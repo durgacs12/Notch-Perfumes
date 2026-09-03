@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Customer Login & Sign Up | Notch Qatar Perfumes</title>
+    <meta name="description" content="Login to your Notch Qatar Perfumes account to track orders, manage wishlist, and get exclusive member offers.">
+    
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        rose: {
+                            900: '#5B1E31',
+                            950: '#4A1525',
+                        },
+                        rosegold: {
+                            300: '#F3C9BC',
+                            400: '#E5A995',
+                            500: '#D49B85',
+                            600: '#B86B7D',
+                        },
+                        blush: {
+                            50: '#FFF5F6',
+                            100: '#FDF0F2',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body class="bg-white text-stone-900 antialiased min-h-screen flex flex-col selection:bg-stone-900 selection:text-white">
+
+    <!-- 1. TOP ANNOUNCEMENT BAR (Dark Magenta) -->
+    <div class="skinn-top-bar text-white py-2 text-xs font-medium tracking-wide">
+        <div class="max-w-7xl mx-auto px-4 flex items-center justify-between">
+            <button class="hover:opacity-75 text-white/80 font-bold px-2">&lt;</button>
+            <div class="text-center flex-1 mx-2 flex items-center justify-center gap-2 flex-wrap">
+                <span class="text-[11px] sm:text-xs">Gift Notch Qatar Perfumes to the one you know by heart- Get upto 25% off on Rakhi Gifts</span>
+                <a href="sale.html" class="underline font-bold hover:text-rose-200 uppercase text-[11px] tracking-widest ml-1">SHOP NOW</a>
+            </div>
+            <button class="hover:opacity-75 text-white/80 font-bold px-2">&gt;</button>
+        </div>
+    </div>
+
+    <!-- 2. MAIN HEADER NAVBAR (Clean White Sticky Header) -->
+    <header class="sticky top-0 z-40 bg-white border-b border-stone-200 text-stone-900 shadow-sm">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between gap-4">
+            
+            <!-- Mobile Menu Toggle -->
+            <button id="mobile-menu-btn" class="lg:hidden text-stone-700 hover:text-stone-900 p-2">
+                <svg class="w-6 h-6 fill-none stroke-current" viewBox="0 0 24 24" stroke-width="2"><path d="M4 6h16M4 12h16M4 18h16"/></svg>
+            </button>
+
+            <!-- Brand Logo -->
+            <a href="index.html" class="flex items-center gap-2.5 group">
+                <img src="image/notch-logo.png" alt="NOTCH Perfumes" class="h-7 md:h-9 w-auto object-contain transition-transform group-hover:scale-105" />
+            </a>
+
+            <!-- Desktop Nav Links -->
+            <nav class="hidden lg:flex items-center gap-7 font-nav-cinzel text-[12px] font-semibold tracking-[0.14em] uppercase text-stone-800">
+                <a href="men.html" class="hover:text-red-700 transition-colors py-2">MEN</a>
+                <a href="women.html" class="hover:text-red-700 transition-colors py-2">WOMEN</a>
+                <a href="collections.html" class="hover:text-red-700 transition-colors py-2">COLLECTIONS</a>
+                <a href="gifting.html" class="hover:text-red-700 transition-colors py-2">GIFTING</a>
+                <a href="collections.html" class="hover:text-red-700 transition-colors py-2">FRAGRANCES</a>
+                <a href="#blog" class="hover:text-red-700 transition-colors py-2">NOTCH BLOG</a>
+                <a href="sale.html" class="text-red-600 hover:text-red-800 transition-colors py-2 font-extrabold">SALE</a>
+            </nav>
+
+            <!-- Header Utilities -->
+            <div class="flex items-center gap-4">
+                <a href="login.html" class="text-red-700 font-extrabold border-b-2 border-red-700 text-xs py-1">
+                    Sign In
+                </a>
+            </div>
+        </div>
+
+        <!-- Mobile Menu Drawer -->
+        <div id="mobile-menu" class="hidden lg:hidden bg-white border-t border-stone-200 px-6 py-6 space-y-3 text-xs font-bold tracking-widest uppercase">
+            <a href="men.html" class="block w-full text-left py-2 hover:text-red-600">MEN</a>
+            <a href="women.html" class="block w-full text-left py-2 hover:text-red-600">WOMEN</a>
+            <a href="collections.html" class="block w-full text-left py-2 hover:text-red-600">COLLECTIONS</a>
+            <a href="gifting.html" class="block w-full text-left py-2 hover:text-red-600">GIFTING</a>
+            <a href="sale.html" class="block w-full text-left py-2 text-red-600 font-extrabold">SALE</a>
+        </div>
+    </header>
+
+    <!-- MAIN LOGIN / REGISTER CONTAINER -->
+    <main class="flex-1 flex items-center justify-center py-12 px-4 bg-stone-50">
+        <div class="bg-white rounded-3xl max-w-md w-full shadow-xl border border-stone-200 p-8 space-y-6">
+            
+            <!-- Logo Header -->
+            <div class="text-center space-y-2">
+                <span class="font-sans text-3xl font-bold text-stone-900 tracking-widest block">NOTCH</span>
+                <span class="text-[10px] font-bold text-red-700 uppercase tracking-[0.3em] block">Luxury Fragrance Club</span>
+            </div>
+
+            <!-- TAB SELECTOR (Login vs Sign Up) -->
+            <div class="flex bg-stone-100 p-1 rounded-2xl border border-stone-200">
+                <button id="tab-login-btn" onclick="switchAuthTab('login')" class="flex-1 py-2.5 rounded-xl text-xs font-bold transition-all text-white bg-stone-900 shadow-sm">
+                    Customer Sign In
+                </button>
+                <button id="tab-register-btn" onclick="switchAuthTab('register')" class="flex-1 py-2.5 rounded-xl text-xs font-bold transition-all text-stone-600 hover:text-stone-900">
+                    Create Account
+                </button>
+            </div>
+
+            <!-- 1. LOGIN FORM -->
+            <form id="login-form" onsubmit="handleCustomerLogin(event)" class="space-y-4 text-xs">
+                <div>
+                    <label class="block font-bold text-stone-900 mb-1">Email or Mobile Number *</label>
+                    <input type="text" id="login-email" required placeholder="name@example.com or 9876543210" class="w-full bg-stone-50 border border-stone-200 p-3 rounded-xl focus:outline-none focus:border-stone-400" />
+                </div>
+
+                <div>
+                    <div class="flex justify-between items-center mb-1">
+                        <label class="font-bold text-stone-900">Password *</label>
+                        <a href="#" onclick="showToast('Password reset link sent to email', 'info'); return false;" class="text-[11px] font-semibold text-red-700 hover:underline">Forgot Password?</a>
+                    </div>
+                    <input type="password" id="login-pass" required placeholder="••••••••" class="w-full bg-stone-50 border border-stone-200 p-3 rounded-xl focus:outline-none focus:border-stone-400" />
+                </div>
+
+                <div class="flex items-center gap-2 pt-1">
+                    <input type="checkbox" id="remember-me" class="rounded accent-stone-900" />
+                    <label for="remember-me" class="text-stone-600 font-medium">Remember me on this device</label>
+                </div>
+
+                <button type="submit" class="w-full py-3.5 bg-stone-900 hover:bg-stone-800 text-white font-bold text-xs uppercase tracking-widest rounded-xl transition-all shadow-md mt-2">
+                    🔒 Sign In to Account
+                </button>
+            </form>
+
+            <!-- 2. REGISTER FORM (Hidden by default) -->
+            <form id="register-form" onsubmit="handleCustomerRegister(event)" class="hidden space-y-4 text-xs">
+                <div>
+                    <label class="block font-bold text-stone-900 mb-1">Full Name *</label>
+                    <input type="text" id="reg-name" required placeholder="e.g. Priya Sharma" class="w-full bg-stone-50 border border-stone-200 p-3 rounded-xl focus:outline-none focus:border-stone-400" />
+                </div>
+
+                <div>
+                    <label class="block font-bold text-stone-900 mb-1">Email Address *</label>
+                    <input type="email" id="reg-email" required placeholder="priya@example.com" class="w-full bg-stone-50 border border-stone-200 p-3 rounded-xl focus:outline-none focus:border-stone-400" />
+                </div>
+
+                <div>
+                    <label class="block font-bold text-stone-900 mb-1">Mobile Number *</label>
+                    <input type="tel" id="reg-phone" required placeholder="+91 98765 43210" class="w-full bg-stone-50 border border-stone-200 p-3 rounded-xl focus:outline-none focus:border-stone-400" />
+                </div>
+
+                <div>
+                    <label class="block font-bold text-stone-900 mb-1">Create Password *</label>
+                    <input type="password" id="reg-pass" required placeholder="At least 6 characters" class="w-full bg-stone-50 border border-stone-200 p-3 rounded-xl focus:outline-none focus:border-stone-400" />
+                </div>
+
+                <button type="submit" class="w-full py-3.5 bg-stone-900 hover:bg-stone-800 text-white font-bold text-xs uppercase tracking-widest rounded-xl transition-all shadow-md mt-2">
+                    ✨ Create Account & Get 10% Off
+                </button>
+            </form>
+
+            <!-- ADMIN QUICK LOGIN LINK -->
+            <div class="pt-4 border-t border-stone-200 text-center space-y-2">
+                <span class="text-[11px] text-stone-500 block">Are you a store manager or administrator?</span>
+                <a href="admin-dashboard.html" class="inline-flex items-center gap-1.5 text-xs font-bold text-stone-900 hover:text-red-700 underline">
+                    <span>⚙️ Go to Admin Master Dashboard</span>
+                </a>
+            </div>
+
+        </div>
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="bg-stone-900 text-stone-400 py-6 border-t border-stone-800 text-center text-xs">
+        © 2026 Notch Qatar Perfumes Ltd. All rights reserved. Developed by <a href="https://techbrightsolutions.com/" target="_blank" rel="noopener noreferrer" class="underline hover:text-stone-300 transition-colors font-semibold">Techbright Solutions</a>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="js/products.js"></script>
+    <script src="js/app.js"></script>
+    <script>
+        function switchAuthTab(tab) {
+            const loginForm = document.getElementById('login-form');
+            const regForm = document.getElementById('register-form');
+            const loginBtn = document.getElementById('tab-login-btn');
+            const regBtn = document.getElementById('tab-register-btn');
+
+            if (tab === 'login') {
+                loginForm.classList.remove('hidden');
+                regForm.classList.add('hidden');
+                loginBtn.className = 'flex-1 py-2.5 rounded-xl text-xs font-bold transition-all text-white bg-stone-900 shadow-sm';
+                regBtn.className = 'flex-1 py-2.5 rounded-xl text-xs font-bold transition-all text-stone-600 hover:text-stone-900';
+            } else {
+                loginForm.classList.add('hidden');
+                regForm.classList.remove('hidden');
+                regBtn.className = 'flex-1 py-2.5 rounded-xl text-xs font-bold transition-all text-white bg-stone-900 shadow-sm';
+                loginBtn.className = 'flex-1 py-2.5 rounded-xl text-xs font-bold transition-all text-stone-600 hover:text-stone-900';
+            }
+        }
+
+        function handleCustomerLogin(e) {
+            e.preventDefault();
+            const email = document.getElementById('login-email').value;
+            showToast(`Welcome back! Logged in as <strong>${email}</strong>`, 'success');
+            setTimeout(() => {
+                window.location.href = 'index.html';
+            }, 1200);
+        }
+
+        function handleCustomerRegister(e) {
+            e.preventDefault();
+            const name = document.getElementById('reg-name').value;
+            showToast(`Account created for <strong>${name}</strong>! 10% coupon code: <strong>NOTCH10</strong>`, 'success');
+            setTimeout(() => {
+                window.location.href = 'index.html';
+            }, 1500);
+        }
+    </script>
+</body>
+</html>

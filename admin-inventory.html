@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inventory & Stock Master | Notch Qatar Perfumes Admin</title>
+    
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        rose: {
+                            900: '#5B1E31',
+                            950: '#4A1525',
+                        },
+                        rosegold: {
+                            300: '#F3C9BC',
+                            400: '#E5A995',
+                            500: '#D49B85',
+                            600: '#B86B7D',
+                        },
+                        blush: {
+                            50: '#FFF5F6',
+                            100: '#FDF0F2',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body class="bg-blush-50 text-stone-900 antialiased min-h-screen flex flex-col">
+
+    <!-- TOP ADMIN BAR -->
+    <header class="glass-header-rose text-white border-b border-rosegold-500/20 px-6 py-4 flex items-center justify-between sticky top-0 z-50">
+        <div class="flex items-center gap-4">
+            <a href="admin-dashboard.html" class="flex flex-col">
+                <img src="image/notch-logo-white.png" alt="NOTCH Admin" class="h-6 md:h-7 w-auto object-contain mb-1" />
+                <span class="text-[8px] font-semibold tracking-[0.3em] uppercase text-rosegold-400">ADMIN CONTROL PANEL</span>
+            </a>
+        </div>
+        <div class="flex items-center gap-4">
+            <a href="index.html" target="_blank" class="px-3.5 py-1.5 bg-rosegold-400/20 text-rosegold-300 hover:bg-rosegold-400 hover:text-rose-950 rounded-lg text-xs font-bold transition-all border border-rosegold-400/30">🌐 Visit Storefront</a>
+            <div class="w-8 h-8 rounded-full rose-gold-bg text-rose-950 font-bold flex items-center justify-center text-xs">AD</div>
+        </div>
+    </header>
+
+    <div class="flex-1 flex">
+        <!-- SIDEBAR -->
+        <aside class="w-64 bg-rose-950 text-rose-100/80 border-r border-rosegold-500/20 hidden md:block flex-shrink-0 p-4 space-y-2">
+            <div class="text-[10px] font-bold uppercase tracking-widest text-rosegold-400 px-3 pt-2 mb-2">Master Modules</div>
+            
+            <a href="admin-dashboard.html" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-semibold text-rose-200/80 hover:bg-rose-900/60 hover:text-rosegold-300 transition-colors">
+                <span>📊</span> Overview Dashboard
+            </a>
+            <a href="admin-inventory.html" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-bold text-rose-950 rose-gold-bg shadow-sm">
+                <span>🏭</span> Stock & Inventory Master
+            </a>
+            <a href="admin-sales-summary.html" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-semibold text-rose-200/80 hover:bg-rose-900/60 hover:text-rosegold-300 transition-colors">
+                <span>📈</span> Sales Summary Report
+            </a>
+            <a href="admin-sales-detail.html" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-semibold text-rose-200/80 hover:bg-rose-900/60 hover:text-rosegold-300 transition-colors">
+                <span>📑</span> Detailed Sales Log
+            </a>
+            <a href="admin-products.html" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-semibold text-rose-200/80 hover:bg-rose-900/60 hover:text-rosegold-300 transition-colors">
+                <span>🧴</span> Product Master
+            </a>
+            <a href="admin-orders.html" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-semibold text-rose-200/80 hover:bg-rose-900/60 hover:text-rosegold-300 transition-colors">
+                <span>📦</span> Order Management
+            </a>
+        </aside>
+
+        <!-- MAIN CONTENT -->
+        <main class="flex-1 p-6 md:p-8 space-y-6 overflow-y-auto">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                <div>
+                    <h1 class="font-serif-heading text-3xl font-bold text-rose-950">Stock & Inventory Master</h1>
+                    <p class="text-xs text-gray-500 mt-1">Manage perfume bottle stock quantities, batch entries, and reorder alerts.</p>
+                </div>
+                <button onclick="openAddStockModal()" class="px-5 py-2.5 rose-gold-bg text-rose-950 font-bold text-xs rounded-xl uppercase tracking-wider shadow-sm hover:opacity-90 transition-opacity">
+                    + Add New Stock Batch
+                </button>
+            </div>
+
+            <!-- INVENTORY KPI SUMMARY -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                <div class="bg-white p-5 rounded-2xl border border-rose-100 shadow-sm space-y-1">
+                    <span class="text-xs text-gray-500">Total Stock Bottles</span>
+                    <div id="kpi-total-units" class="text-2xl font-bold text-rose-950">1,480 Units</div>
+                    <span class="text-[10px] text-emerald-600 font-semibold">Across all 8 perfumes</span>
+                </div>
+                <div class="bg-white p-5 rounded-2xl border border-rose-100 shadow-sm space-y-1">
+                    <span class="text-xs text-gray-500">Inventory Value</span>
+                    <div class="text-2xl font-bold text-rose-950">QAR  1,84,625</div>
+                    <span class="text-[10px] text-gray-400">Total Retail Value</span>
+                </div>
+                <div class="bg-white p-5 rounded-2xl border border-rose-100 shadow-sm space-y-1">
+                    <span class="text-xs text-gray-500">Low Stock Alerts</span>
+                    <div class="text-2xl font-bold text-amber-600">2 Items</div>
+                    <span class="text-[10px] text-amber-600 font-semibold">&lt; 20 units remaining</span>
+                </div>
+                <div class="bg-white p-5 rounded-2xl border border-rose-100 shadow-sm space-y-1">
+                    <span class="text-xs text-gray-500">Out of Stock</span>
+                    <div class="text-2xl font-bold text-emerald-600">0 Items</div>
+                    <span class="text-[10px] text-emerald-600 font-semibold">All products available</span>
+                </div>
+            </div>
+
+            <!-- INVENTORY MANAGEMENT TABLE -->
+            <div class="bg-white rounded-2xl border border-rose-100 shadow-sm overflow-hidden">
+                <div class="p-4 border-b border-rose-100 bg-rose-50/40 flex flex-col sm:flex-row items-center justify-between gap-4">
+                    <input type="text" id="inventory-search" onkeyup="filterInventoryTable(this.value)" placeholder="Search perfume name to manage stock..." class="bg-white border border-rose-200 text-xs px-3.5 py-2 rounded-lg w-full sm:w-80 focus:outline-none focus:border-rosegold-400" />
+                    <span class="text-xs font-bold text-rose-950">Live Stock Monitor</span>
+                </div>
+
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left text-xs">
+                        <thead class="bg-rose-50/80 text-rose-950 uppercase font-bold text-[10px] tracking-wider border-b border-rose-100">
+                            <tr>
+                                <th class="p-4">Perfume Name</th>
+                                <th class="p-4">Category</th>
+                                <th class="p-4">Unit Price</th>
+                                <th class="p-4">Current Stock Level</th>
+                                <th class="p-4">Status</th>
+                                <th class="p-4">Quick Stock Adjustment</th>
+                            </tr>
+                        </thead>
+                        <tbody id="inventory-table-body" class="divide-y divide-gray-100 font-medium"></tbody>
+                    </table>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- ADD STOCK MODAL -->
+    <div id="add-stock-modal" class="hidden fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl max-w-md w-full p-6 relative shadow-2xl space-y-4">
+            <div class="flex justify-between items-center border-b pb-3">
+                <h3 class="font-serif-heading text-xl font-bold text-rose-950">Add Stock Batch</h3>
+                <button onclick="closeAddStockModal()" class="text-gray-400 font-bold">✕</button>
+            </div>
+
+            <form onsubmit="handleAddNewStockBatch(event)" class="space-y-4 text-xs">
+                <div>
+                    <label class="block font-bold text-gray-800 mb-1">Select Perfume *</label>
+                    <select id="stock-perfume-select" required class="w-full bg-stone-50 border p-2.5 rounded-lg focus:outline-none focus:border-rosegold-400">
+                        <option value="notch-raw-men">Notch Raw Eau De Parfum (100 ml)</option>
+                        <option value="notch-steele-men">Notch Steele Eau De Parfum (100 ml)</option>
+                        <option value="notch-celeste-women">Notch Celeste Eau De Parfum (100 ml)</option>
+                        <option value="notch-noura-her">Notch Noura Eau De Parfum (100 ml)</option>
+                        <option value="notch-nox-him">Notch Nox Eau De Parfum (100 ml)</option>
+                        <option value="notch-discovery-kit">Notch Discovery Gift Box</option>
+                    </select>
+                </div>
+
+                <div>
+                    <label class="block font-bold text-gray-800 mb-1">Quantity to Add (+ Units) *</label>
+                    <input type="number" id="stock-qty-input" required placeholder="50" min="1" class="w-full bg-stone-50 border p-2.5 rounded-lg focus:outline-none focus:border-rosegold-400" />
+                </div>
+
+                <div>
+                    <label class="block font-bold text-gray-800 mb-1">Batch Code / Supplier Notes</label>
+                    <input type="text" id="stock-batch-code" placeholder="e.g. BATCH-2026-AUG-14 (Qatar Essence Labs)" class="w-full bg-stone-50 border p-2.5 rounded-lg focus:outline-none focus:border-rosegold-400" />
+                </div>
+
+                <div class="pt-3 flex gap-3">
+                    <button type="button" onclick="closeAddStockModal()" class="flex-1 py-3 border font-bold rounded-xl">Cancel</button>
+                    <button type="submit" class="flex-1 py-3 rose-gold-bg text-rose-950 font-bold rounded-xl uppercase">+ Add Stock</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="js/products.js"></script>
+    <script src="js/app.js"></script>
+    <script>
+        const INVENTORY_DATA = [
+            { id: "notch-raw-men", name: "Notch Raw EDP", category: "Men", price: 2495, stock: 120, minLevel: 20 },
+            { id: "notch-steele-men", name: "Notch Steele EDP", category: "Men", price: 2495, stock: 14, minLevel: 20 },
+            { id: "notch-nox-him", name: "Notch Nox EDP", category: "Men", price: 3495, stock: 45, minLevel: 20 },
+            { id: "notch-celeste-women", name: "Notch Celeste EDP", category: "Women", price: 2495, stock: 18, minLevel: 20 },
+            { id: "notch-noura-her", name: "Notch Noura EDP", category: "Women", price: 3495, stock: 85, minLevel: 20 },
+            { id: "notch-nude-women", name: "Notch Nude EDP", category: "Women", price: 2495, stock: 60, minLevel: 20 },
+            { id: "notch-amalfi-bleue", name: "Notch Amalfi Bleue EDP", category: "Unisex", price: 2995, stock: 95, minLevel: 20 },
+            { id: "notch-discovery-kit", name: "Notch Discovery Box", category: "Discovery", price: 995, stock: 210, minLevel: 30 }
+        ];
+
+        document.addEventListener('DOMContentLoaded', () => {
+            renderInventoryTable(INVENTORY_DATA);
+        });
+
+        function renderInventoryTable(items) {
+            const body = document.getElementById('inventory-table-body');
+            if (!body) return;
+
+            body.innerHTML = items.map((item, idx) => {
+                const isLow = item.stock < item.minLevel;
+                const statusBadge = isLow 
+                    ? `<span class="px-2.5 py-1 bg-amber-100 text-amber-800 font-bold text-[10px] rounded-full">⚠️ Low Stock (${item.stock} left)</span>`
+                    : `<span class="px-2.5 py-1 bg-emerald-100 text-emerald-800 font-bold text-[10px] rounded-full">In Stock (${item.stock} units)</span>`;
+
+                return `
+                    <tr class="hover:bg-rose-50/30">
+                        <td class="p-4 font-bold text-rose-950">${item.name}</td>
+                        <td class="p-4 uppercase font-bold text-[10px] text-gray-500">${item.category}</td>
+                        <td class="p-4 font-bold text-gray-900">QAR ${item.price.toLocaleString('en-US')}</td>
+                        <td class="p-4">
+                            <div class="flex items-center gap-2">
+                                <span class="font-bold text-sm text-gray-900">${item.stock}</span>
+                                <div class="w-24 bg-gray-200 h-2 rounded-full overflow-hidden">
+                                    <div class="h-full ${isLow ? 'bg-amber-500' : 'bg-emerald-600'}" style="width: ${Math.min(100, (item.stock/150)*100)}%"></div>
+                                </div>
+                            </div>
+                        </td>
+                        <td class="p-4">${statusBadge}</td>
+                        <td class="p-4">
+                            <div class="flex items-center gap-2">
+                                <button onclick="adjustStockDirectly(${idx}, -10)" class="px-2.5 py-1 bg-stone-100 text-gray-700 font-bold rounded-lg hover:bg-stone-200">- 10</button>
+                                <button onclick="adjustStockDirectly(${idx}, 10)" class="px-2.5 py-1 bg-stone-100 text-gray-700 font-bold rounded-lg hover:bg-stone-200">+ 10</button>
+                                <button onclick="adjustStockDirectly(${idx}, 50)" class="px-2.5 py-1 rose-gold-bg text-rose-950 font-bold rounded-lg">+ 50</button>
+                            </div>
+                        </td>
+                    </tr>
+                `;
+            }).join('');
+        }
+
+        function adjustStockDirectly(index, delta) {
+            INVENTORY_DATA[index].stock = Math.max(0, INVENTORY_DATA[index].stock + delta);
+            renderInventoryTable(INVENTORY_DATA);
+            showToast(`Updated stock for <strong>${INVENTORY_DATA[index].name}</strong>: ${INVENTORY_DATA[index].stock} units`, 'success');
+        }
+
+        function filterInventoryTable(query) {
+            const q = query.toLowerCase();
+            const filtered = INVENTORY_DATA.filter(i => i.name.toLowerCase().includes(q) || i.category.toLowerCase().includes(q));
+            renderInventoryTable(filtered);
+        }
+
+        function openAddStockModal() {
+            document.getElementById('add-stock-modal').classList.remove('hidden');
+        }
+
+        function closeAddStockModal() {
+            document.getElementById('add-stock-modal').classList.add('hidden');
+        }
+
+        function handleAddNewStockBatch(e) {
+            e.preventDefault();
+            const perfumeId = document.getElementById('stock-perfume-select').value;
+            const qty = parseInt(document.getElementById('stock-qty-input').value) || 0;
+            const item = INVENTORY_DATA.find(i => i.id === perfumeId);
+
+            if (item) {
+                item.stock += qty;
+                renderInventoryTable(INVENTORY_DATA);
+                closeAddStockModal();
+                showToast(`Added <strong>+${qty} bottles</strong> to ${item.name}! Total stock: ${item.stock}`, 'success');
+            }
+        }
+    </script>
+</body>
+</html>

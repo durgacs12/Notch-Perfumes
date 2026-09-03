@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Order Management Master | Notch Qatar Perfumes Admin</title>
+    
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        rose: {
+                            900: '#5B1E31',
+                            950: '#4A1525',
+                        },
+                        rosegold: {
+                            300: '#F3C9BC',
+                            400: '#E5A995',
+                            500: '#D49B85',
+                            600: '#B86B7D',
+                        },
+                        blush: {
+                            50: '#FFF5F6',
+                            100: '#FDF0F2',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body class="bg-blush-50 text-stone-900 antialiased min-h-screen flex flex-col">
+
+    <!-- TOP ADMIN BAR -->
+    <header class="glass-header-rose text-white border-b border-rosegold-500/20 px-6 py-4 flex items-center justify-between sticky top-0 z-50">
+        <div class="flex items-center gap-4">
+            <a href="admin-dashboard.html" class="flex flex-col">
+                <img src="image/notch-logo-white.png" alt="NOTCH Admin" class="h-6 md:h-7 w-auto object-contain mb-1" />
+                <span class="text-[8px] font-semibold tracking-[0.3em] uppercase text-rosegold-400">ADMIN CONTROL PANEL</span>
+            </a>
+        </div>
+        <div class="flex items-center gap-4">
+            <a href="index.html" target="_blank" class="px-3.5 py-1.5 bg-rosegold-400/20 text-rosegold-300 hover:bg-rosegold-400 hover:text-rose-950 rounded-lg text-xs font-bold transition-all border border-rosegold-400/30">
+                🌐 Visit Storefront
+            </a>
+            <div class="w-8 h-8 rounded-full rose-gold-bg text-rose-950 font-bold flex items-center justify-center text-xs">AD</div>
+        </div>
+    </header>
+
+    <div class="flex-1 flex">
+        <!-- SIDEBAR -->
+        <aside class="w-64 bg-rose-950 text-rose-100/80 border-r border-rosegold-500/20 hidden md:block flex-shrink-0 p-4 space-y-2">
+            <div class="text-[10px] font-bold uppercase tracking-widest text-rosegold-400 px-3 pt-2 mb-2">Master Modules</div>
+            
+            <a href="admin-dashboard.html" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-semibold text-rose-200/80 hover:bg-rose-900/60 hover:text-rosegold-300 transition-colors">
+                <span>📊</span> Overview Dashboard
+            </a>
+            <a href="admin-sales-summary.html" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-semibold text-rose-200/80 hover:bg-rose-900/60 hover:text-rosegold-300 transition-colors">
+                <span>📈</span> Sales Summary Report
+            </a>
+            <a href="admin-sales-detail.html" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-semibold text-rose-200/80 hover:bg-rose-900/60 hover:text-rosegold-300 transition-colors">
+                <span>📑</span> Detailed Sales Log
+            </a>
+            <a href="admin-products.html" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-semibold text-rose-200/80 hover:bg-rose-900/60 hover:text-rosegold-300 transition-colors">
+                <span>🧴</span> Product Master
+            </a>
+            <a href="admin-orders.html" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-bold text-rose-950 rose-gold-bg shadow-sm">
+                <span>📦</span> Order Management
+            </a>
+            <a href="admin-categories.html" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-semibold text-rose-200/80 hover:bg-rose-900/60 hover:text-rosegold-300 transition-colors">
+                <span>🏷️</span> Categories & Notes
+            </a>
+            <a href="admin-coupons.html" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-semibold text-rose-200/80 hover:bg-rose-900/60 hover:text-rosegold-300 transition-colors">
+                <span>💳</span> Promo Coupons
+            </a>
+        </aside>
+
+        <!-- MAIN CONTENT -->
+        <main class="flex-1 p-6 md:p-8 space-y-6 overflow-y-auto">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                <div>
+                    <h1 class="font-serif-heading text-3xl font-bold text-rose-950">Order Management Master</h1>
+                    <p class="text-xs text-gray-500 mt-1">Track customer purchases, fulfillment status, and printable invoices.</p>
+                </div>
+            </div>
+
+            <!-- ORDER STATUS TABS -->
+            <div class="flex flex-wrap gap-2">
+                <button onclick="filterOrdersByStatus('all', this)" class="order-tab-btn px-4 py-2 bg-rose-950 text-rosegold-300 rounded-xl text-xs font-bold uppercase shadow-sm">All Orders</button>
+                <button onclick="filterOrdersByStatus('processing', this)" class="order-tab-btn px-4 py-2 bg-white text-gray-700 hover:bg-gray-100 rounded-xl text-xs font-bold uppercase border border-stone-200">Processing</button>
+                <button onclick="filterOrdersByStatus('shipped', this)" class="order-tab-btn px-4 py-2 bg-white text-gray-700 hover:bg-gray-100 rounded-xl text-xs font-bold uppercase border border-stone-200">Shipped</button>
+                <button onclick="filterOrdersByStatus('delivered', this)" class="order-tab-btn px-4 py-2 bg-white text-gray-700 hover:bg-gray-100 rounded-xl text-xs font-bold uppercase border border-stone-200">Delivered</button>
+            </div>
+
+            <!-- ORDERS TABLE -->
+            <div class="bg-white rounded-2xl border border-rose-100 shadow-sm overflow-hidden">
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left text-xs">
+                        <thead class="bg-rose-50/80 text-rose-950 uppercase font-bold text-[10px] tracking-wider border-b border-rose-100">
+                            <tr>
+                                <th class="p-4">Order ID & Date</th>
+                                <th class="p-4">Customer Details</th>
+                                <th class="p-4">Perfumes Ordered</th>
+                                <th class="p-4">Payment Method</th>
+                                <th class="p-4">Total</th>
+                                <th class="p-4">Fulfillment Status</th>
+                                <th class="p-4">Invoice</th>
+                            </tr>
+                        </thead>
+                        <tbody id="orders-table-body" class="divide-y divide-gray-100 font-medium"></tbody>
+                    </table>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- INVOICE MODAL -->
+    <div id="invoice-modal" class="hidden fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl max-w-xl w-full p-6 relative shadow-2xl space-y-4">
+            <button onclick="closeInvoiceModal()" class="absolute top-4 right-4 text-gray-400 hover:text-gray-600 font-bold">✕</button>
+            <div id="invoice-modal-content"></div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="js/products.js"></script>
+    <script src="js/app.js"></script>
+    <script>
+        const ORDERS = [
+            {
+                id: "NOTCH-8941",
+                date: "31 Aug 2026",
+                customer: "Rohan Kapoor",
+                phone: "+91 98765 43210",
+                address: "Flat 402, Lotus Heights, Bandra West, Mumbai 400050",
+                items: "Notch Raw Eau De Parfum (100 ml)",
+                payment: "UPI / GPay",
+                total: 2495,
+                status: "processing"
+            },
+            {
+                id: "NOTCH-8940",
+                date: "30 Aug 2026",
+                customer: "Ananya Sharma",
+                phone: "+91 98123 55443",
+                address: "Villa 14, Palm Meadows, Whitefield, Bengaluru 560066",
+                items: "Notch Noura Eau De Parfum (100 ml)",
+                payment: "Credit Card (Visa)",
+                total: 3495,
+                status: "shipped"
+            },
+            {
+                id: "NOTCH-8939",
+                date: "29 Aug 2026",
+                customer: "Vikram Mehta",
+                phone: "+91 99001 12233",
+                address: "Plot 88, Defense Colony, New Delhi 110024",
+                items: "Notch Discovery Gift Box (5 x 5ml)",
+                payment: "Cash on Delivery",
+                total: 995,
+                status: "delivered"
+            }
+        ];
+
+        let currentOrders = [...ORDERS];
+
+        document.addEventListener('DOMContentLoaded', () => {
+            renderOrdersTable(currentOrders);
+        });
+
+        function renderOrdersTable(items) {
+            const body = document.getElementById('orders-table-body');
+            if (!body) return;
+
+            body.innerHTML = items.map(o => `
+                <tr class="hover:bg-rose-50/30">
+                    <td class="p-4">
+                        <div class="font-bold text-rose-950">${o.id}</div>
+                        <div class="text-[10px] text-gray-400">${o.date}</div>
+                    </td>
+                    <td class="p-4">
+                        <div class="font-bold text-gray-900">${o.customer}</div>
+                        <div class="text-[10px] text-gray-500">${o.phone}</div>
+                    </td>
+                    <td class="p-4 text-gray-800">${o.items}</td>
+                    <td class="p-4 text-gray-600">${o.payment}</td>
+                    <td class="p-4 font-bold text-rose-950">QAR ${o.total.toLocaleString('en-US')}</td>
+                    <td class="p-4">
+                        <select onchange="updateOrderStatus('${o.id}', this.value)" class="bg-stone-50 border border-stone-200 text-xs font-bold p-1.5 rounded-lg focus:outline-none focus:border-rosegold-400">
+                            <option value="processing" ${o.status==='processing'?'selected':''}>Processing</option>
+                            <option value="shipped" ${o.status==='shipped'?'selected':''}>Shipped</option>
+                            <option value="delivered" ${o.status==='delivered'?'selected':''}>Delivered</option>
+                        </select>
+                    </td>
+                    <td class="p-4">
+                        <button onclick="openInvoice('${o.id}')" class="px-3 py-1 bg-rose-50 text-rose-950 font-bold rounded-lg hover:bg-rose-100 transition-colors">Invoice</button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        function filterOrdersByStatus(status, btn) {
+            document.querySelectorAll('.order-tab-btn').forEach(b => {
+                b.className = 'order-tab-btn px-4 py-2 bg-white text-gray-700 hover:bg-gray-100 rounded-xl text-xs font-bold uppercase border border-stone-200';
+            });
+            btn.className = 'order-tab-btn px-4 py-2 bg-rose-950 text-rosegold-300 rounded-xl text-xs font-bold uppercase shadow-sm';
+
+            if (status === 'all') currentOrders = [...ORDERS];
+            else currentOrders = ORDERS.filter(o => o.status === status);
+
+            renderOrdersTable(currentOrders);
+        }
+
+        function updateOrderStatus(orderId, newStatus) {
+            const order = ORDERS.find(o => o.id === orderId);
+            if (order) {
+                order.status = newStatus;
+                showToast(`Order ${orderId} updated to ${newStatus.toUpperCase()}`, 'success');
+            }
+        }
+
+        function openInvoice(orderId) {
+            const order = ORDERS.find(o => o.id === orderId);
+            if (!order) return;
+
+            const modal = document.getElementById('invoice-modal');
+            const content = document.getElementById('invoice-modal-content');
+
+            content.innerHTML = `
+                <div class="space-y-4 text-xs">
+                    <div class="flex justify-between border-b pb-3">
+                        <div>
+                            <h2 class="font-serif-heading text-2xl font-bold text-rose-950">NOTCH QATAR PERFUMES</h2>
+                            <p class="text-[10px] text-gray-400">Official Tax Invoice</p>
+                        </div>
+                        <div class="text-right">
+                            <div class="font-bold text-gray-900">${order.id}</div>
+                            <div class="text-gray-500">${order.date}</div>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-4 bg-rose-50/50 p-3 rounded-lg">
+                        <div>
+                            <span class="font-bold text-rose-900 block">Billed To:</span>
+                            <span class="font-bold text-gray-900">${order.customer}</span>
+                            <p class="text-gray-500 text-[11px]">${order.address}</p>
+                        </div>
+                        <div>
+                            <span class="font-bold text-rose-900 block">Payment Method:</span>
+                            <span>${order.payment}</span>
+                        </div>
+                    </div>
+
+                    <div class="border-t pt-3 space-y-2">
+                        <div class="flex justify-between font-bold text-gray-900">
+                            <span>${order.items}</span>
+                            <span>QAR ${order.total.toLocaleString('en-US')}</span>
+                        </div>
+                        <div class="flex justify-between text-gray-500">
+                            <span>Shipping Fee</span>
+                            <span class="text-emerald-600 font-bold">FREE</span>
+                        </div>
+                        <div class="flex justify-between text-base font-bold text-rose-950 pt-2 border-t">
+                            <span>Total Amount Paid</span>
+                            <span>QAR ${order.total.toLocaleString('en-US')}</span>
+                        </div>
+                    </div>
+
+                    <button onclick="window.print()" class="w-full py-3 rose-gold-bg text-rose-950 font-bold text-xs uppercase rounded-xl">🖨️ Print Invoice</button>
+                </div>
+            `;
+
+            modal.classList.remove('hidden');
+        }
+
+        function closeInvoiceModal() {
+            document.getElementById('invoice-modal').classList.add('hidden');
+        }
+    </script>
+</body>
+</html>

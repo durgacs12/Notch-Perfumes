@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Complete Purchase & Checkout | Notch Qatar Perfumes</title>
+    <meta name="description" content="Complete your Notch Qatar Perfumes purchase securely. Free express delivery and instant online payment options.">
+    
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        rose: {
+                            900: '#5B1E31',
+                            950: '#4A1525',
+                        },
+                        rosegold: {
+                            300: '#F3C9BC',
+                            400: '#E5A995',
+                            500: '#D49B85',
+                            600: '#B86B7D',
+                        },
+                        blush: {
+                            50: '#FFF5F6',
+                            100: '#FDF0F2',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body class="bg-white text-stone-900 antialiased min-h-screen flex flex-col selection:bg-stone-900 selection:text-white">
+
+    <!-- 1. TOP ANNOUNCEMENT BAR (Dark Magenta) -->
+    <div class="skinn-top-bar text-white py-2 text-xs font-medium tracking-wide">
+        <div class="max-w-7xl mx-auto px-4 flex items-center justify-between">
+            <button class="hover:opacity-75 text-white/80 font-bold px-2">&lt;</button>
+            <div class="text-center flex-1 mx-2 flex items-center justify-center gap-2 flex-wrap">
+                <span class="text-[11px] sm:text-xs">Gift Notch Qatar Perfumes to the one you know by heart- Get upto 25% off on Rakhi Gifts</span>
+                <a href="sale.html" class="underline font-bold hover:text-rose-200 uppercase text-[11px] tracking-widest ml-1">SHOP NOW</a>
+            </div>
+            <button class="hover:opacity-75 text-white/80 font-bold px-2">&gt;</button>
+        </div>
+    </div>
+
+    <!-- 2. MAIN HEADER NAVBAR (Clean White Sticky Header) -->
+    <header class="sticky top-0 z-40 bg-white border-b border-stone-200 text-stone-900 shadow-sm">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
+            <!-- Brand Logo -->
+            <a href="index.html" class="flex items-center gap-2.5 group">
+                <img src="image/notch-logo.png" alt="NOTCH Perfumes" class="h-7 md:h-9 w-auto object-contain transition-transform group-hover:scale-105" />
+            </a>
+
+            <div class="flex items-center gap-2 text-xs font-bold text-stone-800 uppercase tracking-widest">
+                <span>🔒 256-Bit Secure Purchase Checkout</span>
+            </div>
+        </div>
+    </header>
+
+    <!-- MAIN PURCHASE CHECKOUT CONTAINER -->
+    <main class="flex-1 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 w-full bg-stone-50">
+        <div class="mb-8 text-center space-y-2">
+            <h1 class="font-serif-heading text-3xl md:text-4xl font-bold text-stone-900">Complete Your Order</h1>
+            <p class="text-xs text-stone-500">Provide shipping address and select payment method to finalize your perfume purchase.</p>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+            
+            <!-- LEFT COLUMN: SHIPPING ADDRESS & PAYMENT METHOD (8 Cols) -->
+            <div class="lg:col-span-7 space-y-8">
+                
+                <!-- 1. SHIPPING ADDRESS FORM -->
+                <div class="bg-white rounded-3xl p-6 sm:p-8 border border-stone-200 shadow-sm space-y-6">
+                    <div class="flex items-center gap-3 border-b border-stone-100 pb-4">
+                        <span class="w-8 h-8 rounded-full bg-stone-900 text-white font-bold flex items-center justify-center text-sm">1</span>
+                        <h2 class="font-serif-heading text-xl font-bold text-stone-900">Shipping & Delivery Address</h2>
+                    </div>
+
+                    <form id="shipping-form" class="space-y-4 text-xs">
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            <div>
+                                <label class="block font-bold text-stone-900 mb-1">Full Name *</label>
+                                <input type="text" id="chk-fullname" required placeholder="e.g. Rahul Sharma" class="w-full bg-stone-50 border border-stone-200 p-3 rounded-xl focus:outline-none focus:border-stone-400" />
+                            </div>
+                            <div>
+                                <label class="block font-bold text-stone-900 mb-1">Mobile Phone Number *</label>
+                                <input type="tel" id="chk-phone" required placeholder="+91 98765 43210" class="w-full bg-stone-50 border border-stone-200 p-3 rounded-xl focus:outline-none focus:border-stone-400" />
+                            </div>
+                        </div>
+
+                        <div>
+                            <label class="block font-bold text-stone-900 mb-1">Email Address (For Invoice) *</label>
+                            <input type="email" id="chk-email" required placeholder="rahul@example.com" class="w-full bg-stone-50 border border-stone-200 p-3 rounded-xl focus:outline-none focus:border-stone-400" />
+                        </div>
+
+                        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                            <div>
+                                <label class="block font-bold text-stone-900 mb-1">Pincode *</label>
+                                <input type="text" id="chk-pincode" required placeholder="400050" class="w-full bg-stone-50 border border-stone-200 p-3 rounded-xl focus:outline-none focus:border-stone-400" />
+                            </div>
+                            <div class="sm:col-span-2">
+                                <label class="block font-bold text-stone-900 mb-1">City / State *</label>
+                                <input type="text" id="chk-city" required placeholder="Mumbai, Maharashtra" class="w-full bg-stone-50 border border-stone-200 p-3 rounded-xl focus:outline-none focus:border-stone-400" />
+                            </div>
+                        </div>
+
+                        <div>
+                            <label class="block font-bold text-stone-900 mb-1">Flat / House No. & Street Address *</label>
+                            <input type="text" id="chk-address" required placeholder="Flat 402, Building A, Bandra West" class="w-full bg-stone-50 border border-stone-200 p-3 rounded-xl focus:outline-none focus:border-stone-400" />
+                        </div>
+                    </form>
+                </div>
+
+                <!-- 2. PAYMENT METHOD SELECTOR -->
+                <div class="bg-white rounded-3xl p-6 sm:p-8 border border-stone-200 shadow-sm space-y-6">
+                    <div class="flex items-center gap-3 border-b border-stone-100 pb-4">
+                        <span class="w-8 h-8 rounded-full bg-stone-900 text-white font-bold flex items-center justify-center text-sm">2</span>
+                        <h2 class="font-serif-heading text-xl font-bold text-stone-900">Select Payment Method</h2>
+                    </div>
+
+                    <div class="space-y-3 text-xs">
+                        <label class="flex items-center justify-between p-4 rounded-2xl border-2 border-stone-900 bg-stone-50 cursor-pointer">
+                            <div class="flex items-center gap-3">
+                                <input type="radio" name="pay-method" checked class="accent-stone-900" />
+                                <span class="font-bold text-stone-900">UPI Instant Payment (Google Pay / PhonePe / Paytm / BHIM)</span>
+                            </div>
+                            <span class="text-xs">⚡ Fast</span>
+                        </label>
+
+                        <label class="flex items-center justify-between p-4 rounded-2xl border border-stone-200 hover:border-stone-400 cursor-pointer">
+                            <div class="flex items-center gap-3">
+                                <input type="radio" name="pay-method" class="accent-stone-900" />
+                                <span class="font-bold text-stone-900">Credit / Debit Card (Visa, MasterCard, RuPay)</span>
+                            </div>
+                            <span class="text-xs">💳 Card</span>
+                        </label>
+
+                        <label class="flex items-center justify-between p-4 rounded-2xl border border-stone-200 hover:border-stone-400 cursor-pointer">
+                            <div class="flex items-center gap-3">
+                                <input type="radio" name="pay-method" class="accent-stone-900" />
+                                <span class="font-bold text-stone-900">Cash on Delivery (COD)</span>
+                            </div>
+                            <span class="text-xs">📦 Pay on Arrival</span>
+                        </label>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- RIGHT COLUMN: ORDER SUMMARY (4 Cols) -->
+            <div class="lg:col-span-5 space-y-6">
+                <div class="bg-white rounded-3xl p-6 sm:p-8 border border-stone-200 shadow-sm space-y-6 sticky top-24">
+                    <h3 class="font-serif-heading text-xl font-bold text-stone-900 border-b border-stone-100 pb-3">Order Items Summary</h3>
+
+                    <div id="checkout-items-list" class="space-y-3 max-h-64 overflow-y-auto"></div>
+
+                    <!-- COUPON DISCOUNTS -->
+                    <div class="pt-4 border-t border-stone-100">
+                        <label class="block font-bold text-stone-900 text-xs mb-1">Have a Coupon Code?</label>
+                        <div class="flex gap-2">
+                            <input type="text" id="coupon-code-input" placeholder="e.g. NOTCH10" class="flex-1 bg-stone-50 border border-stone-200 text-xs px-3 py-2 rounded-xl uppercase font-bold text-stone-900 focus:outline-none" />
+                            <button onclick="applyCouponCode()" class="px-4 py-2 bg-stone-900 hover:bg-stone-800 text-white font-bold text-xs rounded-xl uppercase">Apply</button>
+                        </div>
+                        <span id="coupon-msg" class="hidden"></span>
+                    </div>
+
+                    <!-- PRICE BREAKDOWN -->
+                    <div class="pt-4 border-t border-stone-100 space-y-2 text-xs">
+                        <div class="flex justify-between text-stone-600"><span>Items Subtotal</span><span id="chk-subtotal" class="font-semibold text-stone-900">QAR 0</span></div>
+                        <div class="flex justify-between text-stone-600"><span>Delivery Fee</span><span class="font-bold text-emerald-600">FREE Express</span></div>
+                        <div class="flex justify-between text-stone-600"><span>Coupon Discount</span><span id="chk-discount" class="font-bold text-red-600">- QAR 0</span></div>
+                        <div class="flex justify-between text-base font-bold text-stone-900 border-t border-stone-200 pt-3"><span>Final Total</span><span id="chk-grand-total">QAR 0</span></div>
+                    </div>
+
+                    <button onclick="handlePlaceOrder()" class="w-full py-4 bg-stone-900 hover:bg-stone-800 text-white font-bold text-xs uppercase tracking-widest rounded-xl transition-all shadow-lg">
+                        🔒 Place Order & Complete Purchase
+                    </button>
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+    <!-- SUCCESS MODAL -->
+    <div id="order-success-modal" class="hidden fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
+        <div class="bg-white rounded-3xl max-w-lg w-full p-8 text-center space-y-5 shadow-2xl relative">
+            <div class="w-16 h-16 rounded-full bg-emerald-100 text-emerald-800 text-3xl font-bold flex items-center justify-center mx-auto">🌹</div>
+            <h2 class="font-serif-heading text-3xl font-bold text-stone-900">Order Placed Successfully!</h2>
+            <p class="text-xs text-stone-600 leading-relaxed">
+                Thank you for purchasing Notch Qatar Perfumes. Your order <strong id="success-order-id" class="text-stone-900">#NOTCH-9082</strong> has been confirmed and is being packed.
+            </p>
+
+            <div class="bg-stone-50 p-4 rounded-2xl border border-stone-200 text-xs text-left space-y-1">
+                <div class="flex justify-between"><span class="font-bold text-stone-700">Estimated Delivery:</span><span class="font-bold text-emerald-700">2 - 3 Business Days</span></div>
+                <div class="flex justify-between"><span class="font-bold text-stone-700">Tracking SMS:</span><span>Sent to mobile</span></div>
+            </div>
+
+            <div class="flex gap-3 pt-2">
+                <a href="index.html" class="flex-1 py-3.5 border border-stone-900 text-stone-900 font-bold text-xs rounded-xl uppercase text-center">Return to Store</a>
+                <a href="admin-orders.html" class="flex-1 py-3.5 bg-stone-900 text-white font-bold text-xs rounded-xl uppercase text-center">View Admin Order</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- FOOTER -->
+    <footer class="bg-stone-900 text-stone-400 py-6 border-t border-stone-800 text-center text-xs">
+        © 2026 Notch Qatar Perfumes Ltd. All rights reserved. Developed by <a href="https://techbrightsolutions.com/" target="_blank" rel="noopener noreferrer" class="underline hover:text-stone-300 transition-colors font-semibold">Techbright Solutions</a>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="js/products.js"></script>
+    <script src="js/app.js"></script>
+    <script>
+        let appliedDiscountPercent = 0;
+
+        document.addEventListener('DOMContentLoaded', () => {
+            renderCheckoutSummary();
+        });
+
+        function renderCheckoutSummary() {
+            const listEl = document.getElementById('checkout-items-list');
+            const subtotalEl = document.getElementById('chk-subtotal');
+            const discountEl = document.getElementById('chk-discount');
+            const totalEl = document.getElementById('chk-grand-total');
+
+            if (!listEl) return;
+
+            if (cart.length === 0) {
+                listEl.innerHTML = `<p class="text-xs text-stone-500 py-4 text-center">Your shopping bag is empty. <a href="index.html" class="underline font-bold text-stone-900">Add perfumes</a></p>`;
+                if (subtotalEl) subtotalEl.textContent = 'QAR 0';
+                if (totalEl) totalEl.textContent = 'QAR 0';
+                return;
+            }
+
+            let subtotal = 0;
+            listEl.innerHTML = cart.map(item => {
+                const product = PRODUCTS.find(p => p.id === item.productId);
+                if (!product) return '';
+                const itemTotal = product.price * item.quantity;
+                subtotal += itemTotal;
+
+                return `
+                    <div class="flex items-center gap-3 p-2 bg-stone-50 rounded-xl border border-stone-200 text-xs">
+                        <img src="${product.image}" class="w-12 h-12 object-cover rounded-lg bg-white" />
+                        <div class="flex-1">
+                            <h4 class="font-bold text-stone-900 line-clamp-1">${product.name}</h4>
+                            <span class="text-[10px] text-stone-500">Qty: ${item.quantity} • Size: ${item.size}</span>
+                        </div>
+                        <span class="font-bold text-stone-900">QAR ${itemTotal.toLocaleString('en-US')}</span>
+                    </div>
+                `;
+            }).join('');
+
+            const discountAmount = Math.round((subtotal * appliedDiscountPercent) / 100);
+            const grandTotal = Math.max(0, subtotal - discountAmount);
+
+            if (subtotalEl) subtotalEl.textContent = `QAR ${subtotal.toLocaleString('en-US')}`;
+            if (discountEl) discountEl.textContent = `- QAR ${discountAmount.toLocaleString('en-US')}`;
+            if (totalEl) totalEl.textContent = `QAR ${grandTotal.toLocaleString('en-US')}`;
+        }
+
+        function applyCouponCode() {
+            const input = document.getElementById('coupon-code-input').value.trim().toUpperCase();
+            const msgEl = document.getElementById('coupon-msg');
+
+            if (input === 'NOTCH10') {
+                appliedDiscountPercent = 10;
+                msgEl.textContent = "🎉 10% Discount Applied Successfully!";
+                msgEl.className = "text-[11px] font-semibold mt-1 text-emerald-600 block";
+            } else if (input === 'FESTIVE25') {
+                appliedDiscountPercent = 25;
+                msgEl.textContent = "🎉 25% Festive Discount Applied!";
+                msgEl.className = "text-[11px] font-semibold mt-1 text-emerald-600 block";
+            } else {
+                msgEl.textContent = "❌ Invalid Coupon Code. Try NOTCH10";
+                msgEl.className = "text-[11px] font-semibold mt-1 text-red-500 block";
+            }
+            renderCheckoutSummary();
+        }
+
+        function handlePlaceOrder() {
+            const name = document.getElementById('chk-fullname').value || 'Customer';
+            const phone = document.getElementById('chk-phone').value || 'Mobile';
+            const orderId = `#NOTCH-${Math.floor(1000 + Math.random() * 9000)}`;
+
+            document.getElementById('success-order-id').textContent = orderId;
+            document.getElementById('order-success-modal').classList.remove('hidden');
+
+            // Clear local cart
+            cart = [];
+            saveCart();
+            updateHeaderCounters();
+        }
+    </script>
+</body>
+</html>

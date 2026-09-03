@@ -1,0 +1,182 @@
+@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600;700&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Montserrat:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,500;0,600;1,400&display=swap');
+
+:root {
+    --notch-rose-dark: #4A1525;
+    --notch-rose-plum: #5B1E31;
+    --notch-rose-gold: #D49B85;
+    --notch-rose-gold-light: #F3C9BC;
+    --notch-rose-dusty: #B86B7D;
+    --notch-rose-blush: #FFF5F6;
+    --notch-text-dark: #2A1A1F;
+    --font-heading: 'Cormorant Garamond', Georgia, serif;
+    --font-body: 'Montserrat', sans-serif;
+    --font-nav: 'Cinzel', serif;
+}
+
+body {
+    font-family: var(--font-body);
+    background-color: var(--notch-rose-blush);
+    color: var(--notch-text-dark);
+    overflow-x: hidden;
+}
+
+h1, h2, h3, h4, .font-serif-heading {
+    font-family: var(--font-heading);
+}
+
+.font-nav-cinzel {
+    font-family: 'Cinzel', serif;
+}
+
+.font-nav-cormorant {
+    font-family: 'Cormorant Garamond', Georgia, serif;
+}
+
+.font-nav-playfair {
+    font-family: 'Playfair Display', Georgia, serif;
+}
+
+/* Custom Scrollbar in Rose Gold */
+::-webkit-scrollbar {
+    width: 8px;
+}
+::-webkit-scrollbar-track {
+    background: #FFF5F6;
+}
+::-webkit-scrollbar-thumb {
+    background: #D49B85;
+    border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+    background: #B86B7D;
+}
+
+/* Luxury Rose Headers & Cards */
+.glass-header-rose {
+    background: rgba(74, 21, 37, 0.96);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+}
+
+.rose-gradient-bg {
+    background: linear-gradient(135deg, #4A1525 0%, #5B1E31 50%, #380E1B 100%);
+}
+
+.rose-gold-bg {
+    background: linear-gradient(135deg, #E5A995 0%, #D49B85 50%, #B86B7D 100%);
+}
+
+.rose-gold-bg:hover {
+    background: linear-gradient(135deg, #F3C9BC 0%, #E5A995 50%, #C8826D 100%);
+}
+
+.rose-gold-text {
+    background: linear-gradient(135deg, #F3C9BC 0%, #D49B85 50%, #E5A995 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.rose-gold-glow {
+    box-shadow: 0 0 20px rgba(212, 155, 133, 0.25);
+}
+
+/* Product Cards */
+.product-card {
+    transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+    background-color: #FFFFFF;
+}
+
+.product-card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 20px 30px -10px rgba(91, 30, 49, 0.15);
+}
+
+.product-image-container img {
+    transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.product-card:hover .product-image-container img {
+    transform: scale(1.08);
+}
+
+/* Cart Drawer */
+.cart-drawer-backdrop {
+    transition: opacity 0.3s ease;
+}
+.cart-drawer-panel {
+    transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* Toast Notifications */
+#toast-container {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    z-index: 9999;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.toast {
+    animation: toastIn 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes toastIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px) scale(0.95);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+/* Hero Slider Animations */
+.hero-slide {
+    display: none;
+    opacity: 0;
+    transition: opacity 0.8s ease-in-out;
+}
+.hero-slide.active {
+    display: block;
+    opacity: 1;
+}
+
+.note-pill {
+    transition: all 0.25s ease;
+}
+.note-pill.active {
+    background-color: #5B1E31;
+    color: #FFFFFF;
+    border-color: #D49B85;
+}
+
+/* SKINN Theme Custom Styles */
+.skinn-hero-bg {
+    background: radial-gradient(circle at 55% 45%, #7a0c24 0%, #480211 55%, #270007 100%);
+}
+
+.skinn-top-bar {
+    background-color: #520029;
+}
+
+.skinn-pedestal-base {
+    background: linear-gradient(180deg, #62081d 0%, #420310 100%);
+    box-shadow: 0 15px 35px rgba(0,0,0,0.5), inset 0 2px 4px rgba(255,255,255,0.15);
+}
+
+.vertical-side-tab {
+    writing-mode: vertical-rl;
+    transform: rotate(180deg);
+}
+
+.skinn-gold-text {
+    color: #E2B878;
+}
+
+.skinn-gold-border {
+    border-color: #E2B878;
+}
+

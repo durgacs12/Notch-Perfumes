@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Orders & Live Delivery Tracking | Notch Qatar Perfumes</title>
+    <meta name="description" content="Track your Notch Qatar Perfumes orders live, view purchase history, and manage delivery addresses.">
+    
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        rose: {
+                            900: '#5B1E31',
+                            950: '#4A1525',
+                        },
+                        rosegold: {
+                            300: '#F3C9BC',
+                            400: '#E5A995',
+                            500: '#D49B85',
+                            600: '#B86B7D',
+                        },
+                        blush: {
+                            50: '#FFF5F6',
+                            100: '#FDF0F2',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body class="bg-white text-stone-900 antialiased min-h-screen flex flex-col selection:bg-stone-900 selection:text-white">
+
+    <!-- 1. TOP ANNOUNCEMENT BAR (Dark Magenta) -->
+    <div class="skinn-top-bar text-white py-2 text-xs font-medium tracking-wide">
+        <div class="max-w-7xl mx-auto px-4 flex items-center justify-between">
+            <button class="hover:opacity-75 text-white/80 font-bold px-2">&lt;</button>
+            <div class="text-center flex-1 mx-2 flex items-center justify-center gap-2 flex-wrap">
+                <span class="text-[11px] sm:text-xs">Gift Notch Qatar Perfumes to the one you know by heart- Get upto 25% off on Rakhi Gifts</span>
+                <a href="sale.html" class="underline font-bold hover:text-rose-200 uppercase text-[11px] tracking-widest ml-1">SHOP NOW</a>
+            </div>
+            <button class="hover:opacity-75 text-white/80 font-bold px-2">&gt;</button>
+        </div>
+    </div>
+
+    <!-- 2. MAIN HEADER NAVBAR (Clean White Sticky Header) -->
+    <header class="sticky top-0 z-40 bg-white border-b border-stone-200 text-stone-900 shadow-sm">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between gap-4">
+            
+            <!-- Mobile Menu Toggle -->
+            <button id="mobile-menu-btn" class="lg:hidden text-stone-700 hover:text-stone-900 p-2">
+                <svg class="w-6 h-6 fill-none stroke-current" viewBox="0 0 24 24" stroke-width="2"><path d="M4 6h16M4 12h16M4 18h16"/></svg>
+            </button>
+
+            <!-- Brand Logo -->
+            <a href="index.html" class="flex items-center gap-2.5 group">
+                <img src="image/notch-logo.png" alt="NOTCH Perfumes" class="h-7 md:h-9 w-auto object-contain transition-transform group-hover:scale-105" />
+            </a>
+
+            <!-- Desktop Nav Links -->
+            <nav class="hidden lg:flex items-center gap-7 font-nav-cinzel text-[12px] font-semibold tracking-[0.14em] uppercase text-stone-800">
+                <a href="men.html" class="hover:text-red-700 transition-colors py-2">MEN</a>
+                <a href="women.html" class="hover:text-red-700 transition-colors py-2">WOMEN</a>
+                <a href="collections.html" class="hover:text-red-700 transition-colors py-2">COLLECTIONS</a>
+                <a href="gifting.html" class="hover:text-red-700 transition-colors py-2">GIFTING</a>
+                <a href="collections.html" class="hover:text-red-700 transition-colors py-2">FRAGRANCES</a>
+                <a href="#blog" class="hover:text-red-700 transition-colors py-2">NOTCH BLOG</a>
+                <a href="sale.html" class="text-red-600 hover:text-red-800 transition-colors py-2 font-extrabold">SALE</a>
+            </nav>
+
+            <!-- Header Utilities -->
+            <div class="flex items-center gap-4">
+                <a href="my-orders.html" class="text-red-700 font-extrabold border-b-2 border-red-700 text-xs py-1">
+                    My Orders
+                </a>
+            </div>
+        </div>
+
+        <!-- Mobile Menu Drawer -->
+        <div id="mobile-menu" class="hidden lg:hidden bg-white border-t border-stone-200 px-6 py-6 space-y-3 text-xs font-bold tracking-widest uppercase">
+            <a href="men.html" class="block w-full text-left py-2 hover:text-red-600">MEN</a>
+            <a href="women.html" class="block w-full text-left py-2 hover:text-red-600">WOMEN</a>
+            <a href="collections.html" class="block w-full text-left py-2 hover:text-red-600">COLLECTIONS</a>
+            <a href="gifting.html" class="block w-full text-left py-2 hover:text-red-600">GIFTING</a>
+            <a href="sale.html" class="block w-full text-left py-2 text-red-600 font-extrabold">SALE</a>
+        </div>
+    </header>
+
+    <!-- MAIN CONTAINER -->
+    <main class="flex-1 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 w-full space-y-8 bg-stone-50">
+        
+        <!-- PROFILE HEADER CARD (SKINN Burgundy Studio Theme) -->
+        <div class="skinn-hero-bg text-white rounded-3xl p-6 sm:p-8 shadow-xl border border-white/20 flex flex-col sm:flex-row items-center justify-between gap-6">
+            <div class="flex items-center gap-4 text-center sm:text-left">
+                <div class="w-16 h-16 rounded-2xl bg-white text-stone-900 font-serif font-bold text-2xl flex items-center justify-center shadow-lg">
+                    RS
+                </div>
+                <div>
+                    <div class="flex items-center gap-2 justify-center sm:justify-start">
+                        <h1 class="font-serif-heading text-2xl sm:text-3xl font-bold">Rahul Sharma</h1>
+                        <span class="px-2.5 py-0.5 bg-white/20 text-rose-100 border border-white/30 rounded-full text-[10px] font-bold uppercase">VIP Member</span>
+                    </div>
+                    <p class="text-xs text-rose-100/80 mt-1">rahul.sharma@example.com • Member since 2024</p>
+                </div>
+            </div>
+
+            <div class="flex gap-6 border-t sm:border-t-0 sm:border-l border-white/20 pt-4 sm:pt-0 sm:pl-6 text-center">
+                <div>
+                    <div class="text-2xl font-bold skinn-gold-text">5</div>
+                    <div class="text-[10px] uppercase text-rose-200/80 font-semibold">Total Orders</div>
+                </div>
+                <div>
+                    <div class="text-2xl font-bold skinn-gold-text">1</div>
+                    <div class="text-[10px] uppercase text-rose-200/80 font-semibold">Active Shipment</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- LIVE SHIPMENT TRACKING CARD -->
+        <div class="bg-white rounded-3xl p-6 sm:p-8 border border-stone-200 shadow-sm space-y-6">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-stone-100 pb-4">
+                <div>
+                    <div class="flex items-center gap-2">
+                        <span class="px-2.5 py-1 bg-emerald-100 text-emerald-800 font-bold text-[10px] uppercase rounded-full">Out For Delivery</span>
+                        <span class="text-xs font-bold text-stone-900">Order #NOTCH-9082</span>
+                    </div>
+                    <p class="text-xs text-stone-500 mt-1">Placed on 31 Aug 2026 • Expected Delivery: Today by 6:00 PM</p>
+                </div>
+                <button onclick="showToast('Tracking SMS resent to mobile', 'info')" class="px-4 py-2 bg-stone-100 text-stone-900 font-bold text-xs rounded-xl hover:bg-stone-200 transition-colors self-start sm:self-auto">
+                    🚚 Courier ID: BLUEDART-89412
+                </button>
+            </div>
+
+            <!-- STEPPER PROGRESS VISUALIZER -->
+            <div class="py-4">
+                <div class="relative flex items-center justify-between max-w-2xl mx-auto">
+                    <!-- Progress Line -->
+                    <div class="absolute left-0 top-1/2 -translate-y-1/2 w-full h-1 bg-stone-200 -z-0"></div>
+                    <div class="absolute left-0 top-1/2 -translate-y-1/2 w-3/4 h-1 bg-emerald-500 -z-0"></div>
+
+                    <!-- Step 1 -->
+                    <div class="relative z-10 flex flex-col items-center gap-2">
+                        <div class="w-9 h-9 rounded-full bg-emerald-600 text-white font-bold text-xs flex items-center justify-center shadow-md">✓</div>
+                        <span class="text-[11px] font-bold text-stone-800 text-center">Order Confirmed</span>
+                    </div>
+
+                    <!-- Step 2 -->
+                    <div class="relative z-10 flex flex-col items-center gap-2">
+                        <div class="w-9 h-9 rounded-full bg-emerald-600 text-white font-bold text-xs flex items-center justify-center shadow-md">✓</div>
+                        <span class="text-[11px] font-bold text-stone-800 text-center">Packed at Hub</span>
+                    </div>
+
+                    <!-- Step 3 (Active) -->
+                    <div class="relative z-10 flex flex-col items-center gap-2">
+                        <div class="w-9 h-9 rounded-full bg-stone-900 text-white font-bold text-xs flex items-center justify-center shadow-md animate-pulse">🚚</div>
+                        <span class="text-[11px] font-bold text-stone-900 text-center">Out for Delivery</span>
+                    </div>
+
+                    <!-- Step 4 -->
+                    <div class="relative z-10 flex flex-col items-center gap-2">
+                        <div class="w-9 h-9 rounded-full bg-stone-200 text-stone-500 font-bold text-xs flex items-center justify-center">4</div>
+                        <span class="text-[11px] font-medium text-stone-400 text-center">Delivered</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ORDERED ITEMS & ADDRESS IN SHIPMENT -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 pt-4 border-t border-stone-100 text-xs">
+                <div class="space-y-3">
+                    <span class="font-bold text-stone-900 uppercase tracking-wider block">Items in this Package</span>
+                    <div class="flex items-center gap-3 p-3 bg-stone-50 rounded-xl border border-stone-200">
+                        <img src="https://images.unsplash.com/photo-1594035910387-fea47794261f?auto=format&fit=crop&w=800&q=80" class="w-12 h-12 object-cover rounded-lg bg-white" />
+                        <div>
+                            <h4 class="font-bold text-stone-900">Notch Raw Eau De Parfum</h4>
+                            <p class="text-[10px] text-stone-500">Size: 100 ml • Qty: 1</p>
+                        </div>
+                        <span class="ml-auto font-bold text-stone-900">QAR 2,495</span>
+                    </div>
+                </div>
+
+                <div class="space-y-2 bg-stone-50 p-4 rounded-2xl border border-stone-200">
+                    <span class="font-bold text-stone-900 uppercase tracking-wider block">Delivery Destination</span>
+                    <p class="font-bold text-stone-900">Rahul Sharma (+91 98765 43210)</p>
+                    <p class="text-stone-600 leading-relaxed">Flat 402, Lotus Heights, Bandra West, Mumbai, Maharashtra 400050</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- PAST ORDER HISTORY TABLE -->
+        <div class="bg-white rounded-3xl p-6 sm:p-8 border border-stone-200 shadow-sm space-y-4">
+            <h3 class="font-serif-heading text-xl font-bold text-stone-900 border-b border-stone-100 pb-3">Past Order History</h3>
+
+            <div class="overflow-x-auto">
+                <table class="w-full text-left text-xs">
+                    <thead class="bg-stone-100 text-stone-900 uppercase font-bold text-[10px] tracking-wider border-b border-stone-200">
+                        <tr>
+                            <th class="p-3">Order ID & Date</th>
+                            <th class="p-3">Items Purchased</th>
+                            <th class="p-3">Amount</th>
+                            <th class="p-3">Status</th>
+                            <th class="p-3">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-stone-100 font-medium">
+                        <tr class="hover:bg-stone-50">
+                            <td class="p-3">
+                                <div class="font-bold text-stone-900">#NOTCH-8120</div>
+                                <div class="text-[10px] text-stone-400">12 Jul 2026</div>
+                            </td>
+                            <td class="p-3 text-stone-800">Notch Steele EDP (100ml)</td>
+                            <td class="p-3 font-bold">QAR  2,495</td>
+                            <td class="p-3"><span class="px-2.5 py-1 bg-emerald-100 text-emerald-800 font-bold text-[10px] rounded-full">Delivered</span></td>
+                            <td class="p-3"><button onclick="showToast('Added item to cart for reorder', 'success')" class="text-stone-900 font-bold underline">Reorder</button></td>
+                        </tr>
+                        <tr class="hover:bg-stone-50">
+                            <td class="p-3">
+                                <div class="font-bold text-stone-900">#NOTCH-7440</div>
+                                <div class="text-[10px] text-stone-400">04 May 2026</div>
+                            </td>
+                            <td class="p-3 text-stone-800">Notch Discovery Gift Box</td>
+                            <td class="p-3 font-bold">QAR  995</td>
+                            <td class="p-3"><span class="px-2.5 py-1 bg-emerald-100 text-emerald-800 font-bold text-[10px] rounded-full">Delivered</span></td>
+                            <td class="p-3"><button onclick="showToast('Added item to cart for reorder', 'success')" class="text-stone-900 font-bold underline">Reorder</button></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="bg-stone-900 text-stone-400 py-6 border-t border-stone-800 text-center text-xs">
+        © 2026 Notch Qatar Perfumes Ltd. All rights reserved. Developed by <a href="https://techbrightsolutions.com/" target="_blank" rel="noopener noreferrer" class="underline hover:text-stone-300 transition-colors font-semibold">Techbright Solutions</a>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="js/products.js"></script>
+    <script src="js/app.js"></script>
+</body>
+</html>

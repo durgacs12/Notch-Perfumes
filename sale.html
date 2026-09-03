@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shop NOTCH Perfumes Sale | Notch Fine Qatari Fragrances</title>
+    <meta name="description" content="Shop Notch Qatar Perfumes fine Qatari perfumes on Sale.">
+    
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        rose: {
+                            900: '#5B1E31',
+                            950: '#4A1525',
+                        },
+                        rosegold: {
+                            300: '#F3C9BC',
+                            400: '#E5A995',
+                            500: '#D49B85',
+                            600: '#B86B7D',
+                        },
+                        blush: {
+                            50: '#FFF5F6',
+                            100: '#FDF0F2',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body class="bg-white text-stone-900 antialiased selection:bg-stone-900 selection:text-white">
+
+    <!-- 1. TOP ANNOUNCEMENT BAR (Dark Magenta) -->
+    <div class="skinn-top-bar text-white py-2 text-xs font-medium tracking-wide">
+        <div class="max-w-7xl mx-auto px-4 flex items-center justify-between">
+            <button class="hover:opacity-75 text-white/80 font-bold px-2">&lt;</button>
+            <div class="text-center flex-1 mx-2 flex items-center justify-center gap-2 flex-wrap">
+                <span class="text-[11px] sm:text-xs">Gift Notch Qatar Perfumes to the one you know by heart- Get upto 25% off on Rakhi Gifts</span>
+                <a href="sale.html" class="underline font-bold hover:text-rose-200 uppercase text-[11px] tracking-widest ml-1">SHOP NOW</a>
+            </div>
+            <button class="hover:opacity-75 text-white/80 font-bold px-2">&gt;</button>
+        </div>
+    </div>
+
+    <!-- 2. MAIN HEADER NAVBAR (Clean White Sticky Header) -->
+    <header class="sticky top-0 z-40 bg-white border-b border-stone-200 text-stone-900 shadow-sm">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between gap-4">
+            
+            <!-- Mobile Menu Toggle -->
+            <button id="mobile-menu-btn" class="lg:hidden text-stone-700 hover:text-stone-900 p-2">
+                <svg class="w-6 h-6 fill-none stroke-current" viewBox="0 0 24 24" stroke-width="2"><path d="M4 6h16M4 12h16M4 18h16"/></svg>
+            </button>
+
+            <!-- Brand Logo -->
+            <a href="index.html" class="flex items-center gap-2.5 group">
+                <img src="image/notch-logo.png" alt="NOTCH Perfumes" class="h-7 md:h-9 w-auto object-contain transition-transform group-hover:scale-105" />
+            </a>
+
+            <!-- Desktop Nav Links -->
+            <nav class="hidden lg:flex items-center gap-7 font-nav-cinzel text-[12px] font-semibold tracking-[0.14em] uppercase text-stone-800">
+                <a href="men.html" class="hover:text-red-700 transition-colors py-2">MEN</a>
+                <a href="women.html" class="hover:text-red-700 transition-colors py-2">WOMEN</a>
+                <a href="collections.html" class="hover:text-red-700 transition-colors py-2">COLLECTIONS</a>
+                <a href="gifting.html" class="hover:text-red-700 transition-colors py-2">GIFTING</a>
+                <a href="collections.html" class="hover:text-red-700 transition-colors py-2">FRAGRANCES</a>
+                <a href="#blog" class="hover:text-red-700 transition-colors py-2">NOTCH BLOG</a>
+                <a href="sale.html" class="text-red-600 font-extrabold border-b-2 border-red-700 py-2">SALE</a>
+            </nav>
+
+            <!-- Header Utilities (Search, Account, Wishlist, Cart) -->
+            <div class="flex items-center gap-2 sm:gap-4">
+                <div class="relative hidden sm:block w-44 md:w-56">
+                    <input type="text" id="search-input" placeholder="Search sale items..." class="w-full bg-stone-100 text-stone-900 placeholder-stone-400 text-xs px-3.5 py-2 rounded-full border border-stone-200 focus:outline-none focus:border-stone-400 transition-all" />
+                    <svg class="w-4 h-4 text-stone-500 absolute right-3 top-2.5 pointer-events-none fill-none stroke-current" viewBox="0 0 24 24" stroke-width="2"><path d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+                    <div id="search-results" class="hidden absolute top-11 right-0 w-80 bg-white rounded-xl shadow-2xl border border-stone-200 overflow-hidden z-50 text-stone-800"></div>
+                </div>
+
+                <!-- Account / Sign In -->
+                <a href="login.html" class="p-2 text-stone-700 hover:text-stone-900 transition-colors" title="Account Login">
+                    <svg class="w-6 h-6 fill-none stroke-current" viewBox="0 0 24 24" stroke-width="1.8"><path d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
+                </a>
+
+                <!-- Wishlist -->
+                <a href="collections.html" class="relative p-2 text-stone-700 hover:text-stone-900 transition-colors" title="Wishlist">
+                    <svg class="w-6 h-6 fill-none stroke-current" viewBox="0 0 24 24" stroke-width="1.8"><path d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/></svg>
+                    <span id="wishlist-count-badge" class="hidden absolute top-1 right-1 w-4 h-4 bg-red-600 text-white text-[10px] font-bold rounded-full items-center justify-center">0</span>
+                </a>
+
+                <!-- Cart Bag -->
+                <button onclick="openCart()" class="relative p-2 text-stone-700 hover:text-stone-900 transition-colors flex items-center" title="Shopping Bag">
+                    <svg class="w-6 h-6 fill-none stroke-current" viewBox="0 0 24 24" stroke-width="1.8"><path d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"/></svg>
+                    <span id="cart-count-badge" class="hidden absolute top-1 right-1 w-4 h-4 bg-red-600 text-white text-[10px] font-bold rounded-full items-center justify-center">0</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- Mobile Menu Drawer -->
+        <div id="mobile-menu" class="hidden lg:hidden bg-white border-t border-stone-200 px-6 py-6 space-y-3 text-xs font-bold tracking-widest uppercase">
+            <a href="men.html" class="block w-full text-left py-2 hover:text-red-600">MEN</a>
+            <a href="women.html" class="block w-full text-left py-2 hover:text-red-600">WOMEN</a>
+            <a href="collections.html" class="block w-full text-left py-2 hover:text-red-600">COLLECTIONS</a>
+            <a href="gifting.html" class="block w-full text-left py-2 hover:text-red-600">GIFTING</a>
+            <a href="sale.html" class="block w-full text-left py-2 text-red-600 font-extrabold">SALE</a>
+        </div>
+    </header>
+
+    <!-- SALE HERO BANNER (SKINN Burgundy Studio Lighting) -->
+    <section class="relative skinn-hero-bg text-white py-12 md:py-16 overflow-hidden text-center">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-3 relative z-10">
+            <span class="text-xs font-semibold text-rose-200/80 uppercase tracking-[0.3em]">Special Festive Offers</span>
+            <h1 class="font-serif-heading text-4xl md:text-5xl font-bold">
+                Luxury Perfume <span class="skinn-gold-text">Sale</span>
+            </h1>
+            <p class="text-xs text-rose-100/80 max-w-md mx-auto">Get up to 25% OFF on signature Nox Oud, Gift Sets, & Qatari Eau De Parfums.</p>
+        </div>
+    </section>
+
+    <!-- PRODUCT GRID -->
+    <main class="py-16 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div id="products-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6"></div>
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="bg-stone-900 text-stone-300 pt-16 pb-8 border-t border-stone-800">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-1 md:grid-cols-4 gap-10 pb-12 border-b border-stone-800">
+            <div class="space-y-4">
+                <a href="index.html" class="inline-block">
+                    <img src="image/notch-logo-white.png" alt="NOTCH Perfumes" class="h-7 md:h-9 w-auto object-contain mb-1" />
+                </a>
+                <p class="text-xs text-stone-400 leading-relaxed">
+                    🇶🇦 Crafted in Qatar • Blended by master Qatari perfumers for Notch Qatar Perfumes.
+                </p>
+            </div>
+            <div>
+                <h4 class="font-sans font-bold text-white text-xs mb-4 uppercase tracking-widest">Collections</h4>
+                <ul class="space-y-2 text-xs text-stone-400">
+                    <li><a href="index.html#bestsellers" class="hover:text-white transition-colors">Bestsellers</a></li>
+                    <li><a href="men.html" class="hover:text-white transition-colors">Men's Fragrances</a></li>
+                    <li><a href="women.html" class="hover:text-white transition-colors">Women's Collection</a></li>
+                    <li><a href="gifting.html" class="hover:text-white transition-colors">Luxury Gift Sets</a></li>
+                </ul>
+            </div>
+            <div>
+                <h4 class="font-sans font-bold text-white text-xs mb-4 uppercase tracking-widest">Customer Care</h4>
+                <ul class="space-y-2 text-xs text-stone-400">
+                    <li><a href="#" class="hover:text-white transition-colors">Track Order</a></li>
+                    <li><a href="#" class="hover:text-white transition-colors">Store Locator</a></li>
+                    <li><a href="#" class="hover:text-white transition-colors">Contact Us</a></li>
+                </ul>
+            </div>
+            <div>
+                <h4 class="font-sans font-bold text-white text-xs mb-2 uppercase tracking-widest">Subscribe</h4>
+                <p class="text-xs text-stone-400 mb-4">Get 10% off your first order.</p>
+                <form onsubmit="event.preventDefault(); showToast('Subscribed!', 'success');" class="flex gap-2">
+                    <input type="email" placeholder="Your email" required class="w-full bg-stone-800 text-white text-xs px-3 py-2.5 rounded-lg border border-stone-700" />
+                    <button type="submit" class="px-4 py-2.5 bg-white text-stone-900 font-bold text-xs rounded-lg hover:bg-stone-200">Join</button>
+                </form>
+            </div>
+        </div>
+        <div class="max-w-7xl mx-auto px-4 pt-8 text-center text-xs text-stone-500">
+            © 2026 Notch Qatar Perfumes Ltd. All rights reserved. Developed by <a href="https://techbrightsolutions.com/" target="_blank" rel="noopener noreferrer" class="underline hover:text-stone-300 transition-colors font-semibold">Techbright Solutions</a>
+        </div>
+    </footer>
+
+    <!-- MODALS & DRAWERS -->
+    <div id="quickview-modal" class="hidden fixed inset-0 z-50 bg-black/60 backdrop-blur-sm items-center justify-center p-4">
+        <div class="bg-white rounded-2xl max-w-3xl w-full max-h-[90vh] overflow-y-auto relative shadow-2xl">
+            <button onclick="closeQuickView()" class="absolute top-4 right-4 z-10 w-8 h-8 rounded-full bg-stone-100 hover:bg-stone-200 text-gray-600 flex items-center justify-center">✕</button>
+            <div id="quickview-content"></div>
+        </div>
+    </div>
+
+    <div id="cart-drawer" class="fixed inset-y-0 right-0 z-50 w-full max-w-md bg-white shadow-2xl transform translate-x-full cart-drawer-panel flex flex-col">
+        <div class="p-5 border-b border-gray-100 flex items-center justify-between bg-stone-50">
+            <h3 class="font-serif-heading text-xl font-bold text-stone-900">Your Shopping Bag</h3>
+            <button onclick="closeCart()" class="p-2 text-gray-400 hover:text-gray-600">✕</button>
+        </div>
+        <div id="cart-items-container" class="flex-1 overflow-y-auto p-4 space-y-4"></div>
+        <div class="p-5 border-t border-gray-100 bg-stone-50 space-y-3">
+            <div class="flex justify-between text-xs text-gray-600"><span>Subtotal</span><span id="cart-subtotal" class="font-semibold text-gray-900">QAR 0</span></div>
+            <div class="flex justify-between text-base font-bold text-stone-900 border-t pt-2"><span>Total</span><span id="cart-total">QAR 0</span></div>
+            <a href="checkout.html" class="block w-full py-4 text-center bg-stone-900 hover:bg-stone-800 text-white font-bold text-xs uppercase tracking-widest rounded-xl transition-all shadow-md">🔒 Proceed to Purchase & Checkout</a>
+        </div>
+    </div>
+
+    <script src="js/products.js"></script>
+    <script src="js/app.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            renderProducts('all');
+        });
+    </script>
+</body>
+</html>

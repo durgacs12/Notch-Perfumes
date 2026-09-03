@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard | Notch Qatar Perfumes Control Panel</title>
+    
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        rose: {
+                            900: '#5B1E31',
+                            950: '#4A1525',
+                        },
+                        rosegold: {
+                            300: '#F3C9BC',
+                            400: '#E5A995',
+                            500: '#D49B85',
+                            600: '#B86B7D',
+                        },
+                        blush: {
+                            50: '#FFF5F6',
+                            100: '#FDF0F2',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body class="bg-blush-50 text-stone-900 antialiased min-h-screen flex flex-col">
+
+    <!-- TOP ADMIN BAR -->
+    <header class="glass-header-rose text-white border-b border-rosegold-500/20 px-6 py-4 flex items-center justify-between sticky top-0 z-50">
+        <div class="flex items-center gap-4">
+            <a href="index.html" class="flex flex-col">
+                <img src="image/notch-logo-white.png" alt="NOTCH Admin" class="h-6 md:h-7 w-auto object-contain mb-1" />
+                <span class="text-[8px] font-semibold tracking-[0.3em] uppercase text-rosegold-400">ADMIN CONTROL PANEL</span>
+            </a>
+        </div>
+
+        <div class="flex items-center gap-4">
+            <a href="index.html" target="_blank" class="px-3.5 py-1.5 bg-rosegold-400/20 text-rosegold-300 hover:bg-rosegold-400 hover:text-rose-950 rounded-lg text-xs font-bold transition-all border border-rosegold-400/30 flex items-center gap-1.5">
+                <span>🌐 Visit Storefront</span>
+            </a>
+            <div class="flex items-center gap-2 pl-4 border-l border-rose-800">
+                <div class="w-8 h-8 rounded-full rose-gold-bg text-rose-950 font-bold flex items-center justify-center text-xs">AD</div>
+                <div class="hidden sm:block text-left">
+                    <div class="text-xs font-bold text-white">Admin Master</div>
+                    <div class="text-[10px] text-rosegold-300">admin@notchperfumes.in</div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <div class="flex-1 flex">
+        <!-- SIDEBAR NAVIGATION -->
+        <aside class="w-64 bg-rose-950 text-rose-100/80 border-r border-rosegold-500/20 hidden md:block flex-shrink-0 p-4 space-y-2">
+            <div class="text-[10px] font-bold uppercase tracking-widest text-rosegold-400 px-3 pt-2 mb-2">Master Modules</div>
+            
+            <a href="admin-dashboard.html" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-bold text-rose-950 rose-gold-bg shadow-sm">
+                <span>📊</span> Overview Dashboard
+            </a>
+            <a href="admin-inventory.html" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-semibold text-rose-200/80 hover:bg-rose-900/60 hover:text-rosegold-300 transition-colors">
+                <span>🏭</span> Stock & Inventory Master
+            </a>
+            <a href="admin-sales-summary.html" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-semibold text-rose-200/80 hover:bg-rose-900/60 hover:text-rosegold-300 transition-colors">
+                <span>📈</span> Sales Summary Report
+            </a>
+            <a href="admin-sales-detail.html" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-semibold text-rose-200/80 hover:bg-rose-900/60 hover:text-rosegold-300 transition-colors">
+                <span>📑</span> Detailed Sales Log
+            </a>
+            <a href="admin-products.html" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-semibold text-rose-200/80 hover:bg-rose-900/60 hover:text-rosegold-300 transition-colors">
+                <span>🧴</span> Product Master
+            </a>
+            <a href="admin-orders.html" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-semibold text-rose-200/80 hover:bg-rose-900/60 hover:text-rosegold-300 transition-colors">
+                <span>📦</span> Order Management
+            </a>
+            <a href="admin-categories.html" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-semibold text-rose-200/80 hover:bg-rose-900/60 hover:text-rosegold-300 transition-colors">
+                <span>🏷️</span> Categories & Notes
+            </a>
+            <a href="admin-coupons.html" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-semibold text-rose-200/80 hover:bg-rose-900/60 hover:text-rosegold-300 transition-colors">
+                <span>💳</span> Promo Coupons
+            </a>
+
+            <div class="pt-8 border-t border-rose-900 text-[10px] text-rose-300/50 px-3">
+                Notch Qatar Perfumes Admin v2.4
+            </div>
+        </aside>
+
+        <!-- MAIN DASHBOARD CONTENT -->
+        <main class="flex-1 p-6 md:p-8 space-y-8 overflow-y-auto">
+            <!-- Header Title -->
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                <div>
+                    <h1 class="font-serif-heading text-3xl font-bold text-rose-950">Dashboard Master Overview</h1>
+                    <p class="text-xs text-gray-500 mt-1">Real-time performance analytics for Notch Qatar Perfumes storefront.</p>
+                </div>
+                <div class="flex gap-2">
+                    <a href="admin-products.html" class="px-4 py-2.5 rose-gold-bg text-rose-950 font-bold text-xs rounded-xl uppercase tracking-wider shadow-sm hover:opacity-90 transition-opacity">
+                        + Add New Perfume
+                    </a>
+                </div>
+            </div>
+
+            <!-- ANALYTICS CARDS GRID -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                <!-- Card 1 -->
+                <div class="bg-white p-6 rounded-2xl border border-rose-100 shadow-sm space-y-2">
+                    <div class="flex items-center justify-between text-xs text-gray-500">
+                        <span>Total Revenue</span>
+                        <span class="p-2 rounded-lg bg-rose-50 text-rose-900">💰</span>
+                    </div>
+                    <div class="text-2xl font-bold text-rose-950">QAR  12,450</div>
+                    <div class="text-[11px] text-emerald-600 font-semibold flex items-center gap-1">
+                        <span>↑ 18.5%</span> <span class="text-gray-400 font-normal">vs last month</span>
+                    </div>
+                </div>
+
+                <!-- Card 2 -->
+                <div class="bg-white p-6 rounded-2xl border border-rose-100 shadow-sm space-y-2">
+                    <div class="flex items-center justify-between text-xs text-gray-500">
+                        <span>Total Orders</span>
+                        <span class="p-2 rounded-lg bg-rose-50 text-rose-900">📦</span>
+                    </div>
+                    <div class="text-2xl font-bold text-rose-950">142 Orders</div>
+                    <div class="text-[11px] text-emerald-600 font-semibold flex items-center gap-1">
+                        <span>↑ 12.4%</span> <span class="text-gray-400 font-normal">vs last month</span>
+                    </div>
+                </div>
+
+                <!-- Card 3 -->
+                <div class="bg-white p-6 rounded-2xl border border-rose-100 shadow-sm space-y-2">
+                    <div class="flex items-center justify-between text-xs text-gray-500">
+                        <span>Active Perfumes</span>
+                        <span class="p-2 rounded-lg bg-rose-50 text-rose-900">🧴</span>
+                    </div>
+                    <div class="text-2xl font-bold text-rose-950">8 Products</div>
+                    <div class="text-[11px] text-rosegold-600 font-semibold">
+                        <span>4 Men • 3 Women • 1 Discovery</span>
+                    </div>
+                </div>
+
+                <!-- Card 4 -->
+                <div class="bg-white p-6 rounded-2xl border border-rose-100 shadow-sm space-y-2">
+                    <div class="flex items-center justify-between text-xs text-gray-500">
+                        <span>Stock Alerts</span>
+                        <span class="p-2 rounded-lg bg-amber-50 text-amber-600">⚠️</span>
+                    </div>
+                    <div class="text-2xl font-bold text-amber-600">2 Low Stock</div>
+                    <div class="text-[11px] text-gray-500">
+                        <span>Reorder Notch Steele (100ml)</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- RECENT ORDERS TABLE -->
+            <div class="bg-white rounded-2xl border border-rose-100 shadow-sm overflow-hidden">
+                <div class="p-6 border-b border-rose-100 flex items-center justify-between">
+                    <div>
+                        <h3 class="font-serif-heading text-xl font-bold text-rose-950">Recent Customer Orders</h3>
+                        <p class="text-xs text-gray-500">Latest orders placed on notchperfumes.in</p>
+                    </div>
+                    <a href="admin-orders.html" class="text-xs font-bold text-rose-900 hover:text-rosegold-600 underline">View All Orders</a>
+                </div>
+
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left text-xs">
+                        <thead class="bg-rose-50/60 text-rose-950 uppercase font-bold text-[10px] tracking-wider border-b border-rose-100">
+                            <tr>
+                                <th class="p-4">Order ID</th>
+                                <th class="p-4">Customer Name</th>
+                                <th class="p-4">Items</th>
+                                <th class="p-4">Total Amount</th>
+                                <th class="p-4">Status</th>
+                                <th class="p-4">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-gray-100 font-medium">
+                            <tr class="hover:bg-rose-50/30">
+                                <td class="p-4 font-bold text-rose-950">#NOTCH-8941</td>
+                                <td class="p-4">Rohan Kapoor</td>
+                                <td class="p-4">Notch Raw EDP (100ml)</td>
+                                <td class="p-4 font-bold">QAR  2,495</td>
+                                <td class="p-4"><span class="px-2.5 py-1 bg-amber-100 text-amber-800 font-bold rounded-full text-[10px]">Processing</span></td>
+                                <td class="p-4"><a href="admin-orders.html" class="text-rose-900 underline font-bold">Manage</a></td>
+                            </tr>
+                            <tr class="hover:bg-rose-50/30">
+                                <td class="p-4 font-bold text-rose-950">#NOTCH-8940</td>
+                                <td class="p-4">Ananya Sharma</td>
+                                <td class="p-4">Notch Noura EDP (100ml)</td>
+                                <td class="p-4 font-bold">QAR  3,495</td>
+                                <td class="p-4"><span class="px-2.5 py-1 bg-emerald-100 text-emerald-800 font-bold rounded-full text-[10px]">Shipped</span></td>
+                                <td class="p-4"><a href="admin-orders.html" class="text-rose-900 underline font-bold">Manage</a></td>
+                            </tr>
+                            <tr class="hover:bg-rose-50/30">
+                                <td class="p-4 font-bold text-rose-950">#NOTCH-8939</td>
+                                <td class="p-4">Vikram Mehta</td>
+                                <td class="p-4">Notch Discovery Gift Set</td>
+                                <td class="p-4 font-bold">QAR  995</td>
+                                <td class="p-4"><span class="px-2.5 py-1 bg-blue-100 text-blue-800 font-bold rounded-full text-[10px]">Delivered</span></td>
+                                <td class="p-4"><a href="admin-orders.html" class="text-rose-900 underline font-bold">Manage</a></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </main>
+    </div>
+
+</body>
+</html>

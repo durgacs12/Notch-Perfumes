@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Coupons & Offers Master | Notch Qatar Perfumes Admin</title>
+    
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        rose: {
+                            900: '#5B1E31',
+                            950: '#4A1525',
+                        },
+                        rosegold: {
+                            300: '#F3C9BC',
+                            400: '#E5A995',
+                            500: '#D49B85',
+                            600: '#B86B7D',
+                        },
+                        blush: {
+                            50: '#FFF5F6',
+                            100: '#FDF0F2',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body class="bg-blush-50 text-stone-900 antialiased min-h-screen flex flex-col">
+
+    <!-- TOP ADMIN BAR -->
+    <header class="glass-header-rose text-white border-b border-rosegold-500/20 px-6 py-4 flex items-center justify-between sticky top-0 z-50">
+        <div class="flex items-center gap-4">
+            <a href="admin-dashboard.html" class="flex flex-col">
+                <img src="image/notch-logo-white.png" alt="NOTCH Admin" class="h-6 md:h-7 w-auto object-contain mb-1" />
+                <span class="text-[8px] font-semibold tracking-[0.3em] uppercase text-rosegold-400">ADMIN CONTROL PANEL</span>
+            </a>
+        </div>
+        <div class="flex items-center gap-4">
+            <a href="index.html" target="_blank" class="px-3.5 py-1.5 bg-rosegold-400/20 text-rosegold-300 hover:bg-rosegold-400 hover:text-rose-950 rounded-lg text-xs font-bold border border-rosegold-400/30">🌐 Visit Storefront</a>
+            <div class="w-8 h-8 rounded-full rose-gold-bg text-rose-950 font-bold flex items-center justify-center text-xs">AD</div>
+        </div>
+    </header>
+
+    <div class="flex-1 flex">
+        <!-- SIDEBAR -->
+        <aside class="w-64 bg-rose-950 text-rose-100/80 border-r border-rosegold-500/20 hidden md:block flex-shrink-0 p-4 space-y-2">
+            <div class="text-[10px] font-bold uppercase tracking-widest text-rosegold-400 px-3 pt-2 mb-2">Master Modules</div>
+            
+            <a href="admin-dashboard.html" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-semibold text-rose-200/80 hover:bg-rose-900/60 hover:text-rosegold-300 transition-colors">
+                <span>📊</span> Overview Dashboard
+            </a>
+            <a href="admin-products.html" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-semibold text-rose-200/80 hover:bg-rose-900/60 hover:text-rosegold-300 transition-colors">
+                <span>🧴</span> Product Master
+            </a>
+            <a href="admin-orders.html" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-semibold text-rose-200/80 hover:bg-rose-900/60 hover:text-rosegold-300 transition-colors">
+                <span>📦</span> Order Management
+            </a>
+            <a href="admin-categories.html" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-semibold text-rose-200/80 hover:bg-rose-900/60 hover:text-rosegold-300 transition-colors">
+                <span>🏷️</span> Categories & Notes
+            </a>
+            <a href="admin-coupons.html" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-bold text-rose-950 rose-gold-bg shadow-sm">
+                <span>💳</span> Promo Coupons
+            </a>
+        </aside>
+
+        <!-- MAIN CONTENT -->
+        <main class="flex-1 p-6 md:p-8 space-y-6 overflow-y-auto">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                <div>
+                    <h1 class="font-serif-heading text-3xl font-bold text-rose-950">Coupons & Promo Offers Master</h1>
+                    <p class="text-xs text-gray-500 mt-1">Manage promotional discount codes for notchperfumes.in</p>
+                </div>
+                <button onclick="openAddCouponModal()" class="px-5 py-2.5 rose-gold-bg text-rose-950 font-bold text-xs rounded-xl uppercase tracking-wider shadow-sm hover:opacity-90 transition-opacity">
+                    + Create Promo Code
+                </button>
+            </div>
+
+            <!-- COUPONS TABLE -->
+            <div class="bg-white rounded-2xl border border-rose-100 shadow-sm overflow-hidden">
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left text-xs">
+                        <thead class="bg-rose-50/80 text-rose-950 uppercase font-bold text-[10px] tracking-wider border-b border-rose-100">
+                            <tr>
+                                <th class="p-4">Coupon Code</th>
+                                <th class="p-4">Discount</th>
+                                <th class="p-4">Minimum Order Amount</th>
+                                <th class="p-4">Expiry Date</th>
+                                <th class="p-4">Status</th>
+                                <th class="p-4">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="coupons-table-body" class="divide-y divide-gray-100 font-medium"></tbody>
+                    </table>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- CREATE COUPON MODAL -->
+    <div id="coupon-modal" class="hidden fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl max-w-md w-full p-6 relative shadow-2xl space-y-4">
+            <div class="flex justify-between items-center border-b pb-3">
+                <h3 class="font-serif-heading text-xl font-bold text-rose-950">Create Promo Code</h3>
+                <button onclick="closeAddCouponModal()" class="text-gray-400 font-bold">✕</button>
+            </div>
+
+            <form onsubmit="handleCreateCoupon(event)" class="space-y-4 text-xs">
+                <div>
+                    <label class="block font-bold text-gray-800 mb-1">Coupon Code (Uppercase) *</label>
+                    <input type="text" id="new-coupon-code" required placeholder="e.g. NOTCH25" class="w-full bg-gray-50 border p-2.5 rounded-lg uppercase" />
+                </div>
+                <div>
+                    <label class="block font-bold text-gray-800 mb-1">Discount % *</label>
+                    <input type="number" id="new-coupon-discount" required placeholder="10" class="w-full bg-gray-50 border p-2.5 rounded-lg" />
+                </div>
+                <div>
+                    <label class="block font-bold text-gray-800 mb-1">Minimum Spend (QAR )</label>
+                    <input type="number" id="new-coupon-min" placeholder="999" class="w-full bg-gray-50 border p-2.5 rounded-lg" />
+                </div>
+                <div class="pt-3 flex gap-3">
+                    <button type="button" onclick="closeAddCouponModal()" class="flex-1 py-3 border font-bold rounded-xl">Cancel</button>
+                    <button type="submit" class="flex-1 py-3 rose-gold-bg text-rose-950 font-bold rounded-xl uppercase">Create Coupon</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="js/products.js"></script>
+    <script src="js/app.js"></script>
+    <script>
+        const COUPONS = [
+            { code: "NOTCH10", discount: "10% OFF", min: 999, expiry: "31 Dec 2026", status: "Active" },
+            { code: "FESTIVE25", discount: "25% OFF", min: 1999, expiry: "15 Oct 2026", status: "Active" },
+            { code: "ROSEFREE", discount: "Free 5ml Sample", min: 1499, expiry: "30 Sep 2026", status: "Active" }
+        ];
+
+        document.addEventListener('DOMContentLoaded', () => {
+            renderCouponsTable(COUPONS);
+        });
+
+        function renderCouponsTable(items) {
+            const body = document.getElementById('coupons-table-body');
+            if (!body) return;
+
+            body.innerHTML = items.map((c, idx) => `
+                <tr class="hover:bg-rose-50/30">
+                    <td class="p-4 font-bold text-rose-950 tracking-wider">${c.code}</td>
+                    <td class="p-4 font-bold text-emerald-700">${c.discount}</td>
+                    <td class="p-4">QAR  ${c.min.toLocaleString('en-US')}</td>
+                    <td class="p-4 text-gray-500">${c.expiry}</td>
+                    <td class="p-4"><span class="px-2.5 py-1 bg-emerald-100 text-emerald-800 font-bold text-[10px] rounded-full">${c.status}</span></td>
+                    <td class="p-4">
+                        <button onclick="showToast('Deactivated ${c.code}', 'info')" class="text-red-500 font-bold underline">Deactivate</button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        function openAddCouponModal() {
+            document.getElementById('coupon-modal').classList.remove('hidden');
+        }
+
+        function closeAddCouponModal() {
+            document.getElementById('coupon-modal').classList.add('hidden');
+        }
+
+        function handleCreateCoupon(e) {
+            e.preventDefault();
+            const code = document.getElementById('new-coupon-code').value.toUpperCase();
+            const discount = document.getElementById('new-coupon-discount').value + "% OFF";
+            const min = parseInt(document.getElementById('new-coupon-min').value) || 999;
+
+            COUPONS.unshift({ code, discount, min, expiry: "31 Dec 2026", status: "Active" });
+            renderCouponsTable(COUPONS);
+            closeAddCouponModal();
+            showToast(`Promo Code <strong>${code}</strong> created!`, 'success');
+        }
+    </script>
+</body>
+</html>

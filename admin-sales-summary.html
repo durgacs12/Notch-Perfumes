@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sales Summary Report | Notch Qatar Perfumes Admin</title>
+    
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        rose: {
+                            900: '#5B1E31',
+                            950: '#4A1525',
+                        },
+                        rosegold: {
+                            300: '#F3C9BC',
+                            400: '#E5A995',
+                            500: '#D49B85',
+                            600: '#B86B7D',
+                        },
+                        blush: {
+                            50: '#FFF5F6',
+                            100: '#FDF0F2',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body class="bg-blush-50 text-stone-900 antialiased min-h-screen flex flex-col">
+
+    <!-- TOP ADMIN BAR -->
+    <header class="glass-header-rose text-white border-b border-rosegold-500/20 px-6 py-4 flex items-center justify-between sticky top-0 z-50">
+        <div class="flex items-center gap-4">
+            <a href="admin-dashboard.html" class="flex flex-col">
+                <img src="image/notch-logo-white.png" alt="NOTCH Admin" class="h-6 md:h-7 w-auto object-contain mb-1" />
+                <span class="text-[8px] font-semibold tracking-[0.3em] uppercase text-rosegold-400">ADMIN CONTROL PANEL</span>
+            </a>
+        </div>
+        <div class="flex items-center gap-4">
+            <a href="index.html" target="_blank" class="px-3.5 py-1.5 bg-rosegold-400/20 text-rosegold-300 hover:bg-rosegold-400 hover:text-rose-950 rounded-lg text-xs font-bold border border-rosegold-400/30">🌐 Visit Storefront</a>
+            <div class="w-8 h-8 rounded-full rose-gold-bg text-rose-950 font-bold flex items-center justify-center text-xs">AD</div>
+        </div>
+    </header>
+
+    <div class="flex-1 flex">
+        <!-- SIDEBAR -->
+        <aside class="w-64 bg-rose-950 text-rose-100/80 border-r border-rosegold-500/20 hidden md:block flex-shrink-0 p-4 space-y-2">
+            <div class="text-[10px] font-bold uppercase tracking-widest text-rosegold-400 px-3 pt-2 mb-2">Master Modules</div>
+            
+            <a href="admin-dashboard.html" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-semibold text-rose-200/80 hover:bg-rose-900/60 hover:text-rosegold-300 transition-colors">
+                <span>📊</span> Overview Dashboard
+            </a>
+            <a href="admin-sales-summary.html" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-bold text-rose-950 rose-gold-bg shadow-sm">
+                <span>📈</span> Sales Summary Report
+            </a>
+            <a href="admin-sales-detail.html" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-semibold text-rose-200/80 hover:bg-rose-900/60 hover:text-rosegold-300 transition-colors">
+                <span>📑</span> Detailed Sales Log
+            </a>
+            <a href="admin-products.html" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-semibold text-rose-200/80 hover:bg-rose-900/60 hover:text-rosegold-300 transition-colors">
+                <span>🧴</span> Product Master
+            </a>
+            <a href="admin-orders.html" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-semibold text-rose-200/80 hover:bg-rose-900/60 hover:text-rosegold-300 transition-colors">
+                <span>📦</span> Order Management
+            </a>
+        </aside>
+
+        <!-- MAIN CONTENT -->
+        <main class="flex-1 p-6 md:p-8 space-y-6 overflow-y-auto">
+            <!-- Header & Person Filter Bar -->
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-white p-6 rounded-2xl border border-rose-100 shadow-sm">
+                <div>
+                    <h1 class="font-serif-heading text-3xl font-bold text-rose-950">Sales Summary Report</h1>
+                    <p class="text-xs text-gray-500 mt-1">Financial performance report filtered by individual Person / Sales Executive / Customer.</p>
+                </div>
+                
+                <div class="flex flex-wrap items-center gap-3">
+                    <!-- PERSON / CUSTOMER FILTER DROPDOWN -->
+                    <div class="space-y-1">
+                        <label class="block text-[10px] font-bold uppercase tracking-wider text-rose-900">Filter By Person / Executive:</label>
+                        <select id="person-filter-select" onchange="filterReportByPerson(this.value)" class="bg-rose-50 border border-rosegold-400 text-rose-950 text-xs font-bold px-3 py-2 rounded-xl focus:outline-none">
+                            <option value="all">👥 All Sales (Entire Store)</option>
+                            <option value="Rohan Kapoor">👤 Rohan Kapoor (Customer)</option>
+                            <option value="Ananya Sharma">👤 Ananya Sharma (Customer)</option>
+                            <option value="Vikram Mehta">👤 Vikram Mehta (Customer)</option>
+                            <option value="Priya Nair">👤 Priya Nair (Customer)</option>
+                            <option value="Karan Verma">👤 Karan Verma (Customer)</option>
+                            <option value="Rajesh Kumar">👔 Rajesh Kumar (Sales Executive)</option>
+                        </select>
+                    </div>
+
+                    <button onclick="window.print()" class="px-4 py-2 mt-4 sm:mt-0 bg-rose-950 text-rosegold-300 font-bold text-xs rounded-xl shadow hover:bg-rose-900 transition-colors">
+                        🖨️ Export PDF
+                    </button>
+                </div>
+            </div>
+
+            <!-- KPI SUMMARY METRICS -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                <div class="bg-white p-5 rounded-2xl border border-rose-100 shadow-sm">
+                    <div class="text-xs text-gray-500 mb-1">Selected Person Sales</div>
+                    <div id="kpi-sales-amount" class="text-2xl font-bold text-rose-950">QAR  14,225</div>
+                    <div id="kpi-sales-orders" class="text-[10px] text-emerald-600 font-semibold mt-1">142 Completed Orders</div>
+                </div>
+                <div class="bg-white p-5 rounded-2xl border border-rose-100 shadow-sm">
+                    <div class="text-xs text-gray-500 mb-1">Average Purchase Value</div>
+                    <div id="kpi-avg-value" class="text-2xl font-bold text-rose-950">QAR  2,003</div>
+                    <div class="text-[10px] text-rosegold-600 font-semibold mt-1">Per Order Average</div>
+                </div>
+                <div class="bg-white p-5 rounded-2xl border border-rose-100 shadow-sm">
+                    <div class="text-xs text-gray-500 mb-1">Discounts Applied</div>
+                    <div id="kpi-discounts" class="text-2xl font-bold text-rose-900">QAR  28,450</div>
+                    <div class="text-[10px] text-gray-400 mt-1">Coupon Savings</div>
+                </div>
+                <div class="bg-white p-5 rounded-2xl border border-rose-100 shadow-sm">
+                    <div class="text-xs text-gray-500 mb-1">Net Store Profit</div>
+                    <div id="kpi-net-profit" class="text-2xl font-bold text-emerald-700">QAR  1,75,800</div>
+                    <div class="text-[10px] text-emerald-600 font-semibold mt-1">61.7% Profit Margin</div>
+                </div>
+            </div>
+
+            <!-- INDIVIDUAL PERSON SALES BREAKDOWN TABLE -->
+            <div class="bg-white rounded-2xl border border-rose-100 shadow-sm p-6 space-y-4">
+                <div class="flex items-center justify-between border-b pb-4">
+                    <div>
+                        <h3 class="font-serif-heading text-xl font-bold text-rose-950">Person-Wise Sales Performance Breakdown</h3>
+                        <p class="text-xs text-gray-500">Total sales volume, order counts, and top perfume purchased by each individual person.</p>
+                    </div>
+                </div>
+
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left text-xs">
+                        <thead class="bg-rose-50/80 text-rose-950 uppercase font-bold text-[10px] tracking-wider border-b border-rose-100">
+                            <tr>
+                                <th class="p-3">Person Name</th>
+                                <th class="p-3">Role / Segment</th>
+                                <th class="p-3">Total Orders</th>
+                                <th class="p-3">Top Purchased Fragrance</th>
+                                <th class="p-3">Total Sales Value</th>
+                                <th class="p-3">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="person-sales-table-body" class="divide-y divide-gray-100 font-medium"></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- CATEGORY & PAYMENT BREAKDOWN TABLES -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <!-- Sales by Category -->
+                <div class="bg-white rounded-2xl border border-rose-100 p-6 shadow-sm space-y-4">
+                    <h3 class="font-serif-heading text-xl font-bold text-rose-950 border-b pb-3">Sales Breakdown by Category</h3>
+                    <div class="space-y-3 text-xs">
+                        <div class="flex items-center justify-between p-3 bg-stone-50 rounded-xl">
+                            <div>
+                                <span class="font-bold text-gray-900">Men's Perfumes (Raw, Steele, Nox)</span>
+                                <p class="text-[10px] text-gray-500">62 Units Sold</p>
+                            </div>
+                            <span class="font-bold text-rose-950">QAR  1,54,690 (54%)</span>
+                        </div>
+                        <div class="flex items-center justify-between p-3 bg-stone-50 rounded-xl">
+                            <div>
+                                <span class="font-bold text-gray-900">Women's Perfumes (Celeste, Noura)</span>
+                                <p class="text-[10px] text-gray-500">48 Units Sold</p>
+                            </div>
+                            <span class="font-bold text-rose-950">QAR  98,760 (35%)</span>
+                        </div>
+                        <div class="flex items-center justify-between p-3 bg-stone-50 rounded-xl">
+                            <div>
+                                <span class="font-bold text-gray-900">Discovery Sets & Gifts</span>
+                                <p class="text-[10px] text-gray-500">32 Units Sold</p>
+                            </div>
+                            <span class="font-bold text-rose-950">QAR  31,050 (11%)</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Sales by Payment Method -->
+                <div class="bg-white rounded-2xl border border-rose-100 p-6 shadow-sm space-y-4">
+                    <h3 class="font-serif-heading text-xl font-bold text-rose-950 border-b pb-3">Sales Breakdown by Payment Channel</h3>
+                    <div class="space-y-3 text-xs">
+                        <div class="flex items-center justify-between p-3 bg-stone-50 rounded-xl">
+                            <div>
+                                <span class="font-bold text-gray-900">UPI / GPay / PhonePe</span>
+                                <p class="text-[10px] text-gray-500">Instant Online Verification</p>
+                            </div>
+                            <span class="font-bold text-emerald-700">QAR  1,70,700 (60%)</span>
+                        </div>
+                        <div class="flex items-center justify-between p-3 bg-stone-50 rounded-xl">
+                            <div>
+                                <span class="font-bold text-gray-900">Credit / Debit Cards</span>
+                                <p class="text-[10px] text-gray-500">Visa / Mastercard / Amex</p>
+                            </div>
+                            <span class="font-bold text-emerald-700">QAR  85,350 (30%)</span>
+                        </div>
+                        <div class="flex items-center justify-between p-3 bg-stone-50 rounded-xl">
+                            <div>
+                                <span class="font-bold text-gray-900">Cash on Delivery (COD)</span>
+                                <p class="text-[10px] text-gray-500">Doorstep Cash Collection</p>
+                            </div>
+                            <span class="font-bold text-amber-700">QAR  28,450 (10%)</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Scripts -->
+    <script src="js/products.js"></script>
+    <script src="js/app.js"></script>
+    <script>
+        const PERSON_SALES_DATA = [
+            { name: "Rohan Kapoor", role: "VIP Customer", orders: 4, topScent: "Notch Raw EDP (100ml)", amount: 9980 },
+            { name: "Ananya Sharma", role: "Regular Customer", orders: 3, topScent: "Notch Noura EDP (100ml)", amount: 10485 },
+            { name: "Rajesh Kumar", role: "Sales Executive", orders: 18, topScent: "Notch Discovery Box", amount: 48910 },
+            { name: "Vikram Mehta", role: "Customer", orders: 2, topScent: "Notch Discovery Gift Box", amount: 1990 },
+            { name: "Priya Nair", role: "Regular Customer", orders: 3, topScent: "Notch Celeste EDP (50ml)", amount: 7485 },
+            { name: "Karan Verma", role: "Customer", orders: 2, topScent: "Notch Steele EDP (100ml)", amount: 4495 }
+        ];
+
+        document.addEventListener('DOMContentLoaded', () => {
+            renderPersonSalesTable(PERSON_SALES_DATA);
+        });
+
+        function renderPersonSalesTable(items) {
+            const body = document.getElementById('person-sales-table-body');
+            if (!body) return;
+
+            body.innerHTML = items.map(p => `
+                <tr class="hover:bg-rose-50/30">
+                    <td class="p-3 font-bold text-rose-950">${p.name}</td>
+                    <td class="p-3"><span class="px-2.5 py-0.5 bg-stone-100 text-stone-800 font-bold text-[10px] rounded-full">${p.role}</span></td>
+                    <td class="p-3 font-bold text-gray-900">${p.orders} Orders</td>
+                    <td class="p-3 text-gray-700">${p.topScent}</td>
+                    <td class="p-3 font-bold text-emerald-700">QAR ${p.amount.toLocaleString('en-US')}</td>
+                    <td class="p-3">
+                        <a href="admin-sales-detail.html?person=${encodeURIComponent(p.name)}" class="text-rose-900 font-bold underline hover:text-rosegold-600">View Transactions</a>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        function filterReportByPerson(personName) {
+            if (personName === 'all') {
+                renderPersonSalesTable(PERSON_SALES_DATA);
+                document.getElementById('kpi-sales-amount').textContent = 'QAR  14,225';
+                document.getElementById('kpi-sales-orders').textContent = '142 Completed Orders';
+                document.getElementById('kpi-avg-value').textContent = 'QAR  2,003';
+                document.getElementById('kpi-discounts').textContent = 'QAR  28,450';
+                document.getElementById('kpi-net-profit').textContent = 'QAR  1,75,800';
+                showToast('Showing all store sales', 'info');
+            } else {
+                const person = PERSON_SALES_DATA.find(p => p.name === personName);
+                if (person) {
+                    renderPersonSalesTable([person]);
+                    document.getElementById('kpi-sales-amount').textContent = `QAR  ${person.amount.toLocaleString('en-US')}`;
+                    document.getElementById('kpi-sales-orders').textContent = `${person.orders} Completed Orders`;
+                    document.getElementById('kpi-avg-value').textContent = `QAR  ${Math.round(person.amount / person.orders).toLocaleString('en-US')}`;
+                    document.getElementById('kpi-discounts').textContent = `QAR  ${Math.round(person.amount * 0.1).toLocaleString('en-US')}`;
+                    document.getElementById('kpi-net-profit').textContent = `QAR  ${Math.round(person.amount * 0.6).toLocaleString('en-US')}`;
+                    showToast(`Filtered report for <strong>${personName}</strong>`, 'success');
+                }
+            }
+        }
+    </script>
+</body>
+</html>
