@@ -84,105 +84,149 @@
 
         <!-- MAIN CONTENT -->
         <main class="flex-1 p-6 md:p-8 space-y-6 overflow-y-auto">
-            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-                <div>
-                    <h1 class="font-serif-heading text-3xl font-bold text-rose-950">Product Master Catalog</h1>
-                    <p class="text-xs text-gray-500 mt-1">Manage all Notch Perfume listings, pricing, and inventory.</p>
-                </div>
-                <button onclick="openAddProductModal()" class="px-5 py-2.5 rose-gold-bg text-rose-950 font-bold text-xs rounded-xl uppercase tracking-wider shadow-sm hover:opacity-90 transition-opacity">
-                    + Add New Perfume
-                </button>
+            <div>
+                <h1 class="font-serif-heading text-3xl font-bold text-rose-950">Product Master</h1>
+                <a href="javascript:void(0)" onclick="toggleView()" id="view-toggle-link" class="text-xs text-blue-600 hover:underline font-semibold mt-1 inline-block">View Products</a>
             </div>
 
-            <!-- PRODUCT TABLE CONTAINER -->
-            <div class="bg-white rounded-2xl border border-rose-100 shadow-sm overflow-hidden">
-                <div class="p-4 border-b border-rose-100 bg-rose-50/40 flex items-center justify-between gap-4">
-                    <input type="text" id="admin-search-input" onkeyup="filterAdminProducts(this.value)" placeholder="Search products by title, category..." class="bg-white border border-rose-200 text-xs px-3.5 py-2 rounded-lg w-72 focus:outline-none focus:border-rosegold-400" />
-                    <span id="product-total-badge" class="text-xs font-bold text-rose-950">Total 8 Products</span>
+            <!-- SUCCESS TOAST MESSAGE -->
+            <div id="toast-msg" class="hidden p-3 rounded-lg text-xs font-bold bg-green-100 text-green-800 border border-green-200"></div>
+
+            <!-- ================= VIEW 1: PRODUCT MASTER FORM (DEFAULT OPEN ON PAGE) ================= -->
+            <div id="product-master-form-section" class="space-y-6 max-w-5xl">
+                <form onsubmit="handleSaveProduct(event)" class="space-y-6 text-xs">
+                    
+                    <!-- ================= PRODUCT DETAILS ================= -->
+                    <div class="bg-white rounded-xl p-6 border border-rose-100 shadow-sm space-y-4">
+                        <h3 class="font-bold text-base text-rose-950 border-b border-gray-100 pb-2">Product Details</h3>
+                        
+                        <div>
+                            <label class="block font-medium text-gray-700 mb-1">Product Code</label>
+                            <input type="text" id="prod-code" required class="w-full bg-white border border-gray-300 p-2.5 rounded focus:outline-none focus:border-rose-900" />
+                        </div>
+
+                        <div>
+                            <label class="block font-medium text-gray-700 mb-1">Product Name</label>
+                            <input type="text" id="prod-name" required class="w-full bg-white border border-gray-300 p-2.5 rounded focus:outline-none focus:border-rose-900" />
+                        </div>
+
+                        <div>
+                            <label class="block font-medium text-gray-700 mb-1">Brand</label>
+                            <input type="text" id="prod-brand" required class="w-full bg-white border border-gray-300 p-2.5 rounded focus:outline-none focus:border-rose-900" />
+                        </div>
+
+                        <div>
+                            <label class="block font-medium text-gray-700 mb-1">Description</label>
+                            <textarea id="prod-desc" rows="3" class="w-full bg-white border border-gray-300 p-2.5 rounded focus:outline-none focus:border-rose-900"></textarea>
+                        </div>
+
+                        <div>
+                            <label class="block font-medium text-gray-700 mb-1">Combo Package</label>
+                            <select id="prod-combo" class="w-full bg-white border border-gray-300 p-2.5 rounded focus:outline-none focus:border-rose-900">
+                                <option value="Single">Single</option>
+                                <option value="Combo 2">Combo 2</option>
+                                <option value="Combo 3">Combo 3</option>
+                            </select>
+                        </div>
+
+                        <div>
+                            <label class="block font-medium text-gray-700 mb-1">HSN No</label>
+                            <input type="text" id="prod-hsn" class="w-full bg-white border border-gray-300 p-2.5 rounded focus:outline-none focus:border-rose-900" />
+                        </div>
+
+                        <div>
+                            <label class="block font-medium text-gray-700 mb-1">Barcode No</label>
+                            <input type="text" id="prod-barcode" class="w-full bg-white border border-gray-300 p-2.5 rounded focus:outline-none focus:border-rose-900" />
+                        </div>
+
+                        <div>
+                            <label class="block font-medium text-gray-700 mb-1">Price (QAR) *</label>
+                            <input type="number" id="prod-price" min="1" required class="w-full bg-white border border-gray-300 p-2.5 rounded focus:outline-none focus:border-rose-900" />
+                        </div>
+                    </div>
+
+                    <!-- ================= CATEGORY DETAILS ================= -->
+                    <div class="bg-white rounded-xl p-6 border border-rose-100 shadow-sm space-y-4">
+                        <h3 class="font-bold text-base text-rose-950 border-b border-gray-100 pb-2">Category Details</h3>
+                        
+                        <div>
+                            <label class="block font-medium text-gray-700 mb-1">Category</label>
+                            <select id="prod-cat" required class="w-full bg-white border border-gray-300 p-2.5 rounded focus:outline-none focus:border-rose-900">
+                                <option value="">-- Select Category --</option>
+                                <option value="men">For Men</option>
+                                <option value="women">For Women</option>
+                                <option value="unisex">Unisex</option>
+                                <option value="discovery">Discovery Kit</option>
+                            </select>
+                        </div>
+
+                        <h4 class="font-bold text-xs text-gray-800 pt-2">Specifications</h4>
+                        <div class="border border-gray-200 p-4 rounded-lg bg-white">
+                            <span class="text-gray-400 block mb-2">Specifications value</span>
+                            <input type="text" id="prod-specs" placeholder="e.g. Scent Notes, Fragrance Family" class="w-full bg-white border border-gray-300 p-2 rounded text-xs focus:outline-none focus:border-rose-900" />
+                        </div>
+                    </div>
+
+                    <!-- ================= PRODUCT IMAGES ================= -->
+                    <div class="bg-white rounded-xl p-6 border border-rose-100 shadow-sm space-y-4">
+                        <h3 class="font-bold text-base text-rose-950 border-b border-gray-100 pb-2">Product Images</h3>
+                        
+                        <div>
+                            <label class="block font-medium text-gray-700 mb-1">Main Image</label>
+                            <input type="file" id="prod-img1-file" accept="image/*" class="w-full bg-white border border-gray-300 p-1.5 rounded text-xs mb-1" />
+                            <input type="url" id="prod-img1-url" placeholder="Or Image URL" class="w-full bg-white border border-gray-300 p-2 rounded text-xs" />
+                        </div>
+
+                        <div>
+                            <label class="block font-medium text-gray-700 mb-1">Image 2</label>
+                            <input type="file" id="prod-img2-file" accept="image/*" class="w-full bg-white border border-gray-300 p-1.5 rounded text-xs mb-1" />
+                            <input type="url" id="prod-img2-url" placeholder="Or Image 2 URL" class="w-full bg-white border border-gray-300 p-2 rounded text-xs" />
+                        </div>
+
+                        <div>
+                            <label class="block font-medium text-gray-700 mb-1">Image 3</label>
+                            <input type="file" id="prod-img3-file" accept="image/*" class="w-full bg-white border border-gray-300 p-1.5 rounded text-xs mb-1" />
+                            <input type="url" id="prod-img3-url" placeholder="Or Image 3 URL" class="w-full bg-white border border-gray-300 p-2 rounded text-xs" />
+                        </div>
+
+                        <div>
+                            <label class="block font-medium text-gray-700 mb-1">Image 4</label>
+                            <input type="file" id="prod-img4-file" accept="image/*" class="w-full bg-white border border-gray-300 p-1.5 rounded text-xs mb-1" />
+                            <input type="url" id="prod-img4-url" placeholder="Or Image 4 URL" class="w-full bg-white border border-gray-300 p-2 rounded text-xs" />
+                        </div>
+                    </div>
+
+                    <button type="submit" class="px-5 py-2.5 bg-rose-200 text-rose-950 font-bold text-xs rounded hover:bg-rose-300 transition-colors shadow-sm">
+                        Save Product
+                    </button>
+                </form>
+            </div>
+
+            <!-- ================= VIEW 2: PRODUCT LIST TABLE (HIDDEN BY DEFAULT) ================= -->
+            <div id="product-list-table-section" class="hidden space-y-4">
+                <div class="flex items-center justify-between gap-4">
+                    <h2 class="font-serif-heading text-2xl font-bold text-rose-950">Product List</h2>
+                    <input type="text" id="admin-search-input" onkeyup="filterAdminProducts(this.value)" placeholder="Search products..." class="bg-white border border-gray-300 text-xs px-3 py-1.5 rounded w-64 focus:outline-none focus:border-rose-900" />
                 </div>
 
-                <div class="overflow-x-auto">
-                    <table class="w-full text-left text-xs">
-                        <thead class="bg-rose-50/80 text-rose-950 uppercase font-bold text-[10px] tracking-wider border-b border-rose-100">
-                            <tr>
-                                <th class="p-4">Image</th>
-                                <th class="p-4">Perfume Name</th>
-                                <th class="p-4">Category</th>
-                                <th class="p-4">Price</th>
-                                <th class="p-4">Scent Family</th>
-                                <th class="p-4">Rating</th>
-                                <th class="p-4">Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody id="admin-products-table-body" class="divide-y divide-gray-100 font-medium"></tbody>
-                    </table>
+                <div class="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left text-xs border-collapse">
+                            <thead class="bg-gray-50 text-gray-700 font-bold border-b border-gray-200">
+                                <tr>
+                                    <th class="p-3 border border-gray-200">Product</th>
+                                    <th class="p-3 border border-gray-200">Category</th>
+                                    <th class="p-3 border border-gray-200">Brand</th>
+                                    <th class="p-3 border border-gray-200">Date</th>
+                                    <th class="p-3 border border-gray-200">Action</th>
+                                </tr>
+                            </thead>
+                            <tbody id="admin-products-table-body" class="divide-y divide-gray-100 font-medium"></tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
         </main>
-    </div>
-
-    <!-- ADD NEW PRODUCT MODAL -->
-    <div id="add-product-modal" class="hidden fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
-        <div class="bg-white rounded-2xl max-w-xl w-full p-6 relative shadow-2xl space-y-4">
-            <div class="flex justify-between items-center border-b border-gray-100 pb-3">
-                <h3 class="font-serif-heading text-xl font-bold text-rose-950">Add New Perfume Listing</h3>
-                <button onclick="closeAddProductModal()" class="text-gray-400 hover:text-gray-600 font-bold">✕</button>
-            </div>
-
-            <form onsubmit="handleAddNewProduct(event)" class="space-y-4 text-xs">
-                <div>
-                    <label class="block font-bold text-gray-800 mb-1">Perfume Title *</label>
-                    <input type="text" id="new-prod-title" required placeholder="e.g. Notch Velvet Amber EDP" class="w-full bg-gray-50 border border-gray-200 p-2.5 rounded-lg focus:outline-none focus:border-rosegold-400" />
-                </div>
-
-                <div class="grid grid-cols-2 gap-4">
-                    <div>
-                        <label class="block font-bold text-gray-800 mb-1">Category *</label>
-                        <select id="new-prod-cat" required class="w-full bg-gray-50 border border-gray-200 p-2.5 rounded-lg focus:outline-none focus:border-rosegold-400">
-                            <option value="men">For Men</option>
-                            <option value="women">For Women</option>
-                            <option value="unisex">Unisex</option>
-                            <option value="discovery">Discovery Kit</option>
-                        </select>
-                    </div>
-                    <div>
-                        <label class="block font-bold text-gray-800 mb-1">Price (QAR ) *</label>
-                        <input type="number" id="new-prod-price" required placeholder="2495" class="w-full bg-gray-50 border border-gray-200 p-2.5 rounded-lg focus:outline-none focus:border-rosegold-400" />
-                    </div>
-                </div>
-
-                <div class="grid grid-cols-2 gap-4">
-                    <div>
-                        <label class="block font-bold text-gray-800 mb-1">Scent Family *</label>
-                        <select id="new-prod-family" required class="w-full bg-gray-50 border border-gray-200 p-2.5 rounded-lg focus:outline-none focus:border-rosegold-400">
-                            <option value="citrus">Fresh & Citrus 🍋</option>
-                            <option value="floral">Sensual Floral 🌸</option>
-                            <option value="woody">Earthy & Woody 🌲</option>
-                            <option value="amber">Warm Amber & Spice ✨</option>
-                        </select>
-                    </div>
-                    <div>
-                        <label class="block font-bold text-gray-800 mb-1">Perfumer Name</label>
-                        <input type="text" id="new-prod-perfumer" placeholder="e.g. Olivier Pescheux" class="w-full bg-gray-50 border border-gray-200 p-2.5 rounded-lg focus:outline-none focus:border-rosegold-400" />
-                    </div>
-                </div>
-
-                <div>
-                    <label class="block font-bold text-gray-800 mb-1">Top Notes</label>
-                    <input type="text" id="new-prod-topnotes" placeholder="e.g. Bergamot, Lemon, Watery Accord" class="w-full bg-gray-50 border border-gray-200 p-2.5 rounded-lg focus:outline-none focus:border-rosegold-400" />
-                </div>
-
-                <div>
-                    <label class="block font-bold text-gray-800 mb-1">Product Image URL</label>
-                    <input type="url" id="new-prod-image" placeholder="https://images.unsplash.com/..." class="w-full bg-gray-50 border border-gray-200 p-2.5 rounded-lg focus:outline-none focus:border-rosegold-400" />
-                </div>
-
-                <div class="pt-3 border-t border-gray-100 flex gap-3">
-                    <button type="button" onclick="closeAddProductModal()" class="flex-1 py-3 border border-gray-300 text-gray-700 font-bold rounded-xl">Cancel</button>
-                    <button type="submit" class="flex-1 py-3 rose-gold-bg text-rose-950 font-bold rounded-xl uppercase">Save Perfume</button>
-                </div>
-            </form>
-        </div>
     </div>
 
     <!-- Scripts -->
@@ -190,34 +234,43 @@
     <script src="js/app.js"></script>
     <script>
         let adminProductsList = [...PRODUCTS];
+        let editingProductIdx = null;
+        let isShowingList = false;
 
         document.addEventListener('DOMContentLoaded', () => {
             renderAdminProductsTable(adminProductsList);
         });
 
+        function toggleView() {
+            isShowingList = !isShowingList;
+            const formSec = document.getElementById('product-master-form-section');
+            const listSec = document.getElementById('product-list-table-section');
+            const link = document.getElementById('view-toggle-link');
+
+            if (isShowingList) {
+                formSec.classList.add('hidden');
+                listSec.classList.remove('hidden');
+                link.textContent = 'Back to Form';
+            } else {
+                formSec.classList.remove('hidden');
+                listSec.classList.add('hidden');
+                link.textContent = 'View Products';
+            }
+        }
+
         function renderAdminProductsTable(items) {
             const body = document.getElementById('admin-products-table-body');
-            const totalEl = document.getElementById('product-total-badge');
-            if (totalEl) totalEl.textContent = `Total ${items.length} Products`;
-
             if (!body) return;
 
             body.innerHTML = items.map((p, idx) => `
-                <tr class="hover:bg-rose-50/30">
-                    <td class="p-4">
-                        <img src="${p.image}" class="w-12 h-12 object-cover rounded-lg bg-gray-50 border border-gray-200" />
-                    </td>
-                    <td class="p-4">
-                        <div class="font-bold text-rose-950">${p.name}</div>
-                        <div class="text-[10px] text-gray-400">${p.subtitle}</div>
-                    </td>
-                    <td class="p-4 uppercase font-bold text-[10px] text-gray-600">${p.category}</td>
-                    <td class="p-4 font-bold text-gray-900">QAR ${p.price.toLocaleString('en-US')}</td>
-                    <td class="p-4 text-gray-700 capitalize">${p.scentFamily}</td>
-                    <td class="p-4 text-yellow-600 font-bold">★ ${p.rating}</td>
-                    <td class="p-4 space-x-2">
-                        <button onclick="showToast('Edit product #${p.id}', 'info')" class="text-rose-900 hover:text-rosegold-600 font-bold underline">Edit</button>
-                        <button onclick="deleteAdminProduct(${idx})" class="text-red-500 hover:text-red-700 font-bold underline">Delete</button>
+                <tr class="hover:bg-rose-50/20">
+                    <td class="p-3 border border-gray-200 font-bold text-gray-900">${p.name}</td>
+                    <td class="p-3 border border-gray-200 uppercase text-gray-600">${p.category}</td>
+                    <td class="p-3 border border-gray-200 text-gray-800">${p.brand || 'NOTCH'}</td>
+                    <td class="p-3 border border-gray-200 text-gray-600">${p.createdDate || '3/24/2026'}</td>
+                    <td class="p-3 border border-gray-200 space-x-1">
+                        <button onclick="editAdminProduct(${idx})" class="px-2.5 py-1 bg-red-200 text-rose-950 font-bold text-[11px] rounded hover:bg-red-300">Edit</button>
+                        <button onclick="deleteAdminProduct(${idx})" class="px-2.5 py-1 bg-red-600 text-white font-bold text-[11px] rounded hover:bg-red-700">Delete</button>
                     </td>
                 </tr>
             `).join('');
@@ -225,51 +278,100 @@
 
         function filterAdminProducts(query) {
             const q = query.toLowerCase();
-            const filtered = PRODUCTS.filter(p => p.name.toLowerCase().includes(q) || p.category.toLowerCase().includes(q));
+            const filtered = PRODUCTS.filter(p => p.name.toLowerCase().includes(q) || p.category.toLowerCase().includes(q) || (p.brand && p.brand.toLowerCase().includes(q)));
             renderAdminProductsTable(filtered);
         }
 
-        function openAddProductModal() {
-            document.getElementById('add-product-modal').classList.remove('hidden');
+        function editAdminProduct(idx) {
+            editingProductIdx = idx;
+            const p = PRODUCTS[idx];
+            document.getElementById('prod-code').value = p.code || `PRD-${100 + idx}`;
+            document.getElementById('prod-name').value = p.name || '';
+            document.getElementById('prod-brand').value = p.brand || 'NOTCH';
+            document.getElementById('prod-desc').value = p.description || '';
+            document.getElementById('prod-combo').value = p.combo || 'Single';
+            document.getElementById('prod-hsn').value = p.hsn || '';
+            document.getElementById('prod-barcode').value = p.barcode || '';
+            document.getElementById('prod-price').value = p.price || 0;
+            document.getElementById('prod-cat').value = p.category || 'men';
+            document.getElementById('prod-specs').value = p.topNotes || '';
+            document.getElementById('prod-img1-url').value = p.image || '';
+
+            if (isShowingList) toggleView();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
-        function closeAddProductModal() {
-            document.getElementById('add-product-modal').classList.add('hidden');
-        }
-
-        function handleAddNewProduct(e) {
+        function handleSaveProduct(e) {
             e.preventDefault();
-            const title = document.getElementById('new-prod-title').value;
-            const category = document.getElementById('new-prod-cat').value;
-            const price = parseInt(document.getElementById('new-prod-price').value);
-            const scentFamily = document.getElementById('new-prod-family').value;
-            const perfumer = document.getElementById('new-prod-perfumer').value || 'Master Qatari Perfumer';
-            const topNotes = document.getElementById('new-prod-topnotes').value || 'Bergamot, Water Accord';
-            const image = document.getElementById('new-prod-image').value || 'https://images.unsplash.com/photo-1594035910387-fea47794261f?auto=format&fit=crop&w=800&q=80';
+            const code = document.getElementById('prod-code').value;
+            const title = document.getElementById('prod-name').value;
+            const brand = document.getElementById('prod-brand').value;
+            const price = parseInt(document.getElementById('prod-price').value);
+            const desc = document.getElementById('prod-desc').value;
+            const combo = document.getElementById('prod-combo').value;
+            const hsn = document.getElementById('prod-hsn').value;
+            const barcode = document.getElementById('prod-barcode').value;
+            const category = document.getElementById('prod-cat').value;
+            const specs = document.getElementById('prod-specs').value;
+            const img1 = document.getElementById('prod-img1-url').value || 'https://images.unsplash.com/photo-1594035910387-fea47794261f?auto=format&fit=crop&w=800&q=80';
 
-            const newObj = {
-                id: `notch-custom-${Date.now()}`,
-                name: title,
-                subtitle: `For ${category.toUpperCase()} • Fine EDP`,
-                category,
-                scentFamily,
-                price,
-                rating: 5.0,
-                reviewsCount: 1,
-                badge: "New Arrival",
-                image,
-                topNotes,
-                heartNotes: "Qatari Essences",
-                baseNotes: "Rich Amber",
-                perfumer,
-                description: "New Notch Perfume creation.",
-                sizes: ["100 ml"]
-            };
+            if (editingProductIdx !== null) {
+                const item = PRODUCTS[editingProductIdx];
+                item.code = code;
+                item.name = title;
+                item.brand = brand;
+                item.price = price;
+                item.description = desc;
+                item.combo = combo;
+                item.hsn = hsn;
+                item.barcode = barcode;
+                item.category = category;
+                item.topNotes = specs;
+                item.image = img1;
+                showToast(`Product <strong>${title}</strong> updated successfully!`);
+            } else {
+                const newObj = {
+                    id: `notch-custom-${Date.now()}`,
+                    code,
+                    name: title,
+                    brand,
+                    subtitle: `For ${category.toUpperCase()} • Fine EDP`,
+                    category,
+                    price,
+                    description: desc,
+                    combo,
+                    hsn,
+                    barcode,
+                    topNotes: specs,
+                    image: img1,
+                    rating: 5.0,
+                    createdDate: new Date().toLocaleDateString('en-US'),
+                    sizes: ["100 ml"]
+                };
+                PRODUCTS.unshift(newObj);
+                showToast(`New Product <strong>${title}</strong> saved successfully!`);
+            }
 
-            PRODUCTS.unshift(newObj);
             renderAdminProductsTable(PRODUCTS);
-            closeAddProductModal();
-            showToast(`New Perfume <strong>${title}</strong> added successfully!`, 'success');
+            
+            // Clear form
+            editingProductIdx = null;
+            document.getElementById('prod-code').value = '';
+            document.getElementById('prod-name').value = '';
+            document.getElementById('prod-brand').value = '';
+            document.getElementById('prod-desc').value = '';
+            document.getElementById('prod-hsn').value = '';
+            document.getElementById('prod-barcode').value = '';
+            document.getElementById('prod-price').value = '';
+            document.getElementById('prod-specs').value = '';
+            document.getElementById('prod-img1-url').value = '';
+        }
+
+        function showToast(msg) {
+            const toast = document.getElementById('toast-msg');
+            toast.innerHTML = msg;
+            toast.classList.remove('hidden');
+            setTimeout(() => { toast.classList.add('hidden'); }, 3000);
         }
 
         function deleteAdminProduct(index) {
@@ -277,7 +379,7 @@
             if (confirm(`Are you sure you want to delete ${item.name}?`)) {
                 PRODUCTS.splice(index, 1);
                 renderAdminProductsTable(PRODUCTS);
-                showToast(`Deleted product`, 'info');
+                showToast(`Deleted product ${item.name}`);
             }
         }
     </script>
