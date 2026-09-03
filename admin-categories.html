@@ -214,8 +214,8 @@
                     <td class="py-3 px-4"><span class="px-2.5 py-1 bg-emerald-100 text-emerald-800 font-bold text-[10px] rounded-full">Active</span></td>
                     <td class="py-3 px-4 text-center">
                         <div class="flex items-center justify-center gap-2">
-                            <button onclick="editCategory(${c.id}, '${c.name.replace(/'/g, "\\'")}')" class="btn-edit-yellow px-3 py-1 text-xs font-bold rounded-lg shadow-xs">Edit</button>
-                            <button onclick="deleteCategory(${c.id})" class="btn-delete-red px-3 py-1 text-xs font-bold rounded-lg shadow-xs">Delete</button>
+                            <button onclick="editCategory('${c.id}', '${c.name.replace(/'/g, "\\'")}')" class="btn-edit-yellow px-3 py-1 text-xs font-bold rounded-lg shadow-xs">Edit</button>
+                            <button onclick="deleteCategory('${c.id}')" class="btn-delete-red px-3 py-1 text-xs font-bold rounded-lg shadow-xs">Delete</button>
                         </div>
                     </td>
                 `;
@@ -229,7 +229,7 @@
             const categoryName = document.getElementById('categoryName').value.trim().toUpperCase();
             if (!categoryName) return;
 
-            const payload = { name: categoryName, status: 'Active' };
+            const payload = { id: editId || undefined, categoryName: categoryName };
 
             try {
                 const res = await fetch('/api/categories', {
@@ -248,7 +248,7 @@
                 const idx = categories.findIndex(x => String(x.id) === String(editId));
                 if (idx !== -1) categories[idx].name = categoryName;
             } else {
-                categories.push({ id: Date.now(), name: categoryName, status: 'Active' });
+                categories.push({ id: editId || categoryName.toLowerCase().replace(/\s+/g, '-'), name: categoryName, status: 'Active' });
             }
 
             resetForm();
@@ -262,8 +262,15 @@
             document.getElementById('categoryName').focus();
         }
 
-        function deleteCategory(id) {
+        async function deleteCategory(id) {
             if (!confirm('Are you sure you want to delete this category?')) return;
+            try {
+                const res = await fetch(`/api/categories/${encodeURIComponent(id)}`, { method: 'DELETE' });
+                if (res.ok) {
+                    await fetchCategories();
+                    return;
+                }
+            } catch (e) {}
             categories = categories.filter(x => String(x.id) !== String(id));
             renderTable();
         }
