@@ -176,14 +176,46 @@ IF NOT EXISTS (SELECT * FROM sys.tables WHERE name = 'Suppliers')
 BEGIN
     CREATE TABLE Suppliers (
         Id INT IDENTITY(1,1) PRIMARY KEY,
+        SupplierCode NVARCHAR(50),
         SupplierName NVARCHAR(150) NOT NULL,
-        ContactPerson NVARCHAR(100),
-        Email NVARCHAR(150),
-        Phone NVARCHAR(50),
-        Address NVARCHAR(MAX),
+        Type NVARCHAR(50),
         Status NVARCHAR(50) DEFAULT 'Active',
+        Country NVARCHAR(100) DEFAULT 'India',
+        State NVARCHAR(100),
+        City NVARCHAR(100),
+        Address NVARCHAR(MAX),
+        PostalCode NVARCHAR(20),
+        Phone NVARCHAR(50),
+        Email NVARCHAR(150),
+        GSTIN NVARCHAR(50),
+        BankName NVARCHAR(100),
+        AccountNumber NVARCHAR(50),
+        IFSC NVARCHAR(50),
         CreatedAt DATETIME DEFAULT GETDATE()
     );
+END;
+ELSE
+BEGIN
+    IF NOT EXISTS (SELECT * FROM sys.columns WHERE object_id = OBJECT_ID('Suppliers') AND name = 'SupplierCode')
+        ALTER TABLE Suppliers ADD SupplierCode NVARCHAR(50);
+    IF NOT EXISTS (SELECT * FROM sys.columns WHERE object_id = OBJECT_ID('Suppliers') AND name = 'Type')
+        ALTER TABLE Suppliers ADD Type NVARCHAR(50);
+    IF NOT EXISTS (SELECT * FROM sys.columns WHERE object_id = OBJECT_ID('Suppliers') AND name = 'Country')
+        ALTER TABLE Suppliers ADD Country NVARCHAR(100) DEFAULT 'India';
+    IF NOT EXISTS (SELECT * FROM sys.columns WHERE object_id = OBJECT_ID('Suppliers') AND name = 'State')
+        ALTER TABLE Suppliers ADD State NVARCHAR(100);
+    IF NOT EXISTS (SELECT * FROM sys.columns WHERE object_id = OBJECT_ID('Suppliers') AND name = 'City')
+        ALTER TABLE Suppliers ADD City NVARCHAR(100);
+    IF NOT EXISTS (SELECT * FROM sys.columns WHERE object_id = OBJECT_ID('Suppliers') AND name = 'PostalCode')
+        ALTER TABLE Suppliers ADD PostalCode NVARCHAR(20);
+    IF NOT EXISTS (SELECT * FROM sys.columns WHERE object_id = OBJECT_ID('Suppliers') AND name = 'GSTIN')
+        ALTER TABLE Suppliers ADD GSTIN NVARCHAR(50);
+    IF NOT EXISTS (SELECT * FROM sys.columns WHERE object_id = OBJECT_ID('Suppliers') AND name = 'BankName')
+        ALTER TABLE Suppliers ADD BankName NVARCHAR(100);
+    IF NOT EXISTS (SELECT * FROM sys.columns WHERE object_id = OBJECT_ID('Suppliers') AND name = 'AccountNumber')
+        ALTER TABLE Suppliers ADD AccountNumber NVARCHAR(50);
+    IF NOT EXISTS (SELECT * FROM sys.columns WHERE object_id = OBJECT_ID('Suppliers') AND name = 'IFSC')
+        ALTER TABLE Suppliers ADD IFSC NVARCHAR(50);
 END;
 GO
 

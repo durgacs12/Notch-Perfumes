@@ -18,6 +18,41 @@ IDbConnection GetConnection() => new SqlConnection(connectionString);
 app.UseDefaultFiles();
 app.UseStaticFiles();
 
+// Ensure existing Suppliers table in SQL Server has all MEIL project columns
+try
+{
+    using var migrationDb = GetConnection();
+    migrationDb.Execute(@"
+        IF EXISTS (SELECT * FROM sys.tables WHERE name = 'Suppliers')
+        BEGIN
+            IF NOT EXISTS (SELECT * FROM sys.columns WHERE object_id = OBJECT_ID('Suppliers') AND name = 'SupplierCode')
+                ALTER TABLE Suppliers ADD SupplierCode NVARCHAR(50);
+            IF NOT EXISTS (SELECT * FROM sys.columns WHERE object_id = OBJECT_ID('Suppliers') AND name = 'Type')
+                ALTER TABLE Suppliers ADD Type NVARCHAR(50);
+            IF NOT EXISTS (SELECT * FROM sys.columns WHERE object_id = OBJECT_ID('Suppliers') AND name = 'Country')
+                ALTER TABLE Suppliers ADD Country NVARCHAR(100) DEFAULT 'India';
+            IF NOT EXISTS (SELECT * FROM sys.columns WHERE object_id = OBJECT_ID('Suppliers') AND name = 'State')
+                ALTER TABLE Suppliers ADD State NVARCHAR(100);
+            IF NOT EXISTS (SELECT * FROM sys.columns WHERE object_id = OBJECT_ID('Suppliers') AND name = 'City')
+                ALTER TABLE Suppliers ADD City NVARCHAR(100);
+            IF NOT EXISTS (SELECT * FROM sys.columns WHERE object_id = OBJECT_ID('Suppliers') AND name = 'PostalCode')
+                ALTER TABLE Suppliers ADD PostalCode NVARCHAR(20);
+            IF NOT EXISTS (SELECT * FROM sys.columns WHERE object_id = OBJECT_ID('Suppliers') AND name = 'GSTIN')
+                ALTER TABLE Suppliers ADD GSTIN NVARCHAR(50);
+            IF NOT EXISTS (SELECT * FROM sys.columns WHERE object_id = OBJECT_ID('Suppliers') AND name = 'BankName')
+                ALTER TABLE Suppliers ADD BankName NVARCHAR(100);
+            IF NOT EXISTS (SELECT * FROM sys.columns WHERE object_id = OBJECT_ID('Suppliers') AND name = 'AccountNumber')
+                ALTER TABLE Suppliers ADD AccountNumber NVARCHAR(50);
+            IF NOT EXISTS (SELECT * FROM sys.columns WHERE object_id = OBJECT_ID('Suppliers') AND name = 'IFSC')
+                ALTER TABLE Suppliers ADD IFSC NVARCHAR(50);
+        END
+    ");
+}
+catch (Exception ex)
+{
+    Console.WriteLine($"Supplier table migration note: {ex.Message}");
+}
+
 // API Endpoints for NotchPerfumes Database
 
 // Get All Products
@@ -207,18 +242,38 @@ app.MapGet("/api/suppliers", async () =>
 app.MapPost("/api/suppliers", async (SupplierDto dto) =>
 {
     using var db = GetConnection();
-    string sql = @"INSERT INTO Suppliers (SupplierName, ContactPerson, Email, Phone, Address, Status)
-                   VALUES (@SupplierName, @ContactPerson, @Email, @Phone, @Address, @Status);
+    string sql = @"INSERT INTO Suppliers (SupplierCode, SupplierName, Type, Status, Country, State, City, Address, PostalCode, Phone, Email, GSTIN, BankName, AccountNumber, IFSC)
+                   VALUES (@SupplierCode, @SupplierName, @Type, @Status, @Country, @State, @City, @Address, @PostalCode, @Phone, @Email, @GSTIN, @BankName, @AccountNumber, @IFSC);
                    SELECT CAST(SCOPE_IDENTITY() as int);";
     int id = await db.ExecuteScalarAsync<int>(sql, dto);
-    return Results.Created($"/api/suppliers/{id}", new { Id = id, dto.SupplierName, dto.ContactPerson, dto.Email, dto.Phone, dto.Address, dto.Status });
+    return Results.Created($"/api/suppliers/{id}", dto with { Id = id });
 });
 
 app.MapPut("/api/suppliers/{id:int}", async (int id, SupplierDto dto) =>
 {
     using var db = GetConnection();
-    string sql = @"UPDATE Suppliers SET SupplierName = @SupplierName, ContactPerson = @ContactPerson, Email = @Email, Phone = @Phone, Address = @Address, Status = @Status WHERE Id = @Id";
-    int rows = await db.ExecuteAsync(sql, new { Id = id, dto.SupplierName, dto.ContactPerson, dto.Email, dto.Phone, dto.Address, dto.Status });
+    string sql = @"UPDATE Suppliers SET SupplierCode = @SupplierCode, SupplierName = @SupplierName, Type = @Type, Status = @Status, 
+                   Country = @Country, State = @State, City = @City, Address = @Address, PostalCode = @PostalCode, 
+                   Phone = @Phone, Email = @Email, GSTIN = @GSTIN, BankName = @BankName, AccountNumber = @AccountNumber, IFSC = @IFSC 
+                   WHERE Id = @Id";
+    int rows = await db.ExecuteAsync(sql, new { 
+        Id = id, 
+        dto.SupplierCode, 
+        dto.SupplierName, 
+        dto.Type, 
+        dto.Status, 
+        dto.Country, 
+        dto.State, 
+        dto.City, 
+        dto.Address, 
+        dto.PostalCode, 
+        dto.Phone, 
+        dto.Email, 
+        dto.GSTIN, 
+        dto.BankName, 
+        dto.AccountNumber, 
+        dto.IFSC 
+    });
     return rows > 0 ? Results.Ok() : Results.NotFound();
 });
 
@@ -267,7 +322,7 @@ app.Run();
 public record SubCategoryDto(int? Id, string MainCategoryId, string SubCategoryName);
 public record BannerDto(int? Id, string Title, string Subtitle, string Image, string TargetUrl, bool IsActive);
 public record CategorySpecDto(int? Id, string CategoryId, string SpecName, string SpecValues, bool IsRequired);
-public record SupplierDto(int? Id, string SupplierName, string ContactPerson, string Email, string Phone, string Address, string Status);
+public record SupplierDto(int? Id, string SupplierCode, string SupplierName, string Type, string Status, string Country, string State, string City, string Address, string PostalCode, string Phone, string Email, string GSTIN, string BankName, string AccountNumber, string IFSC);
 public record CustomerDto(int? Id, string CustomerName, string Email, string Phone, string City, int TotalOrders, decimal TotalSpent);
 
 
