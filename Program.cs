@@ -15,6 +15,83 @@ string connectionString = builder.Configuration.GetConnectionString("DefaultConn
 
 IDbConnection GetConnection() => new SqlConnection(connectionString);
 
+// Auto-create database tables on startup if missing
+try
+{
+    using var initDb = GetConnection();
+    initDb.Execute(@"
+        IF NOT EXISTS (SELECT * FROM sys.tables WHERE name = 'SubCategories')
+        BEGIN
+            CREATE TABLE SubCategories (
+                Id INT IDENTITY(1,1) PRIMARY KEY,
+                MainCategoryId NVARCHAR(50) NOT NULL,
+                SubCategoryName NVARCHAR(100) NOT NULL,
+                CreatedAt DATETIME DEFAULT GETDATE()
+            );
+        END;
+
+        IF NOT EXISTS (SELECT * FROM sys.tables WHERE name = 'Banners')
+        BEGIN
+            CREATE TABLE Banners (
+                Id INT IDENTITY(1,1) PRIMARY KEY,
+                Title NVARCHAR(150) NOT NULL,
+                Subtitle NVARCHAR(250),
+                Image NVARCHAR(MAX) NOT NULL,
+                TargetUrl NVARCHAR(250),
+                IsActive BIT DEFAULT 1,
+                CreatedAt DATETIME DEFAULT GETDATE()
+            );
+        END;
+
+        IF NOT EXISTS (SELECT * FROM sys.tables WHERE name = 'CategorySpecifications')
+        BEGIN
+            CREATE TABLE CategorySpecifications (
+                Id INT IDENTITY(1,1) PRIMARY KEY,
+                CategoryId NVARCHAR(50) NOT NULL,
+                SpecName NVARCHAR(100) NOT NULL,
+                SpecValues NVARCHAR(MAX),
+                IsRequired BIT DEFAULT 0,
+                CreatedAt DATETIME DEFAULT GETDATE()
+            );
+        END;
+
+        IF NOT EXISTS (SELECT * FROM sys.tables WHERE name = 'Suppliers')
+        BEGIN
+            CREATE TABLE Suppliers (
+                Id INT IDENTITY(1,1) PRIMARY KEY,
+                SupplierName NVARCHAR(150) NOT NULL,
+                ContactPerson NVARCHAR(100),
+                Email NVARCHAR(150),
+                Phone NVARCHAR(50),
+                Address NVARCHAR(MAX),
+                Status NVARCHAR(50) DEFAULT 'Active',
+                CreatedAt DATETIME DEFAULT GETDATE()
+            );
+        END;
+
+        IF NOT EXISTS (SELECT * FROM sys.tables WHERE name = 'Customers')
+        BEGIN
+            CREATE TABLE Customers (
+                Id INT IDENTITY(1,1) PRIMARY KEY,
+                FirstName NVARCHAR(100) NOT NULL,
+                LastName NVARCHAR(100),
+                Email NVARCHAR(150) NOT NULL,
+                MobileNumber NVARCHAR(50),
+                Gender NVARCHAR(20),
+                Address NVARCHAR(MAX),
+                City NVARCHAR(100),
+                Postcode NVARCHAR(50),
+                Password NVARCHAR(100),
+                CreatedAt DATETIME DEFAULT GETDATE()
+            );
+        END;
+    ");
+}
+catch (Exception ex)
+{
+    Console.WriteLine($"DB Auto-Create Warning: {ex.Message}");
+}
+
 app.UseDefaultFiles();
 app.UseStaticFiles();
 
@@ -232,26 +309,33 @@ app.MapDelete("/api/suppliers/{id:int}", async (int id) =>
 // Customers Endpoints
 app.MapGet("/api/customers", async () =>
 {
-    using var db = GetConnection();
-    var customers = await db.QueryAsync("SELECT * FROM Customers ORDER BY Id DESC");
-    return Results.Ok(customers);
+    try
+    {
+        using var db = GetConnection();
+        var customers = await db.QueryAsync("SELECT * FROM Customers ORDER BY Id DESC");
+        return Results.Ok(customers);
+    }
+    catch (Exception)
+    {
+        return Results.Ok(new List<object>());
+    }
 });
 
 app.MapPost("/api/customers", async (CustomerDto dto) =>
 {
     using var db = GetConnection();
-    string sql = @"INSERT INTO Customers (CustomerName, Email, Phone, City, TotalOrders, TotalSpent)
-                   VALUES (@CustomerName, @Email, @Phone, @City, @TotalOrders, @TotalSpent);
+    string sql = @"INSERT INTO Customers (FirstName, LastName, Email, MobileNumber, Gender, Address, City, Postcode, Password)
+                   VALUES (@FirstName, @LastName, @Email, @MobileNumber, @Gender, @Address, @City, @Postcode, @Password);
                    SELECT CAST(SCOPE_IDENTITY() as int);";
     int id = await db.ExecuteScalarAsync<int>(sql, dto);
-    return Results.Created($"/api/customers/{id}", new { Id = id, dto.CustomerName, dto.Email, dto.Phone, dto.City, dto.TotalOrders, dto.TotalSpent });
+    return Results.Created($"/api/customers/{id}", new { Id = id, dto.FirstName, dto.LastName, dto.Email, dto.MobileNumber, dto.Gender, dto.Address, dto.City, dto.Postcode });
 });
 
 app.MapPut("/api/customers/{id:int}", async (int id, CustomerDto dto) =>
 {
     using var db = GetConnection();
-    string sql = @"UPDATE Customers SET CustomerName = @CustomerName, Email = @Email, Phone = @Phone, City = @City, TotalOrders = @TotalOrders, TotalSpent = @TotalSpent WHERE Id = @Id";
-    int rows = await db.ExecuteAsync(sql, new { Id = id, dto.CustomerName, dto.Email, dto.Phone, dto.City, dto.TotalOrders, dto.TotalSpent });
+    string sql = @"UPDATE Customers SET FirstName = @FirstName, LastName = @LastName, Email = @Email, MobileNumber = @MobileNumber, Gender = @Gender, Address = @Address, City = @City, Postcode = @Postcode, Password = @Password WHERE Id = @Id";
+    int rows = await db.ExecuteAsync(sql, new { Id = id, dto.FirstName, dto.LastName, dto.Email, dto.MobileNumber, dto.Gender, dto.Address, dto.City, dto.Postcode, dto.Password });
     return rows > 0 ? Results.Ok() : Results.NotFound();
 });
 
@@ -268,6 +352,7 @@ public record SubCategoryDto(int? Id, string MainCategoryId, string SubCategoryN
 public record BannerDto(int? Id, string Title, string Subtitle, string Image, string TargetUrl, bool IsActive);
 public record CategorySpecDto(int? Id, string CategoryId, string SpecName, string SpecValues, bool IsRequired);
 public record SupplierDto(int? Id, string SupplierName, string ContactPerson, string Email, string Phone, string Address, string Status);
-public record CustomerDto(int? Id, string CustomerName, string Email, string Phone, string City, int TotalOrders, decimal TotalSpent);
+public record CustomerDto(int? Id, string FirstName, string LastName, string Email, string MobileNumber, string Gender, string Address, string City, string Postcode, string Password);
+
 
 
