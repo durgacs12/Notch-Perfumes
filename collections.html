@@ -129,6 +129,7 @@
     <section class="py-6 bg-white border-b border-stone-200 sticky top-20 z-30 shadow-sm">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-wrap gap-2 justify-center">
             <button onclick="selectCollectionTab('all', this)" class="collection-tab-btn px-5 py-2 bg-stone-900 text-white rounded-full text-xs font-bold uppercase tracking-wider shadow-sm">All Collections</button>
+            <button onclick="selectCollectionTab('new-arrivals', this)" class="collection-tab-btn px-5 py-2 bg-stone-100 hover:bg-stone-200 text-stone-700 rounded-full text-xs font-semibold uppercase tracking-wider border border-stone-300">✨ New Arrivals</button>
             <button onclick="selectCollectionTab('classics', this)" class="collection-tab-btn px-5 py-2 bg-stone-100 hover:bg-stone-200 text-stone-700 rounded-full text-xs font-semibold uppercase tracking-wider border border-stone-300">🌟 Classics (Raw/Celeste)</button>
             <button onclick="selectCollectionTab('qatari-rose', this)" class="collection-tab-btn px-5 py-2 bg-stone-100 hover:bg-stone-200 text-stone-700 rounded-full text-xs font-semibold uppercase tracking-wider border border-stone-300">🌹 Qatari Rose Artistry</button>
             <button onclick="selectCollectionTab('mediterranean', this)" class="collection-tab-btn px-5 py-2 bg-stone-100 hover:bg-stone-200 text-stone-700 rounded-full text-xs font-semibold uppercase tracking-wider border border-stone-300">🌊 Mediterranean Escapes</button>
@@ -207,39 +208,66 @@
     <script src="js/products.js"></script>
     <script src="js/app.js"></script>
     <script>
-        const COLLECTIONS_DATA = [
-            {
-                id: 'classics',
-                title: 'The Notch Iconics (Raw & Celeste)',
-                subtitle: 'The signature fragrances that defined Qatari luxury perfumery.',
-                banner: 'https://images.unsplash.com/photo-1588405748880-12d1d2a59f75?auto=format&fit=crop&w=1200&q=80',
-                productIds: ['notch-raw-men', 'notch-celeste-women']
-            },
-            {
-                id: 'qatari-rose',
-                title: 'Rose Gold & Botanical Essences',
-                subtitle: 'Precious damask rose oils harvested at dawn in Grasse.',
-                banner: 'https://images.unsplash.com/photo-1594035910387-fea47794261f?auto=format&fit=crop&w=1200&q=80',
-                productIds: ['notch-noura-her', 'notch-nude-women', 'notch-discovery-kit']
-            },
-            {
-                id: 'mediterranean',
-                title: 'Mediterranean Escapes',
-                subtitle: 'Sun-drenched sea breezes, zesty citrus groves, and coastal figs.',
-                banner: 'https://images.unsplash.com/photo-1523293182086-7651a899d37f?auto=format&fit=crop&w=1200&q=80',
-                productIds: ['notch-amalfi-bleue', 'notch-raw-men']
-            },
-            {
-                id: 'night',
-                title: 'Opulent Evening EDPs',
-                subtitle: 'Intense woods, smoky leathers, and dark vanilla amber for nightfall.',
-                banner: 'https://images.unsplash.com/photo-1508746829417-e6f548d8d6ed?auto=format&fit=crop&w=1200&q=80',
-                productIds: ['notch-steele-men', 'notch-nox-him']
+        function getDynamicCollectionsData() {
+            const allProds = getProductsList();
+            
+            const defaultIds = ['notch-raw-men', 'notch-celeste-women', 'notch-noura-her', 'notch-nude-women', 'notch-discovery-kit', 'notch-amalfi-bleue', 'notch-steele-men', 'notch-nox-him'];
+            
+            const newOrCustomProducts = allProds.filter(p => !defaultIds.includes(p.id) || p.id === 'notch-oud-royale' || p.badge === 'New Arrival' || p.badge === 'NEW');
+
+            let dynamicCollections = [];
+
+            if (newOrCustomProducts.length > 0) {
+                dynamicCollections.push({
+                    id: 'new-arrivals',
+                    title: '✨ New Arrivals & Exclusive Creations',
+                    subtitle: 'The latest Qatari luxury fragrance additions to the Notch catalog.',
+                    banner: 'https://images.unsplash.com/photo-1547887537-6158d64c35b3?auto=format&fit=crop&w=1200&q=80',
+                    productIds: newOrCustomProducts.map(p => p.id)
+                });
             }
-        ];
+
+            const classicsIds = ['notch-raw-men', 'notch-celeste-women', ...allProds.filter(p => p.collection === 'classics' || p.badge === 'Bestseller').map(p => p.id)];
+            const roseIds = ['notch-noura-her', 'notch-nude-women', 'notch-discovery-kit', ...allProds.filter(p => p.collection === 'qatari-rose' || p.scentFamily === 'floral').map(p => p.id)];
+            const medIds = ['notch-amalfi-bleue', 'notch-raw-men', ...allProds.filter(p => p.collection === 'mediterranean' || p.scentFamily === 'oceanic' || p.scentFamily === 'citrus').map(p => p.id)];
+            const nightIds = ['notch-steele-men', 'notch-nox-him', 'notch-oud-royale', ...allProds.filter(p => p.collection === 'night' || p.scentFamily === 'amber' || p.scentFamily === 'woody').map(p => p.id)];
+
+            dynamicCollections.push(
+                {
+                    id: 'classics',
+                    title: 'The Notch Iconics (Raw & Celeste)',
+                    subtitle: 'The signature fragrances that defined Qatari luxury perfumery.',
+                    banner: 'https://images.unsplash.com/photo-1588405748880-12d1d2a59f75?auto=format&fit=crop&w=1200&q=80',
+                    productIds: Array.from(new Set(classicsIds))
+                },
+                {
+                    id: 'qatari-rose',
+                    title: 'Rose Gold & Botanical Essences',
+                    subtitle: 'Precious damask rose oils harvested at dawn in Grasse.',
+                    banner: 'https://images.unsplash.com/photo-1594035910387-fea47794261f?auto=format&fit=crop&w=1200&q=80',
+                    productIds: Array.from(new Set(roseIds))
+                },
+                {
+                    id: 'mediterranean',
+                    title: 'Mediterranean Escapes',
+                    subtitle: 'Sun-drenched sea breezes, zesty citrus groves, and coastal figs.',
+                    banner: 'https://images.unsplash.com/photo-1523293182086-7651a899d37f?auto=format&fit=crop&w=1200&q=80',
+                    productIds: Array.from(new Set(medIds))
+                },
+                {
+                    id: 'night',
+                    title: 'Opulent Evening EDPs',
+                    subtitle: 'Intense woods, smoky leathers, and dark vanilla amber for nightfall.',
+                    banner: 'https://images.unsplash.com/photo-1508746829417-e6f548d8d6ed?auto=format&fit=crop&w=1200&q=80',
+                    productIds: Array.from(new Set(nightIds))
+                }
+            );
+
+            return dynamicCollections;
+        }
 
         document.addEventListener('DOMContentLoaded', () => {
-            renderCollections(COLLECTIONS_DATA);
+            renderCollections(getDynamicCollectionsData());
         });
 
         function renderCollections(collections) {
@@ -249,6 +277,8 @@
             const allProds = getProductsList();
             container.innerHTML = collections.map(col => {
                 const colProducts = allProds.filter(p => col.productIds.includes(p.id));
+                if (colProducts.length === 0) return '';
+
                 return `
                     <div id="col-sec-${col.id}" class="space-y-6">
                         <div class="relative h-72 md:h-96 rounded-2xl overflow-hidden shadow-lg border border-stone-200">
@@ -260,8 +290,10 @@
                             </div>
                         </div>
 
-                        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                            ${colProducts.map(p => `
+                        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                            ${colProducts.map(p => {
+                                const defaultSize = (p.sizes && p.sizes.length) ? p.sizes[0] : '100 ml';
+                                return `
                                 <div class="product-card bg-white rounded-xl overflow-hidden border border-stone-200 shadow-sm flex flex-col group relative">
                                     ${p.badge ? `<span class="absolute top-3 left-3 z-10 px-3 py-1 text-[11px] font-bold uppercase text-white bg-stone-900 rounded-full shadow-sm">${p.badge}</span>` : ''}
                                     
@@ -276,21 +308,22 @@
                                     <div class="p-6 flex-1 flex flex-col justify-between">
                                         <div>
                                             <div class="flex items-center gap-1 mb-1 text-xs text-amber-600">
-                                                ★ <span class="font-bold text-gray-800">${p.rating}</span> (${p.reviewsCount})
+                                                ★ <span class="font-bold text-gray-800">${p.rating || 5.0}</span> (${p.reviewsCount || 1})
                                             </div>
                                             <h3 class="font-serif-heading text-xl font-bold text-stone-900 cursor-pointer hover:text-red-700" onclick="openQuickView('${p.id}')">${p.name}</h3>
-                                            <p class="text-xs text-stone-500 mt-1 mb-3">${p.subtitle}</p>
+                                            <p class="text-xs text-stone-500 mt-1 mb-3">${p.subtitle || ''}</p>
                                         </div>
 
                                         <div class="pt-3 border-t border-stone-100 flex items-center justify-between">
                                             <span class="text-lg font-bold text-stone-900">QAR ${p.price.toLocaleString('en-US')}</span>
-                                            <button onclick="addToCart('${p.id}', '${p.sizes[0]}', 1)" class="px-4 py-2 bg-stone-900 hover:bg-stone-800 text-white rounded-lg text-xs font-bold uppercase tracking-wide">
+                                            <button onclick="addToCart('${p.id}', '${defaultSize}', 1)" class="px-4 py-2 bg-stone-900 hover:bg-stone-800 text-white rounded-lg text-xs font-bold uppercase tracking-wide">
                                                 Add To Bag
                                             </button>
                                         </div>
                                     </div>
                                 </div>
-                            `).join('')}
+                            `;
+                            }).join('')}
                         </div>
                     </div>
                 `;
@@ -303,10 +336,11 @@
             });
             btn.className = 'collection-tab-btn px-5 py-2 bg-stone-900 text-white rounded-full text-xs font-bold uppercase tracking-wider shadow-sm';
 
+            const collections = getDynamicCollectionsData();
             if (cat === 'all') {
-                renderCollections(COLLECTIONS_DATA);
+                renderCollections(collections);
             } else {
-                const filtered = COLLECTIONS_DATA.filter(c => c.id === cat);
+                const filtered = collections.filter(c => c.id === cat);
                 renderCollections(filtered);
             }
         }
