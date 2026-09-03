@@ -161,17 +161,11 @@
                 </div>
 
                 <button type="submit" class="w-full py-3.5 bg-stone-900 hover:bg-stone-800 text-white font-bold text-xs uppercase tracking-widest rounded-xl transition-all shadow-md mt-2">
-                    ✨ Create Account & Get 10% Off
+                    Create Account
                 </button>
             </form>
 
-            <!-- ADMIN QUICK LOGIN LINK -->
-            <div class="pt-4 border-t border-stone-200 text-center space-y-2">
-                <span class="text-[11px] text-stone-500 block">Are you a store manager or administrator?</span>
-                <a href="admin-dashboard.html" class="inline-flex items-center gap-1.5 text-xs font-bold text-stone-900 hover:text-red-700 underline">
-                    <span>⚙️ Go to Admin Master Dashboard</span>
-                </a>
-            </div>
+
 
         </div>
     </main>
@@ -206,17 +200,29 @@
 
         function handleCustomerLogin(e) {
             e.preventDefault();
-            const email = document.getElementById('login-email').value;
-            showToast(`Welcome back! Logged in as <strong>${email}</strong>`, 'success');
-            setTimeout(() => {
-                window.location.href = 'index.html';
-            }, 1200);
+            const email = document.getElementById('login-email').value.trim();
+            const pass = document.getElementById('login-pass').value.trim();
+
+            if (email === 'admin@gmail.com' && pass === '123') {
+                localStorage.setItem('adminLoggedIn', 'true');
+                showToast(`Admin authenticated! Accessing Dashboard...`, 'success');
+                setTimeout(() => {
+                    window.location.href = 'admin-dashboard.html';
+                }, 800);
+            } else if (email === 'admin@gmail.com' && pass !== '123') {
+                showToast('Invalid Admin Password! Access Denied.', 'error');
+            } else {
+                showToast(`Welcome back! Logged in as <strong>${email}</strong>`, 'success');
+                setTimeout(() => {
+                    window.location.href = 'index.html';
+                }, 1200);
+            }
         }
 
         function handleCustomerRegister(e) {
             e.preventDefault();
             const name = document.getElementById('reg-name').value;
-            showToast(`Account created for <strong>${name}</strong>! 10% coupon code: <strong>NOTCH10</strong>`, 'success');
+            showToast(`Account created successfully for <strong>${name}</strong>!`, 'success');
             setTimeout(() => {
                 window.location.href = 'index.html';
             }, 1500);

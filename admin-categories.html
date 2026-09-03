@@ -33,6 +33,11 @@
     </script>
     
     <!-- Custom CSS -->
+    <script>
+        if (localStorage.getItem('adminLoggedIn') !== 'true') {
+            window.location.href = 'admin-login.html';
+        }
+    </script>
     <link rel="stylesheet" href="css/styles.css">
 </head>
 <body class="bg-blush-50 text-stone-900 antialiased min-h-screen flex flex-col">
@@ -54,6 +59,7 @@
                     <div class="text-xs font-bold text-white">Admin Master</div>
                     <div class="text-[10px] text-rosegold-300">admin@notchperfumes.in</div>
                 </div>
+                <button onclick="localStorage.removeItem('adminLoggedIn'); window.location.href='admin-login.html';" class="ml-2 text-xs text-red-300 hover:text-white font-bold bg-red-900/40 px-2.5 py-1 rounded-lg border border-red-500/30">Logout 🚪</button>
             </div>
         </div>
     </header>

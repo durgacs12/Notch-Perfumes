@@ -32,6 +32,11 @@
         }
     </script>
     
+    <script>
+        if (localStorage.getItem('adminLoggedIn') !== 'true') {
+            window.location.href = 'admin-login.html';
+        }
+    </script>
     <!-- Custom CSS -->
     <link rel="stylesheet" href="css/styles.css">
     <style>
@@ -83,8 +88,9 @@
                 <div class="w-8 h-8 rounded-full rose-gold-bg text-rose-950 font-bold flex items-center justify-center text-xs">AD</div>
                 <div class="hidden sm:block text-left">
                     <div class="text-xs font-bold text-white">Admin Master</div>
-                    <div class="text-[10px] text-rosegold-300">admin@notchperfumes.in</div>
+                    <div class="text-[10px] text-rosegold-300">admin@gmail.com</div>
                 </div>
+                <button onclick="localStorage.removeItem('adminLoggedIn'); window.location.href='admin-login.html';" class="ml-2 text-xs text-red-300 hover:text-white font-bold bg-red-900/40 px-2.5 py-1 rounded-lg border border-red-500/30">Logout 🚪</button>
             </div>
         </div>
     </header>

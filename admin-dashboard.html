@@ -33,6 +33,11 @@
     </script>
     
     <!-- Custom CSS -->
+    <script>
+        if (localStorage.getItem('adminLoggedIn') !== 'true') {
+            window.location.href = 'admin-login.html';
+        }
+    </script>
     <link rel="stylesheet" href="css/styles.css">
 </head>
 <body class="bg-blush-50 text-stone-900 antialiased min-h-screen flex flex-col">
@@ -40,22 +45,21 @@
     <!-- TOP ADMIN BAR -->
     <header class="glass-header-rose text-white border-b border-rosegold-500/20 px-6 py-4 flex items-center justify-between sticky top-0 z-50">
         <div class="flex items-center gap-4">
-            <a href="index.html" class="flex flex-col">
+            <a href="admin-dashboard.html" class="flex flex-col">
                 <img src="image/notch-logo-white.png" alt="NOTCH Admin" class="h-6 md:h-7 w-auto object-contain mb-1" />
                 <span class="text-[8px] font-semibold tracking-[0.3em] uppercase text-rosegold-400">ADMIN CONTROL PANEL</span>
             </a>
         </div>
 
         <div class="flex items-center gap-4">
-            <a href="index.html" target="_blank" class="px-3.5 py-1.5 bg-rosegold-400/20 text-rosegold-300 hover:bg-rosegold-400 hover:text-rose-950 rounded-lg text-xs font-bold transition-all border border-rosegold-400/30 flex items-center gap-1.5">
-                <span>🌐 Visit Storefront</span>
-            </a>
+            <a href="index.html" target="_blank" class="px-3.5 py-1.5 bg-rosegold-400/20 text-rosegold-300 hover:bg-rosegold-400 hover:text-rose-950 rounded-lg text-xs font-bold border border-rosegold-400/30">🌐 Visit Storefront</a>
             <div class="flex items-center gap-2 pl-4 border-l border-rose-800">
                 <div class="w-8 h-8 rounded-full rose-gold-bg text-rose-950 font-bold flex items-center justify-center text-xs">AD</div>
                 <div class="hidden sm:block text-left">
                     <div class="text-xs font-bold text-white">Admin Master</div>
-                    <div class="text-[10px] text-rosegold-300">admin@notchperfumes.in</div>
+                    <div class="text-[10px] text-rosegold-300">admin@gmail.com</div>
                 </div>
+                <button onclick="localStorage.removeItem('adminLoggedIn'); window.location.href='admin-login.html';" class="ml-2 text-xs text-red-300 hover:text-white font-bold bg-red-900/40 px-2.5 py-1 rounded-lg border border-red-500/30">Logout 🚪</button>
             </div>
         </div>
     </header>
