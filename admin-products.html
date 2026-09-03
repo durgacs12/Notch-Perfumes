@@ -149,7 +149,6 @@
                                 <option value="men">For Men</option>
                                 <option value="women">For Women</option>
                                 <option value="unisex">Unisex</option>
-                                <option value="discovery">Discovery Kit</option>
                             </select>
                         </div>
 
@@ -226,7 +225,21 @@
     <script src="js/products.js"></script>
     <script src="js/app.js"></script>
     <script>
-        let adminProductsList = [...PRODUCTS];
+        function getSavedProducts() {
+            const saved = localStorage.getItem('notch_custom_products');
+            if (saved) {
+                try {
+                    return JSON.parse(saved);
+                } catch(e) {}
+            }
+            return PRODUCTS;
+        }
+
+        function saveProductsToStorage(items) {
+            localStorage.setItem('notch_custom_products', JSON.stringify(items));
+        }
+
+        let adminProductsList = getSavedProducts();
         let editingProductIdx = null;
         let isShowingList = false;
 
@@ -271,13 +284,13 @@
 
         function filterAdminProducts(query) {
             const q = query.toLowerCase();
-            const filtered = PRODUCTS.filter(p => p.name.toLowerCase().includes(q) || p.category.toLowerCase().includes(q) || (p.brand && p.brand.toLowerCase().includes(q)));
+            const filtered = adminProductsList.filter(p => p.name.toLowerCase().includes(q) || p.category.toLowerCase().includes(q) || (p.brand && p.brand.toLowerCase().includes(q)));
             renderAdminProductsTable(filtered);
         }
 
         function editAdminProduct(idx) {
             editingProductIdx = idx;
-            const p = PRODUCTS[idx];
+            const p = adminProductsList[idx];
             document.getElementById('prod-code').value = p.code || `PRD-${100 + idx}`;
             document.getElementById('prod-name').value = p.name || '';
             document.getElementById('prod-brand').value = p.brand || 'NOTCH';
@@ -306,58 +319,78 @@
             const barcode = document.getElementById('prod-barcode').value;
             const category = document.getElementById('prod-cat').value;
             const specs = document.getElementById('prod-specs').value;
-            const img1 = document.getElementById('prod-img1-url').value || 'https://images.unsplash.com/photo-1594035910387-fea47794261f?auto=format&fit=crop&w=800&q=80';
+            const img1Url = document.getElementById('prod-img1-url').value;
+            const img1File = document.getElementById('prod-img1-file').files[0];
 
-            if (editingProductIdx !== null) {
-                const item = PRODUCTS[editingProductIdx];
-                item.code = code;
-                item.name = title;
-                item.brand = brand;
-                item.price = price;
-                item.description = desc;
-                item.combo = combo;
-                item.hsn = hsn;
-                item.barcode = barcode;
-                item.category = category;
-                item.topNotes = specs;
-                item.image = img1;
-                showToast(`Product <strong>${title}</strong> updated successfully!`);
-            } else {
-                const newObj = {
-                    id: `notch-custom-${Date.now()}`,
-                    code,
-                    name: title,
-                    brand,
-                    subtitle: `For ${category.toUpperCase()} • Fine EDP`,
-                    category,
-                    price,
-                    description: desc,
-                    combo,
-                    hsn,
-                    barcode,
-                    topNotes: specs,
-                    image: img1,
-                    rating: 5.0,
-                    createdDate: new Date().toLocaleDateString('en-US'),
-                    sizes: ["100 ml"]
-                };
-                PRODUCTS.unshift(newObj);
-                showToast(`New Product <strong>${title}</strong> saved successfully!`);
+            let img1 = img1Url || 'https://images.unsplash.com/photo-1594035910387-fea47794261f?auto=format&fit=crop&w=800&q=80';
+
+            function proceedSave(finalImg) {
+                if (editingProductIdx !== null) {
+                    const item = adminProductsList[editingProductIdx];
+                    item.code = code;
+                    item.name = title;
+                    item.brand = brand;
+                    item.price = price;
+                    item.description = desc;
+                    item.combo = combo;
+                    item.hsn = hsn;
+                    item.barcode = barcode;
+                    item.category = category;
+                    item.topNotes = specs;
+                    if (finalImg) item.image = finalImg;
+                    showToast(`Product <strong>${title}</strong> updated successfully!`);
+                } else {
+                    const newObj = {
+                        id: `notch-custom-${Date.now()}`,
+                        code,
+                        name: title,
+                        brand,
+                        subtitle: `For ${category.toUpperCase()} • Fine EDP`,
+                        category,
+                        price,
+                        description: desc,
+                        combo,
+                        hsn,
+                        barcode,
+                        topNotes: specs,
+                        image: finalImg,
+                        rating: 5.0,
+                        createdDate: new Date().toLocaleDateString('en-US'),
+                        sizes: ["100 ml"]
+                    };
+                    adminProductsList.unshift(newObj);
+                    showToast(`New Product <strong>${title}</strong> saved successfully!`);
+                }
+
+                saveProductsToStorage(adminProductsList);
+                renderAdminProductsTable(adminProductsList);
+                
+                // Clear form
+                editingProductIdx = null;
+                document.getElementById('prod-code').value = '';
+                document.getElementById('prod-name').value = '';
+                document.getElementById('prod-brand').value = '';
+                document.getElementById('prod-desc').value = '';
+                document.getElementById('prod-hsn').value = '';
+                document.getElementById('prod-barcode').value = '';
+                document.getElementById('prod-price').value = '';
+                document.getElementById('prod-specs').value = '';
+                document.getElementById('prod-img1-url').value = '';
+                document.getElementById('prod-img1-file').value = '';
+
+                // Switch view to View Products so user sees the newly saved product immediately!
+                if (!isShowingList) toggleView();
             }
 
-            renderAdminProductsTable(PRODUCTS);
-            
-            // Clear form
-            editingProductIdx = null;
-            document.getElementById('prod-code').value = '';
-            document.getElementById('prod-name').value = '';
-            document.getElementById('prod-brand').value = '';
-            document.getElementById('prod-desc').value = '';
-            document.getElementById('prod-hsn').value = '';
-            document.getElementById('prod-barcode').value = '';
-            document.getElementById('prod-price').value = '';
-            document.getElementById('prod-specs').value = '';
-            document.getElementById('prod-img1-url').value = '';
+            if (img1File) {
+                const reader = new FileReader();
+                reader.onload = function(evt) {
+                    proceedSave(evt.target.result);
+                };
+                reader.readAsDataURL(img1File);
+            } else {
+                proceedSave(img1);
+            }
         }
 
         function showToast(msg) {
@@ -368,10 +401,11 @@
         }
 
         function deleteAdminProduct(index) {
-            const item = PRODUCTS[index];
+            const item = adminProductsList[index];
             if (confirm(`Are you sure you want to delete ${item.name}?`)) {
-                PRODUCTS.splice(index, 1);
-                renderAdminProductsTable(PRODUCTS);
+                adminProductsList.splice(index, 1);
+                saveProductsToStorage(adminProductsList);
+                renderAdminProductsTable(adminProductsList);
                 showToast(`Deleted product ${item.name}`);
             }
         }
