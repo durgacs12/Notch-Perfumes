@@ -480,11 +480,11 @@ app.Run();
 public record SubCategoryDto(int? Id, string MainCategoryId, string SubCategoryName);
 public record BannerDto(int? Id, string Title, string Subtitle, string Image, string TargetUrl, bool IsActive);
 public record CategorySpecDto(int? Id, string CategoryId, string SpecName, string SpecValues, bool IsRequired);
-public record SupplierDto(int? Id, string SupplierName, string ContactPerson, string Email, string Phone, string Address, string Status);
+//public record SupplierDto(int? Id, string SupplierName, string ContactPerson, string Email, string Phone, string Address, string Status);
 public record CustomerDto(int? Id, string FirstName, string LastName, string Email, string MobileNumber, string Gender, string Address, string City, string Postcode, string Password);
 public record CategoryDto(string? Id, string CategoryName, string? SubCategories, string? Note);
 
 public record SupplierDto(int? Id, string SupplierCode, string SupplierName, string Type, string Status, string Country, string State, string City, string Address, string PostalCode, string Phone, string Email, string GSTIN, string BankName, string AccountNumber, string IFSC);
-public record CustomerDto(int? Id, string CustomerName, string Email, string Phone, string City, int TotalOrders, decimal TotalSpent);
+//public record CustomerDto(int? Id, string CustomerName, string Email, string Phone, string City, int TotalOrders, decimal TotalSpent);
 
 
