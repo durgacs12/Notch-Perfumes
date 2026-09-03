@@ -340,23 +340,31 @@
                     if (finalImg) item.image = finalImg;
                     showToast(`Product <strong>${title}</strong> updated successfully!`);
                 } else {
+                    const catName = category ? (category.charAt(0).toUpperCase() + category.slice(1)) : 'Unisex';
                     const newObj = {
                         id: `notch-custom-${Date.now()}`,
-                        code,
+                        code: code || `PRD-${Date.now().toString().slice(-4)}`,
                         name: title,
-                        brand,
-                        subtitle: `For ${category.toUpperCase()} • Fine EDP`,
-                        category,
-                        price,
-                        description: desc,
+                        brand: brand || 'NOTCH',
+                        subtitle: `For ${catName} • ${specs || 'Fine EDP'}`,
+                        category: category || 'unisex',
+                        scentFamily: 'amber',
+                        price: price,
+                        originalPrice: Math.round(price * 1.25),
+                        description: desc || `${title} - Exclusive Qatari luxury perfume crafted by Notch Qatar.`,
                         combo,
                         hsn,
                         barcode,
-                        topNotes: specs,
+                        topNotes: specs || 'Agarwood (Oud), Saffron, Bergamot',
+                        heartNotes: 'Qatari Rose, Jasmine',
+                        baseNotes: 'Amber, Sandalwood, Musk',
+                        perfumer: 'Master Qatari Perfumers',
                         image: finalImg,
                         rating: 5.0,
+                        reviewsCount: 1,
+                        badge: 'NEW',
                         createdDate: new Date().toLocaleDateString('en-US'),
-                        sizes: ["100 ml"]
+                        sizes: ["100 ml", "50 ml"]
                     };
                     adminProductsList.unshift(newObj);
                     showToast(`New Product <strong>${title}</strong> saved successfully!`);

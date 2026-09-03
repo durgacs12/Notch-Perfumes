@@ -246,8 +246,9 @@
             const container = document.getElementById('collections-container');
             if (!container) return;
 
+            const allProds = getProductsList();
             container.innerHTML = collections.map(col => {
-                const colProducts = PRODUCTS.filter(p => col.productIds.includes(p.id));
+                const colProducts = allProds.filter(p => col.productIds.includes(p.id));
                 return `
                     <div id="col-sec-${col.id}" class="space-y-6">
                         <div class="relative h-72 md:h-96 rounded-2xl overflow-hidden shadow-lg border border-stone-200">

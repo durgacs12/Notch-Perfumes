@@ -82,9 +82,10 @@ function renderProducts(filterCategory = 'all') {
     const grid = document.getElementById('products-grid');
     if (!grid) return;
 
-    let filtered = PRODUCTS;
+    const allProds = getProductsList();
+    let filtered = allProds;
     if (filterCategory !== 'all') {
-        filtered = PRODUCTS.filter(p => p.category === filterCategory);
+        filtered = allProds.filter(p => p.category === filterCategory);
     }
 
     if (currentNoteFilter !== 'all') {
@@ -103,6 +104,11 @@ function renderProducts(filterCategory = 'all') {
 
     grid.innerHTML = filtered.map(product => {
         const isWishlisted = wishlist.includes(product.id);
+        const ratingVal = product.rating || 5.0;
+        const reviewsVal = product.reviewsCount || 1;
+        const defaultSize = (product.sizes && product.sizes.length) ? product.sizes[0] : '100 ml';
+        const topNotesVal = product.topNotes || 'Agarwood (Oud), Amber, Floral Notes';
+
         return `
             <div class="product-card bg-white rounded-xl overflow-hidden border border-rose-100 shadow-sm flex flex-col group relative">
                 ${product.badge ? `<span class="absolute top-3 left-3 z-10 px-3 py-1 text-[11px] font-semibold tracking-wider uppercase text-rose-950 bg-rosegold-300 rounded-full shadow-sm">${product.badge}</span>` : ''}
@@ -127,19 +133,19 @@ function renderProducts(filterCategory = 'all') {
                     <div>
                         <div class="flex items-center gap-1 mb-1">
                             <span class="text-xs text-rosegold-600">★</span>
-                            <span class="text-xs font-semibold text-gray-800">${product.rating}</span>
-                            <span class="text-xs text-gray-400">(${product.reviewsCount})</span>
+                            <span class="text-xs font-semibold text-gray-800">${ratingVal}</span>
+                            <span class="text-xs text-gray-400">(${reviewsVal})</span>
                         </div>
                         
                         <h3 class="font-serif-heading text-xl font-bold text-rose-950 cursor-pointer hover:text-rosegold-600 transition-colors" onclick="openQuickView('${product.id}')">
                             ${product.name}
                         </h3>
-                        <p class="text-xs text-gray-500 mt-1 mb-3 line-clamp-1">${product.subtitle}</p>
+                        <p class="text-xs text-gray-500 mt-1 mb-3 line-clamp-1">${product.subtitle || 'Fine Qatari EDP'}</p>
 
                         <div class="bg-rose-50/60 border border-rose-100 rounded-lg p-2.5 mb-4 text-[11px] text-gray-600 space-y-1">
                             <div class="flex items-center gap-1.5">
                                 <span class="font-semibold text-rose-900">Notes:</span>
-                                <span class="truncate">${product.topNotes}</span>
+                                <span class="truncate">${topNotesVal}</span>
                             </div>
                         </div>
                     </div>
@@ -153,7 +159,7 @@ function renderProducts(filterCategory = 'all') {
                             <span class="text-[10px] text-rose-700 font-medium">Taxes Included</span>
                         </div>
                         
-                        <button onclick="addToCart('${product.id}', '${product.sizes[0]}', 1)" class="px-4 py-2 bg-rose-950 hover:bg-rose-900 text-rosegold-300 font-bold rounded-lg text-xs tracking-wide transition-all shadow-sm flex items-center gap-1.5">
+                        <button onclick="addToCart('${product.id}', '${defaultSize}', 1)" class="px-4 py-2 bg-rose-950 hover:bg-rose-900 text-rosegold-300 font-bold rounded-lg text-xs tracking-wide transition-all shadow-sm flex items-center gap-1.5">
                             <svg class="w-3.5 h-3.5 fill-none stroke-current" viewBox="0 0 24 24" stroke-width="2"><path d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"/></svg>
                             Add
                         </button>
@@ -185,13 +191,13 @@ function resetFilters() {
 }
 
 function openQuickView(productId) {
-    const product = PRODUCTS.find(p => p.id === productId);
+    const product = getProductsList().find(p => p.id === productId);
     if (!product) return;
 
     const modal = document.getElementById('quickview-modal');
     const modalContent = document.getElementById('quickview-content');
 
-    let selectedSize = product.sizes[0];
+    let selectedSize = (product.sizes && product.sizes.length) ? product.sizes[0] : '100 ml';
 
     modalContent.innerHTML = `
         <div class="grid grid-cols-1 md:grid-cols-2 gap-8 p-6 md:p-8">
@@ -206,24 +212,24 @@ function openQuickView(productId) {
                     <div class="flex items-center justify-between mb-2">
                         <span class="px-2.5 py-0.5 text-[10px] font-semibold uppercase tracking-wider text-rose-900 bg-rosegold-300/40 rounded-full">${product.badge || product.category}</span>
                         <div class="flex items-center gap-1 text-xs text-rosegold-600">
-                            ★ <span class="font-bold text-gray-800">${product.rating}</span> (${product.reviewsCount} reviews)
+                            ★ <span class="font-bold text-gray-800">${product.rating || 5.0}</span> (${product.reviewsCount || 1} reviews)
                         </div>
                     </div>
 
                     <h2 class="font-serif-heading text-3xl font-bold text-rose-950 mb-1">${product.name}</h2>
-                    <p class="text-xs text-gray-500 mb-4">${product.subtitle}</p>
+                    <p class="text-xs text-gray-500 mb-4">${product.subtitle || ''}</p>
 
                     <div class="flex items-baseline gap-3 mb-4 pb-4 border-b border-gray-100">
                         <span class="text-2xl font-bold text-rose-950">QAR ${product.price}</span>
                         ${product.originalPrice ? `<span class="text-sm text-gray-400 line-through">QAR ${product.originalPrice}</span>` : ''}
                     </div>
 
-                    <p class="text-xs text-gray-600 leading-relaxed mb-6">${product.description}</p>
+                    <p class="text-xs text-gray-600 leading-relaxed mb-6">${product.description || ''}</p>
 
                     <div class="bg-rose-50/60 rounded-xl p-4 border border-rose-100 space-y-2 mb-6 text-xs text-gray-700">
-                        <div class="flex"><span class="w-24 font-bold text-rose-900">Top Notes:</span> <span>${product.topNotes}</span></div>
-                        <div class="flex"><span class="w-24 font-bold text-rose-900">Heart Notes:</span> <span>${product.heartNotes}</span></div>
-                        <div class="flex"><span class="w-24 font-bold text-rose-900">Base Notes:</span> <span>${product.baseNotes}</span></div>
+                        <div class="flex"><span class="w-24 font-bold text-rose-900">Top Notes:</span> <span>${product.topNotes || 'Essential oils, Bergamot'}</span></div>
+                        <div class="flex"><span class="w-24 font-bold text-rose-900">Heart Notes:</span> <span>${product.heartNotes || 'Floral Essence'}</span></div>
+                        <div class="flex"><span class="w-24 font-bold text-rose-900">Base Notes:</span> <span>${product.baseNotes || 'Amber, Musk'}</span></div>
                     </div>
                 </div>
 
@@ -249,7 +255,7 @@ function closeQuickView() {
 }
 
 function addToCart(productId, size = '50 ml', quantity = 1) {
-    const product = PRODUCTS.find(p => p.id === productId);
+    const product = getProductsList().find(p => p.id === productId);
     if (!product) return;
 
     const existingIndex = cart.findIndex(item => item.productId === productId && item.size === size);
@@ -268,7 +274,7 @@ function addToCart(productId, size = '50 ml', quantity = 1) {
 
 function removeFromCart(index) {
     const item = cart[index];
-    const product = PRODUCTS.find(p => p.id === item.productId);
+    const product = getProductsList().find(p => p.id === item.productId);
     cart.splice(index, 1);
     saveCart();
     renderCart();
@@ -320,7 +326,7 @@ function renderCart() {
     let subtotal = 0;
 
     container.innerHTML = cart.map((item, idx) => {
-        const product = PRODUCTS.find(p => p.id === item.productId);
+        const product = getProductsList().find(p => p.id === item.productId);
         if (!product) return '';
         const itemTotal = product.price * item.quantity;
         subtotal += itemTotal;
@@ -380,7 +386,7 @@ function closeCart() {
 
 function toggleWishlist(productId) {
     const index = wishlist.indexOf(productId);
-    const product = PRODUCTS.find(p => p.id === productId);
+    const product = getProductsList().find(p => p.id === productId);
 
     if (index > -1) {
         wishlist.splice(index, 1);
@@ -425,10 +431,10 @@ function initSearch() {
             return;
         }
 
-        const matches = PRODUCTS.filter(p => 
-            p.name.toLowerCase().includes(query) ||
-            p.topNotes.toLowerCase().includes(query) ||
-            p.perfumer.toLowerCase().includes(query)
+        const matches = getProductsList().filter(p => 
+            (p.name && p.name.toLowerCase().includes(query)) ||
+            (p.topNotes && p.topNotes.toLowerCase().includes(query)) ||
+            (p.perfumer && p.perfumer.toLowerCase().includes(query))
         );
 
         if (matches.length === 0) {
@@ -439,7 +445,7 @@ function initSearch() {
                     <img src="${p.image}" class="w-10 h-10 object-cover rounded bg-gray-100" />
                     <div>
                         <h5 class="text-xs font-bold text-rose-950">${p.name}</h5>
-                        <p class="text-[10px] text-gray-500 line-clamp-1">${p.subtitle}</p>
+                        <p class="text-[10px] text-gray-500 line-clamp-1">${p.subtitle || ''}</p>
                     </div>
                     <span class="ml-auto text-xs font-bold text-rosegold-600">QAR ${p.price.toLocaleString('en-US')}</span>
                 </div>
@@ -494,7 +500,7 @@ function renderQuizStep() {
             </div>
         `;
     } else {
-        let bestMatch = PRODUCTS.find(p => p.category === quizState.answers.gender) || PRODUCTS[1];
+        let bestMatch = getProductsList().find(p => p.category === quizState.answers.gender) || getProductsList()[0];
         body.innerHTML = `
             <div class="text-center py-6 max-w-md mx-auto">
                 <span class="px-3 py-1 bg-rose-100 text-rose-900 text-[10px] font-bold uppercase rounded-full">Scent Match</span>
