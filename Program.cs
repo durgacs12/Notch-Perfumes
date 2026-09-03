@@ -15,6 +15,115 @@ string connectionString = builder.Configuration.GetConnectionString("DefaultConn
 
 IDbConnection GetConnection() => new SqlConnection(connectionString);
 
+// Auto-create database tables on startup if missing
+try
+{
+    using var initDb = GetConnection();
+    initDb.Execute(@"
+        IF EXISTS (SELECT * FROM sys.tables WHERE name = 'Categories')
+        BEGIN
+            IF NOT EXISTS (SELECT * FROM sys.columns WHERE object_id = OBJECT_ID('Categories') AND name = 'CategoryName')
+            BEGIN
+                ALTER TABLE Categories ADD CategoryName NVARCHAR(100);
+            END;
+        END;
+        ELSE
+        BEGIN
+            CREATE TABLE Categories (
+                Id NVARCHAR(50) PRIMARY KEY,
+                Name NVARCHAR(100),
+                CategoryName NVARCHAR(100)
+            );
+        END;
+
+        -- Ensure exact 7 Storefront categories exist in Categories table
+        IF NOT EXISTS (SELECT 1 FROM Categories WHERE Id = 'men' OR CategoryName = 'MEN' OR Name = 'MEN')
+            INSERT INTO Categories (Id, Name, CategoryName) VALUES ('men', 'MEN', 'MEN');
+        IF NOT EXISTS (SELECT 1 FROM Categories WHERE Id = 'women' OR CategoryName = 'WOMEN' OR Name = 'WOMEN')
+            INSERT INTO Categories (Id, Name, CategoryName) VALUES ('women', 'WOMEN', 'WOMEN');
+        IF NOT EXISTS (SELECT 1 FROM Categories WHERE Id = 'collections' OR CategoryName = 'COLLECTIONS' OR Name = 'COLLECTIONS')
+            INSERT INTO Categories (Id, Name, CategoryName) VALUES ('collections', 'COLLECTIONS', 'COLLECTIONS');
+        IF NOT EXISTS (SELECT 1 FROM Categories WHERE Id = 'gifting' OR CategoryName = 'GIFTING' OR Name = 'GIFTING')
+            INSERT INTO Categories (Id, Name, CategoryName) VALUES ('gifting', 'GIFTING', 'GIFTING');
+        IF NOT EXISTS (SELECT 1 FROM Categories WHERE Id = 'fragrances' OR CategoryName = 'FRAGRANCES' OR Name = 'FRAGRANCES')
+            INSERT INTO Categories (Id, Name, CategoryName) VALUES ('fragrances', 'FRAGRANCES', 'FRAGRANCES');
+        IF NOT EXISTS (SELECT 1 FROM Categories WHERE Id = 'notch-blog' OR CategoryName = 'NOTCH BLOG' OR Name = 'NOTCH BLOG')
+            INSERT INTO Categories (Id, Name, CategoryName) VALUES ('notch-blog', 'NOTCH BLOG', 'NOTCH BLOG');
+        IF NOT EXISTS (SELECT 1 FROM Categories WHERE Id = 'sale' OR CategoryName = 'SALE' OR Name = 'SALE')
+            INSERT INTO Categories (Id, Name, CategoryName) VALUES ('sale', 'SALE', 'SALE');
+
+        IF NOT EXISTS (SELECT * FROM sys.tables WHERE name = 'SubCategories')
+        BEGIN
+            CREATE TABLE SubCategories (
+                Id INT IDENTITY(1,1) PRIMARY KEY,
+                MainCategoryId NVARCHAR(50) NOT NULL,
+                SubCategoryName NVARCHAR(100) NOT NULL,
+                CreatedAt DATETIME DEFAULT GETDATE()
+            );
+        END;
+
+        IF NOT EXISTS (SELECT * FROM sys.tables WHERE name = 'Banners')
+        BEGIN
+            CREATE TABLE Banners (
+                Id INT IDENTITY(1,1) PRIMARY KEY,
+                Title NVARCHAR(150) NOT NULL,
+                Subtitle NVARCHAR(250),
+                Image NVARCHAR(MAX) NOT NULL,
+                TargetUrl NVARCHAR(250),
+                IsActive BIT DEFAULT 1,
+                CreatedAt DATETIME DEFAULT GETDATE()
+            );
+        END;
+
+        IF NOT EXISTS (SELECT * FROM sys.tables WHERE name = 'CategorySpecifications')
+        BEGIN
+            CREATE TABLE CategorySpecifications (
+                Id INT IDENTITY(1,1) PRIMARY KEY,
+                CategoryId NVARCHAR(50) NOT NULL,
+                SpecName NVARCHAR(100) NOT NULL,
+                SpecValues NVARCHAR(MAX),
+                IsRequired BIT DEFAULT 0,
+                CreatedAt DATETIME DEFAULT GETDATE()
+            );
+        END;
+
+        IF NOT EXISTS (SELECT * FROM sys.tables WHERE name = 'Suppliers')
+        BEGIN
+            CREATE TABLE Suppliers (
+                Id INT IDENTITY(1,1) PRIMARY KEY,
+                SupplierName NVARCHAR(150) NOT NULL,
+                ContactPerson NVARCHAR(100),
+                Email NVARCHAR(150),
+                Phone NVARCHAR(50),
+                Address NVARCHAR(MAX),
+                Status NVARCHAR(50) DEFAULT 'Active',
+                CreatedAt DATETIME DEFAULT GETDATE()
+            );
+        END;
+
+        IF NOT EXISTS (SELECT * FROM sys.tables WHERE name = 'Customers')
+        BEGIN
+            CREATE TABLE Customers (
+                Id INT IDENTITY(1,1) PRIMARY KEY,
+                FirstName NVARCHAR(100) NOT NULL,
+                LastName NVARCHAR(100),
+                Email NVARCHAR(150) NOT NULL,
+                MobileNumber NVARCHAR(50),
+                Gender NVARCHAR(20),
+                Address NVARCHAR(MAX),
+                City NVARCHAR(100),
+                Postcode NVARCHAR(50),
+                Password NVARCHAR(100),
+                CreatedAt DATETIME DEFAULT GETDATE()
+            );
+        END;
+    ");
+}
+catch (Exception ex)
+{
+    Console.WriteLine($"DB Auto-Create Warning: {ex.Message}");
+}
+
 app.UseDefaultFiles();
 app.UseStaticFiles();
 
@@ -71,12 +180,54 @@ app.MapGet("/api/products/{id}", async (string id) =>
     return product is not null ? Results.Ok(product) : Results.NotFound(new { message = "Product not found" });
 });
 
-// Get Categories
+// Categories Endpoints
 app.MapGet("/api/categories", async () =>
 {
+    try
+    {
+        using var db = GetConnection();
+        var categories = await db.QueryAsync("SELECT Id, COALESCE(CategoryName, Name) AS CategoryName, COALESCE(Name, CategoryName) AS Name FROM Categories");
+        return Results.Ok(categories);
+    }
+    catch (Exception)
+    {
+        return Results.Ok(new List<object>());
+    }
+});
+
+app.MapPost("/api/categories", async (CategoryDto dto) =>
+{
+    if (string.IsNullOrWhiteSpace(dto.CategoryName))
+        return Results.BadRequest(new { message = "CategoryName is required." });
+
     using var db = GetConnection();
-    var categories = await db.QueryAsync("SELECT * FROM Categories");
-    return Results.Ok(categories);
+    string id = string.IsNullOrWhiteSpace(dto.Id) ? dto.CategoryName.Trim().ToLower().Replace(" ", "-").Replace("'", "") : dto.Id;
+    string sql = @"IF EXISTS (SELECT 1 FROM Categories WHERE Id = @Id)
+                   BEGIN
+                       UPDATE Categories SET Name = @CategoryName, CategoryName = @CategoryName WHERE Id = @Id;
+                   END
+                   ELSE
+                   BEGIN
+                       INSERT INTO Categories (Id, Name, CategoryName)
+                       VALUES (@Id, @CategoryName, @CategoryName);
+                   END";
+    await db.ExecuteAsync(sql, new { Id = id, dto.CategoryName });
+    return Results.Ok(new { Id = id, dto.CategoryName, Name = dto.CategoryName });
+});
+
+app.MapPut("/api/categories/{id}", async (string id, CategoryDto dto) =>
+{
+    using var db = GetConnection();
+    string sql = @"UPDATE Categories SET Name = @CategoryName, CategoryName = @CategoryName WHERE Id = @Id";
+    int rows = await db.ExecuteAsync(sql, new { Id = id, dto.CategoryName });
+    return rows > 0 ? Results.Ok() : Results.NotFound();
+});
+
+app.MapDelete("/api/categories/{id}", async (string id) =>
+{
+    using var db = GetConnection();
+    int rows = await db.ExecuteAsync("DELETE FROM Categories WHERE Id = @Id OR Name = @Id OR CategoryName = @Id", new { Id = id });
+    return rows > 0 ? Results.Ok() : Results.NotFound();
 });
 
 // Get SubCategories
@@ -287,26 +438,33 @@ app.MapDelete("/api/suppliers/{id:int}", async (int id) =>
 // Customers Endpoints
 app.MapGet("/api/customers", async () =>
 {
-    using var db = GetConnection();
-    var customers = await db.QueryAsync("SELECT * FROM Customers ORDER BY Id DESC");
-    return Results.Ok(customers);
+    try
+    {
+        using var db = GetConnection();
+        var customers = await db.QueryAsync("SELECT * FROM Customers ORDER BY Id DESC");
+        return Results.Ok(customers);
+    }
+    catch (Exception)
+    {
+        return Results.Ok(new List<object>());
+    }
 });
 
 app.MapPost("/api/customers", async (CustomerDto dto) =>
 {
     using var db = GetConnection();
-    string sql = @"INSERT INTO Customers (CustomerName, Email, Phone, City, TotalOrders, TotalSpent)
-                   VALUES (@CustomerName, @Email, @Phone, @City, @TotalOrders, @TotalSpent);
+    string sql = @"INSERT INTO Customers (FirstName, LastName, Email, MobileNumber, Gender, Address, City, Postcode, Password)
+                   VALUES (@FirstName, @LastName, @Email, @MobileNumber, @Gender, @Address, @City, @Postcode, @Password);
                    SELECT CAST(SCOPE_IDENTITY() as int);";
     int id = await db.ExecuteScalarAsync<int>(sql, dto);
-    return Results.Created($"/api/customers/{id}", new { Id = id, dto.CustomerName, dto.Email, dto.Phone, dto.City, dto.TotalOrders, dto.TotalSpent });
+    return Results.Created($"/api/customers/{id}", new { Id = id, dto.FirstName, dto.LastName, dto.Email, dto.MobileNumber, dto.Gender, dto.Address, dto.City, dto.Postcode });
 });
 
 app.MapPut("/api/customers/{id:int}", async (int id, CustomerDto dto) =>
 {
     using var db = GetConnection();
-    string sql = @"UPDATE Customers SET CustomerName = @CustomerName, Email = @Email, Phone = @Phone, City = @City, TotalOrders = @TotalOrders, TotalSpent = @TotalSpent WHERE Id = @Id";
-    int rows = await db.ExecuteAsync(sql, new { Id = id, dto.CustomerName, dto.Email, dto.Phone, dto.City, dto.TotalOrders, dto.TotalSpent });
+    string sql = @"UPDATE Customers SET FirstName = @FirstName, LastName = @LastName, Email = @Email, MobileNumber = @MobileNumber, Gender = @Gender, Address = @Address, City = @City, Postcode = @Postcode, Password = @Password WHERE Id = @Id";
+    int rows = await db.ExecuteAsync(sql, new { Id = id, dto.FirstName, dto.LastName, dto.Email, dto.MobileNumber, dto.Gender, dto.Address, dto.City, dto.Postcode, dto.Password });
     return rows > 0 ? Results.Ok() : Results.NotFound();
 });
 
@@ -322,6 +480,10 @@ app.Run();
 public record SubCategoryDto(int? Id, string MainCategoryId, string SubCategoryName);
 public record BannerDto(int? Id, string Title, string Subtitle, string Image, string TargetUrl, bool IsActive);
 public record CategorySpecDto(int? Id, string CategoryId, string SpecName, string SpecValues, bool IsRequired);
+public record SupplierDto(int? Id, string SupplierName, string ContactPerson, string Email, string Phone, string Address, string Status);
+public record CustomerDto(int? Id, string FirstName, string LastName, string Email, string MobileNumber, string Gender, string Address, string City, string Postcode, string Password);
+public record CategoryDto(string? Id, string CategoryName, string? SubCategories, string? Note);
+
 public record SupplierDto(int? Id, string SupplierCode, string SupplierName, string Type, string Status, string Country, string State, string City, string Address, string PostalCode, string Phone, string Email, string GSTIN, string BankName, string AccountNumber, string IFSC);
 public record CustomerDto(int? Id, string CustomerName, string Email, string Phone, string City, int TotalOrders, decimal TotalSpent);
 

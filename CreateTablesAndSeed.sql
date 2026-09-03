@@ -224,12 +224,15 @@ IF NOT EXISTS (SELECT * FROM sys.tables WHERE name = 'Customers')
 BEGIN
     CREATE TABLE Customers (
         Id INT IDENTITY(1,1) PRIMARY KEY,
-        CustomerName NVARCHAR(150) NOT NULL,
-        Email NVARCHAR(150),
-        Phone NVARCHAR(50),
+        FirstName NVARCHAR(100) NOT NULL,
+        LastName NVARCHAR(100),
+        Email NVARCHAR(150) NOT NULL,
+        MobileNumber NVARCHAR(50),
+        Gender NVARCHAR(20),
+        Address NVARCHAR(MAX),
         City NVARCHAR(100),
-        TotalOrders INT DEFAULT 0,
-        TotalSpent DECIMAL(18, 2) DEFAULT 0,
+        Postcode NVARCHAR(50),
+        Password NVARCHAR(100),
         CreatedAt DATETIME DEFAULT GETDATE()
     );
 END;

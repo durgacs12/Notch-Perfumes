@@ -232,7 +232,7 @@
     <script src="js/products.js"></script>
     <script src="js/app.js"></script>
     <script>
-        let currentWomenList = PRODUCTS.filter(p => p.category === 'women' || p.category === 'unisex' || p.category === 'discovery');
+        let currentWomenList = getProductsList().filter(p => p.category === 'women' || p.category === 'unisex' || p.category === 'discovery');
 
         document.addEventListener('DOMContentLoaded', () => {
             renderWomenGrid(currentWomenList);
@@ -244,7 +244,9 @@
             if (countEl) countEl.textContent = `Showing ${items.length} Women's Fragrances`;
             if (!container) return;
 
-            container.innerHTML = items.map(product => `
+            container.innerHTML = items.map(product => {
+                const defaultSize = (product.sizes && product.sizes.length) ? product.sizes[0] : '100 ml';
+                return `
                 <div class="product-card bg-white rounded-xl overflow-hidden border border-stone-200 shadow-sm flex flex-col group relative">
                     ${product.badge ? `<span class="absolute top-3 left-3 z-10 px-3 py-1 text-[11px] font-bold uppercase text-white bg-stone-900 rounded-full shadow-sm">${product.badge}</span>` : ''}
                     
@@ -259,21 +261,22 @@
                     <div class="p-6 flex-1 flex flex-col justify-between">
                         <div>
                             <div class="flex items-center gap-1 mb-1 text-xs text-amber-600">
-                                ★ <span class="font-bold text-gray-800">${product.rating}</span> (${product.reviewsCount})
+                                ★ <span class="font-bold text-gray-800">${product.rating || 5.0}</span> (${product.reviewsCount || 1})
                             </div>
                             <h3 class="font-serif-heading text-xl font-bold text-stone-900 cursor-pointer hover:text-red-700" onclick="openQuickView('${product.id}')">${product.name}</h3>
-                            <p class="text-xs text-gray-500 mt-1 mb-3">${product.subtitle}</p>
+                            <p class="text-xs text-gray-500 mt-1 mb-3">${product.subtitle || ''}</p>
                         </div>
 
                         <div class="pt-3 border-t border-stone-100 flex items-center justify-between">
                             <span class="text-lg font-bold text-stone-900">QAR ${product.price.toLocaleString('en-US')}</span>
-                            <button onclick="addToCart('${product.id}', '${product.sizes[0]}', 1)" class="px-4 py-2 bg-stone-900 hover:bg-stone-800 text-white rounded-lg text-xs font-bold uppercase tracking-wide">
+                            <button onclick="addToCart('${product.id}', '${defaultSize}', 1)" class="px-4 py-2 bg-stone-900 hover:bg-stone-800 text-white rounded-lg text-xs font-bold uppercase tracking-wide">
                                 Add To Bag
                             </button>
                         </div>
                     </div>
                 </div>
-            `).join('');
+            `;
+            }).join('');
         }
 
         function filterWomenByVibe(vibe, btn) {
@@ -283,9 +286,9 @@
             btn.className = 'women-vibe-btn px-4 py-1.5 bg-stone-900 text-white rounded-full text-xs font-bold shadow-sm';
 
             if (vibe === 'all') {
-                currentWomenList = PRODUCTS.filter(p => p.category === 'women' || p.category === 'unisex' || p.category === 'discovery');
+                currentWomenList = getProductsList().filter(p => p.category === 'women' || p.category === 'unisex' || p.category === 'discovery');
             } else {
-                currentWomenList = PRODUCTS.filter(p => (p.category === 'women' || p.category === 'unisex') && p.scentFamily === vibe);
+                currentWomenList = getProductsList().filter(p => (p.category === 'women' || p.category === 'unisex') && p.scentFamily === vibe);
             }
             renderWomenGrid(currentWomenList);
         }

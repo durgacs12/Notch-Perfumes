@@ -171,7 +171,12 @@
             const targetUrl = document.getElementById('bannerTarget').value;
             const payload = { title, subtitle, image, targetUrl, isActive: true };
             try {
-                await fetch('/api/banners', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
+                const res = await fetch('/api/banners', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
+                if (res.ok) {
+                    await fetchBanners();
+                    document.getElementById('banner-form').reset();
+                    return;
+                }
             } catch (err) {}
             banners.push({ id: Date.now(), ...payload });
             document.getElementById('banner-form').reset();
@@ -179,7 +184,13 @@
         }
         async function deleteBanner(id) {
             if (!confirm('Delete banner?')) return;
-            try { await fetch(`/api/banners/${id}`, { method: 'DELETE' }); } catch (e) {}
+            try {
+                const res = await fetch(`/api/banners/${id}`, { method: 'DELETE' });
+                if (res.ok) {
+                    await fetchBanners();
+                    return;
+                }
+            } catch (e) {}
             banners = banners.filter(x => (x.id || x.Id) !== id);
             renderTable();
         }

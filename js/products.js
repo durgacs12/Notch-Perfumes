@@ -3,6 +3,31 @@
  */
 const PRODUCTS = [
     {
+        id: "notch-oud-royale",
+        code: "PRD-101",
+        name: "Eau de Parfum - Oud Royale",
+        brand: "NOTCH",
+        subtitle: "Unisex • Royal Oud & Amber Spice",
+        category: "unisex",
+        scentFamily: "amber",
+        price: 199,
+        originalPrice: 249,
+        rating: 5.0,
+        reviewsCount: 142,
+        badge: "New Arrival",
+        image: "https://images.unsplash.com/photo-1547887537-6158d64c35b3?auto=format&fit=crop&w=800&q=80",
+        gallery: [
+            "https://images.unsplash.com/photo-1547887537-6158d64c35b3?auto=format&fit=crop&w=800&q=80"
+        ],
+        topNotes: "Agarwood (Oud), Saffron, Rose",
+        heartNotes: "Amber, Sandalwood, Patchouli",
+        baseNotes: "Precious Woods, Musk, Vanilla",
+        perfumer: "Master Qatari Perfumers",
+        description: "Eau de Parfum - Oud Royale is a regal fragrance blending rare Qatari oud with warm amber and saffron for an undeniable aura of sophistication.",
+        sizes: ["100 ml", "50 ml"],
+        createdDate: "9/3/2026"
+    },
+    {
         id: "notch-raw-men",
         name: "Notch Raw Eau De Parfum",
         subtitle: "For Men • Fresh & Citrus Woody",
@@ -190,3 +215,36 @@ const SCENT_FAMILY_INFO = {
     oceanic: { title: "Aquatic Breeze", icon: "🌊", desc: "Refreshing marine accents reminiscent of sea mist." },
     amber: { title: "Warm Amber & Spices", icon: "✨", desc: "Opulent blend of Roasted Tonka, Saffron, Vanilla, and Leather." }
 };
+
+/**
+ * Returns products list from localStorage if modified by Admin, or defaults to PRODUCTS
+ */
+function getProductsList() {
+    const saved = localStorage.getItem('notch_custom_products');
+    if (saved) {
+        try {
+            const parsed = JSON.parse(saved);
+            if (Array.isArray(parsed) && parsed.length > 0) {
+                return parsed;
+            }
+        } catch (e) {
+            console.error('Error reading saved products:', e);
+        }
+    }
+    return PRODUCTS;
+}
+
+// Auto-sync PRODUCTS array in-place so all legacy direct accesses see custom admin items
+(function syncProductsArray() {
+    const saved = localStorage.getItem('notch_custom_products');
+    if (saved) {
+        try {
+            const parsed = JSON.parse(saved);
+            if (Array.isArray(parsed) && parsed.length > 0) {
+                PRODUCTS.length = 0;
+                PRODUCTS.push(...parsed);
+            }
+        } catch (e) {}
+    }
+})();
+

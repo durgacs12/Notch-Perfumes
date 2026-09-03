@@ -152,6 +152,16 @@
                             </select>
                         </div>
 
+                        <div>
+                            <label class="block font-medium text-gray-700 mb-1">Fragrance Collection</label>
+                            <select id="prod-collection" required class="w-full bg-white border border-gray-300 p-2.5 rounded focus:outline-none focus:border-rose-900">
+                                <option value="classics">Classics (Raw / Celeste / Bestsellers)</option>
+                                <option value="qatari-rose">Qatari Rose Artistry (Floral & Rose)</option>
+                                <option value="mediterranean">Mediterranean Escapes (Oceanic & Citrus Fresh)</option>
+                                <option value="night" selected>Sensual Night EDPs (Oud, Amber & Woody)</option>
+                            </select>
+                        </div>
+
                         <h4 class="font-bold text-xs text-gray-800 pt-2">Specifications</h4>
                         <div class="border border-gray-200 p-4 rounded-lg bg-white">
                             <span class="text-gray-400 block mb-2">Specifications value</span>
@@ -300,6 +310,7 @@
             document.getElementById('prod-barcode').value = p.barcode || '';
             document.getElementById('prod-price').value = p.price || 0;
             document.getElementById('prod-cat').value = p.category || 'men';
+            document.getElementById('prod-collection').value = p.collection || (p.scentFamily === 'floral' ? 'qatari-rose' : p.scentFamily === 'oceanic' ? 'mediterranean' : p.scentFamily === 'citrus' ? 'classics' : 'night');
             document.getElementById('prod-specs').value = p.topNotes || '';
             document.getElementById('prod-img1-url').value = p.image || '';
 
@@ -318,9 +329,16 @@
             const hsn = document.getElementById('prod-hsn').value;
             const barcode = document.getElementById('prod-barcode').value;
             const category = document.getElementById('prod-cat').value;
+            const collectionTarget = document.getElementById('prod-collection').value;
             const specs = document.getElementById('prod-specs').value;
             const img1Url = document.getElementById('prod-img1-url').value;
             const img1File = document.getElementById('prod-img1-file').files[0];
+
+            let family = 'amber';
+            if (collectionTarget === 'classics') family = 'citrus';
+            else if (collectionTarget === 'qatari-rose') family = 'floral';
+            else if (collectionTarget === 'mediterranean') family = 'oceanic';
+            else if (collectionTarget === 'night') family = 'amber';
 
             let img1 = img1Url || 'https://images.unsplash.com/photo-1594035910387-fea47794261f?auto=format&fit=crop&w=800&q=80';
 
@@ -336,27 +354,38 @@
                     item.hsn = hsn;
                     item.barcode = barcode;
                     item.category = category;
+                    item.collection = collectionTarget;
+                    item.scentFamily = family;
                     item.topNotes = specs;
                     if (finalImg) item.image = finalImg;
                     showToast(`Product <strong>${title}</strong> updated successfully!`);
                 } else {
+                    const catName = category ? (category.charAt(0).toUpperCase() + category.slice(1)) : 'Unisex';
                     const newObj = {
                         id: `notch-custom-${Date.now()}`,
-                        code,
+                        code: code || `PRD-${Date.now().toString().slice(-4)}`,
                         name: title,
-                        brand,
-                        subtitle: `For ${category.toUpperCase()} • Fine EDP`,
-                        category,
-                        price,
-                        description: desc,
+                        brand: brand || 'NOTCH',
+                        subtitle: `For ${catName} • ${specs || 'Fine EDP'}`,
+                        category: category || 'unisex',
+                        collection: collectionTarget,
+                        scentFamily: family,
+                        price: price,
+                        originalPrice: Math.round(price * 1.25),
+                        description: desc || `${title} - Exclusive Qatari luxury perfume crafted by Notch Qatar.`,
                         combo,
                         hsn,
                         barcode,
-                        topNotes: specs,
+                        topNotes: specs || 'Agarwood (Oud), Saffron, Bergamot',
+                        heartNotes: 'Qatari Rose, Jasmine',
+                        baseNotes: 'Amber, Sandalwood, Musk',
+                        perfumer: 'Master Qatari Perfumers',
                         image: finalImg,
                         rating: 5.0,
+                        reviewsCount: 1,
+                        badge: 'NEW',
                         createdDate: new Date().toLocaleDateString('en-US'),
-                        sizes: ["100 ml"]
+                        sizes: ["100 ml", "50 ml"]
                     };
                     adminProductsList.unshift(newObj);
                     showToast(`New Product <strong>${title}</strong> saved successfully!`);

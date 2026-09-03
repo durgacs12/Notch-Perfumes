@@ -211,8 +211,6 @@
     <script src="js/products.js"></script>
     <script src="js/app.js"></script>
     <script>
-        const GIFT_SETS = PRODUCTS.filter(p => p.category === 'gift');
-
         document.addEventListener('DOMContentLoaded', () => {
             renderGiftingGrid();
         });
@@ -221,7 +219,8 @@
             const container = document.getElementById('gifting-grid');
             if (!container) return;
 
-            container.innerHTML = GIFT_SETS.map(item => `
+            const giftSets = getProductsList().filter(p => p.category === 'gift' || p.category === 'discovery');
+            container.innerHTML = giftSets.map(item => `
                 <div class="product-card bg-white rounded-2xl overflow-hidden border border-stone-200 shadow-sm flex flex-col group">
                     <div class="relative h-72 overflow-hidden bg-stone-50 cursor-pointer" onclick="openQuickView('${item.id}')">
                         <img src="${item.image}" alt="${item.name}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
