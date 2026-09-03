@@ -32,13 +32,35 @@
         }
     </script>
     
-    <!-- Custom CSS -->
     <script>
         if (localStorage.getItem('adminLoggedIn') !== 'true') {
             window.location.href = 'admin-login.html';
         }
     </script>
     <link rel="stylesheet" href="css/styles.css">
+    <style>
+        .btn-save-green {
+            background-color: #198754;
+            color: #ffffff;
+        }
+        .btn-save-green:hover {
+            background-color: #157347;
+        }
+        .btn-edit-yellow {
+            background-color: #ffc107;
+            color: #000000;
+        }
+        .btn-edit-yellow:hover {
+            background-color: #ffca2c;
+        }
+        .btn-delete-red {
+            background-color: #dc3545;
+            color: #ffffff;
+        }
+        .btn-delete-red:hover {
+            background-color: #bb2d3b;
+        }
+    </style>
 </head>
 <body class="bg-blush-50 text-stone-900 antialiased min-h-screen flex flex-col">
 
@@ -57,7 +79,7 @@
                 <div class="w-8 h-8 rounded-full rose-gold-bg text-rose-950 font-bold flex items-center justify-center text-xs">AD</div>
                 <div class="hidden sm:block text-left">
                     <div class="text-xs font-bold text-white">Admin Master</div>
-                    <div class="text-[10px] text-rosegold-300">admin@notchperfumes.in</div>
+                    <div class="text-[10px] text-rosegold-300">admin@gmail.com</div>
                 </div>
                 <button onclick="localStorage.removeItem('adminLoggedIn'); window.location.href='admin-login.html';" class="ml-2 text-xs text-red-300 hover:text-white font-bold bg-red-900/40 px-2.5 py-1 rounded-lg border border-red-500/30">Logout 🚪</button>
             </div>
@@ -93,79 +115,164 @@
         <main class="flex-1 p-6 md:p-8 space-y-8 overflow-y-auto">
             <div>
                 <h1 class="font-serif-heading text-3xl font-bold text-rose-950">Categories Master</h1>
-                <p class="text-xs text-gray-500 mt-1">Manage product categories and collection lines.</p>
+                <p class="text-xs text-gray-500 mt-1">Manage main storefront navigation categories and fragrance lines.</p>
             </div>
 
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-                <!-- CATEGORIES CARD -->
-                <div class="bg-white rounded-2xl border border-rose-100 shadow-sm p-6 space-y-4">
-                    <div class="flex justify-between items-center border-b pb-3">
-                        <h3 class="font-serif-heading text-xl font-bold text-rose-950">Target Categories</h3>
-                        <button onclick="showToast('Add Category feature', 'info')" class="px-3 py-1.5 rose-gold-bg text-rose-950 font-bold text-xs rounded-lg">+ Add Category</button>
+            <!-- ADD / EDIT CATEGORY CARD -->
+            <div class="bg-white rounded-2xl border border-rose-100 shadow-sm p-6 space-y-4">
+                <h3 class="font-serif-heading text-xl font-bold text-rose-950 border-b pb-3" id="form-title">Add Category</h3>
+                <form id="category-form" onsubmit="handleFormSubmit(event)" autocomplete="off" class="space-y-4 text-xs">
+                    <input type="hidden" id="editing-id" value="" />
+                    
+                    <div class="max-w-md">
+                        <label class="block font-medium text-stone-800 mb-1">Category Name *</label>
+                        <input type="text" id="categoryName" required autocomplete="off" placeholder="e.g. FRAGRANCES, GIFTING, COLLECTIONS" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-1 focus:ring-rose-950 text-xs bg-white uppercase" />
                     </div>
 
-                    <div class="space-y-3 text-xs">
-                        <div class="flex items-center justify-between p-3 bg-stone-50 rounded-xl border border-stone-200">
-                            <div>
-                                <h4 class="font-bold text-rose-950">For Men</h4>
-                                <p class="text-[10px] text-gray-500">4 Active Fragrances (Raw, Steele, Nox, Verge)</p>
-                            </div>
-                            <span class="px-2.5 py-1 bg-rose-100 text-rose-900 font-bold text-[10px] rounded-full">Active</span>
-                        </div>
-                        <div class="flex items-center justify-between p-3 bg-stone-50 rounded-xl border border-stone-200">
-                            <div>
-                                <h4 class="font-bold text-rose-950">For Women</h4>
-                                <p class="text-[10px] text-gray-500">3 Active Fragrances (Celeste, Nude, Noura)</p>
-                            </div>
-                            <span class="px-2.5 py-1 bg-rose-100 text-rose-900 font-bold text-[10px] rounded-full">Active</span>
-                        </div>
-                        <div class="flex items-center justify-between p-3 bg-stone-50 rounded-xl border border-stone-200">
-                            <div>
-                                <h4 class="font-bold text-rose-950">Unisex & Discovery</h4>
-                                <p class="text-[10px] text-gray-500">2 Active Items (Amalfi Bleue, Discovery Set)</p>
-                            </div>
-                            <span class="px-2.5 py-1 bg-rose-100 text-rose-900 font-bold text-[10px] rounded-full">Active</span>
-                        </div>
+                    <div class="flex items-center gap-3 pt-2">
+                        <button type="submit" class="btn-save-green px-5 py-2.5 font-semibold rounded-lg text-xs transition-colors">Save Category</button>
+                        <button type="button" onclick="resetForm()" class="bg-stone-200 hover:bg-stone-300 text-stone-800 px-4 py-2.5 font-semibold rounded-lg text-xs transition-colors">Cancel</button>
                     </div>
+                </form>
+            </div>
+
+            <!-- CATEGORY LIST SECTION -->
+            <div id="categories-list-section" class="bg-white rounded-2xl border border-rose-100 shadow-sm p-6 space-y-4">
+                <div class="flex justify-between items-center border-b pb-3">
+                    <h3 class="font-serif-heading text-xl font-bold text-rose-950">Storefront Category Directory</h3>
+                    <span class="text-xs font-semibold text-rose-900 bg-rose-100 px-3 py-1 rounded-full" id="total-badge">7 Categories</span>
                 </div>
-
-                <!-- SCENT FAMILIES CARD -->
-                <div class="bg-white rounded-2xl border border-rose-100 shadow-sm p-6 space-y-4">
-                    <div class="flex justify-between items-center border-b pb-3">
-                        <h3 class="font-serif-heading text-xl font-bold text-rose-950">Fragrance Families</h3>
-                        <button onclick="showToast('Add Fragrance Family feature', 'info')" class="px-3 py-1.5 rose-gold-bg text-rose-950 font-bold text-xs rounded-lg">+ Add Family</button>
-                    </div>
-
-                    <div class="space-y-3 text-xs">
-                        <div class="flex items-center gap-3 p-3 bg-stone-50 rounded-xl border border-stone-200">
-                            <span class="text-2xl">🍋</span>
-                            <div>
-                                <h4 class="font-bold text-rose-950">Fresh & Citrus</h4>
-                                <p class="text-[10px] text-gray-500">Italian Bergamot, Lemon, Mandarin</p>
-                            </div>
-                        </div>
-                        <div class="flex items-center gap-3 p-3 bg-stone-50 rounded-xl border border-stone-200">
-                            <span class="text-2xl">🌸</span>
-                            <div>
-                                <h4 class="font-bold text-rose-950">Sensual Floral</h4>
-                                <p class="text-[10px] text-gray-500">Damask Rose, Jasmine, Peony</p>
-                            </div>
-                        </div>
-                        <div class="flex items-center gap-3 p-3 bg-stone-50 rounded-xl border border-stone-200">
-                            <span class="text-2xl">🌲</span>
-                            <div>
-                                <h4 class="font-bold text-rose-950">Earthy & Woody</h4>
-                                <p class="text-[10px] text-gray-500">Cedarwood, Guaiac, Vetiver</p>
-                            </div>
-                        </div>
-                    </div>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left text-xs border-collapse">
+                        <thead>
+                            <tr class="border-b border-stone-200 bg-stone-50 text-stone-900 font-bold">
+                                <th class="py-3 px-4">#</th>
+                                <th class="py-3 px-4">Category Name</th>
+                                <th class="py-3 px-4">Storefront Status</th>
+                                <th class="py-3 px-4 text-center">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="categories-table-body" class="divide-y divide-stone-200 bg-white">
+                            <!-- Dynamic rows -->
+                        </tbody>
+                    </table>
                 </div>
             </div>
+
         </main>
     </div>
 
     <!-- Scripts -->
-    <script src="js/products.js"></script>
-    <script src="js/app.js"></script>
+    <script>
+        let categories = [
+            { id: 1, name: 'MEN', status: 'Active' },
+            { id: 2, name: 'WOMEN', status: 'Active' },
+            { id: 3, name: 'COLLECTIONS', status: 'Active' },
+            { id: 4, name: 'GIFTING', status: 'Active' },
+            { id: 5, name: 'FRAGRANCES', status: 'Active' },
+            { id: 6, name: 'NOTCH BLOG', status: 'Active' },
+            { id: 7, name: 'SALE', status: 'Active' }
+        ];
+
+        document.addEventListener('DOMContentLoaded', fetchCategories);
+
+        async function fetchCategories() {
+            try {
+                const res = await fetch('/api/categories');
+                if (res.ok) {
+                    const data = await res.json();
+                    if (Array.isArray(data) && data.length > 0) {
+                        categories = data.map((c, i) => ({
+                            id: c.id || c.Id || (i + 1),
+                            name: c.name || c.Name || c.categoryName || c.CategoryName,
+                            status: c.status || c.Status || 'Active'
+                        }));
+                    }
+                }
+            } catch (e) {}
+            renderTable();
+        }
+
+        function renderTable() {
+            const tbody = document.getElementById('categories-table-body');
+            const totalBadge = document.getElementById('total-badge');
+            tbody.innerHTML = '';
+            
+            if (totalBadge) totalBadge.textContent = `${categories.length} Categories`;
+
+            if (categories.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="4" class="py-6 text-center text-gray-500 italic">No categories added yet.</td></tr>';
+                return;
+            }
+
+            categories.forEach((c, index) => {
+                const tr = document.createElement('tr');
+                tr.className = 'hover:bg-stone-50 font-medium';
+                tr.innerHTML = `
+                    <td class="py-3 px-4 font-bold text-stone-400">${index + 1}</td>
+                    <td class="py-3 px-4 font-bold text-rose-950 tracking-wider text-xs uppercase">${c.name}</td>
+                    <td class="py-3 px-4"><span class="px-2.5 py-1 bg-emerald-100 text-emerald-800 font-bold text-[10px] rounded-full">Active</span></td>
+                    <td class="py-3 px-4 text-center">
+                        <div class="flex items-center justify-center gap-2">
+                            <button onclick="editCategory(${c.id}, '${c.name.replace(/'/g, "\\'")}')" class="btn-edit-yellow px-3 py-1 text-xs font-bold rounded-lg shadow-xs">Edit</button>
+                            <button onclick="deleteCategory(${c.id})" class="btn-delete-red px-3 py-1 text-xs font-bold rounded-lg shadow-xs">Delete</button>
+                        </div>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        async function handleFormSubmit(e) {
+            e.preventDefault();
+            const editId = document.getElementById('editing-id').value;
+            const categoryName = document.getElementById('categoryName').value.trim().toUpperCase();
+            if (!categoryName) return;
+
+            const payload = { name: categoryName, status: 'Active' };
+
+            try {
+                const res = await fetch('/api/categories', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+                if (res.ok) {
+                    await fetchCategories();
+                    resetForm();
+                    return;
+                }
+            } catch (err) {}
+
+            if (editId) {
+                const idx = categories.findIndex(x => String(x.id) === String(editId));
+                if (idx !== -1) categories[idx].name = categoryName;
+            } else {
+                categories.push({ id: Date.now(), name: categoryName, status: 'Active' });
+            }
+
+            resetForm();
+            renderTable();
+        }
+
+        function editCategory(id, name) {
+            document.getElementById('form-title').textContent = 'Edit Category';
+            document.getElementById('editing-id').value = id;
+            document.getElementById('categoryName').value = name;
+            document.getElementById('categoryName').focus();
+        }
+
+        function deleteCategory(id) {
+            if (!confirm('Are you sure you want to delete this category?')) return;
+            categories = categories.filter(x => String(x.id) !== String(id));
+            renderTable();
+        }
+
+        function resetForm() {
+            document.getElementById('category-form').reset();
+            document.getElementById('editing-id').value = '';
+            document.getElementById('form-title').textContent = 'Add Category';
+        }
+    </script>
 </body>
 </html>
