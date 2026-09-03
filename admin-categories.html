@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Categories Master | Notch Qatar Perfumes Control Panel</title>
+    
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        rose: {
+                            900: '#5B1E31',
+                            950: '#4A1525',
+                        },
+                        rosegold: {
+                            300: '#F3C9BC',
+                            400: '#E5A995',
+                            500: '#D49B85',
+                            600: '#B86B7D',
+                        },
+                        blush: {
+                            50: '#FFF5F6',
+                            100: '#FDF0F2',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body class="bg-blush-50 text-stone-900 antialiased min-h-screen flex flex-col">
+
+    <!-- TOP ADMIN BAR -->
+    <header class="glass-header-rose text-white border-b border-rosegold-500/20 px-6 py-4 flex items-center justify-between sticky top-0 z-50">
+        <div class="flex items-center gap-4">
+            <a href="admin-dashboard.html" class="flex flex-col">
+                <img src="image/notch-logo-white.png" alt="NOTCH Admin" class="h-6 md:h-7 w-auto object-contain mb-1" />
+                <span class="text-[8px] font-semibold tracking-[0.3em] uppercase text-rosegold-400">ADMIN CONTROL PANEL</span>
+            </a>
+        </div>
+
+        <div class="flex items-center gap-4">
+            <a href="index.html" target="_blank" class="px-3.5 py-1.5 bg-rosegold-400/20 text-rosegold-300 hover:bg-rosegold-400 hover:text-rose-950 rounded-lg text-xs font-bold border border-rosegold-400/30">🌐 Visit Storefront</a>
+            <div class="flex items-center gap-2 pl-4 border-l border-rose-800">
+                <div class="w-8 h-8 rounded-full rose-gold-bg text-rose-950 font-bold flex items-center justify-center text-xs">AD</div>
+                <div class="hidden sm:block text-left">
+                    <div class="text-xs font-bold text-white">Admin Master</div>
+                    <div class="text-[10px] text-rosegold-300">admin@notchperfumes.in</div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <div class="flex-1 flex">
+        <!-- SIDEBAR -->
+        <aside class="w-64 bg-rose-950 text-rose-100/80 border-r border-rosegold-500/20 hidden md:block flex-shrink-0 p-4 space-y-2">
+            <div class="text-[10px] font-bold uppercase tracking-widest text-rosegold-400 px-3 pt-2 mb-2">Master Modules</div>
+            
+            <a href="admin-dashboard.html" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-semibold text-rose-200/80 hover:bg-rose-900/60 hover:text-rosegold-300 transition-colors">
+                <span>📊</span> Overview Dashboard
+            </a>
+            <a href="admin-inventory.html" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-semibold text-rose-200/80 hover:bg-rose-900/60 hover:text-rosegold-300 transition-colors">
+                <span>🏭</span> Stock & Inventory Master
+            </a>
+            <a href="admin-sales-summary.html" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-semibold text-rose-200/80 hover:bg-rose-900/60 hover:text-rosegold-300 transition-colors">
+                <span>📈</span> Sales Summary Report
+            </a>
+            <a href="admin-sales-detail.html" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-semibold text-rose-200/80 hover:bg-rose-900/60 hover:text-rosegold-300 transition-colors">
+                <span>📑</span> Detailed Sales Log
+            </a>
+            <a href="admin-products.html" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-semibold text-rose-200/80 hover:bg-rose-900/60 hover:text-rosegold-300 transition-colors">
+                <span>🧴</span> Product Master
+            </a>
+            <a href="admin-orders.html" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-semibold text-rose-200/80 hover:bg-rose-900/60 hover:text-rosegold-300 transition-colors">
+                <span>📦</span> Order Management
+            </a>
+            <a href="admin-categories.html" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-bold text-rose-950 rose-gold-bg shadow-sm">
+                <span>🏷️</span> Categories
+            </a>
+            <a href="admin-coupons.html" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-semibold text-rose-200/80 hover:bg-rose-900/60 hover:text-rosegold-300 transition-colors">
+                <span>💳</span> Promo Coupons
+            </a>
+
+            <div class="pt-8 border-t border-rose-900 text-[10px] text-rose-300/50 px-3">
+                Notch Qatar Perfumes Admin v2.4
+            </div>
+        </aside>
+
+        <!-- MAIN CONTENT -->
+        <main class="flex-1 p-6 md:p-8 space-y-8 overflow-y-auto">
+            <div>
+                <h1 class="font-serif-heading text-3xl font-bold text-rose-950">Categories Master</h1>
+                <p class="text-xs text-gray-500 mt-1">Manage product categories and collection lines.</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <!-- CATEGORIES CARD -->
+                <div class="bg-white rounded-2xl border border-rose-100 shadow-sm p-6 space-y-4">
+                    <div class="flex justify-between items-center border-b pb-3">
+                        <h3 class="font-serif-heading text-xl font-bold text-rose-950">Target Categories</h3>
+                        <button onclick="showToast('Add Category feature', 'info')" class="px-3 py-1.5 rose-gold-bg text-rose-950 font-bold text-xs rounded-lg">+ Add Category</button>
+                    </div>
+
+                    <div class="space-y-3 text-xs">
+                        <div class="flex items-center justify-between p-3 bg-stone-50 rounded-xl border border-stone-200">
+                            <div>
+                                <h4 class="font-bold text-rose-950">For Men</h4>
+                                <p class="text-[10px] text-gray-500">4 Active Fragrances (Raw, Steele, Nox, Verge)</p>
+                            </div>
+                            <span class="px-2.5 py-1 bg-rose-100 text-rose-900 font-bold text-[10px] rounded-full">Active</span>
+                        </div>
+                        <div class="flex items-center justify-between p-3 bg-stone-50 rounded-xl border border-stone-200">
+                            <div>
+                                <h4 class="font-bold text-rose-950">For Women</h4>
+                                <p class="text-[10px] text-gray-500">3 Active Fragrances (Celeste, Nude, Noura)</p>
+                            </div>
+                            <span class="px-2.5 py-1 bg-rose-100 text-rose-900 font-bold text-[10px] rounded-full">Active</span>
+                        </div>
+                        <div class="flex items-center justify-between p-3 bg-stone-50 rounded-xl border border-stone-200">
+                            <div>
+                                <h4 class="font-bold text-rose-950">Unisex & Discovery</h4>
+                                <p class="text-[10px] text-gray-500">2 Active Items (Amalfi Bleue, Discovery Set)</p>
+                            </div>
+                            <span class="px-2.5 py-1 bg-rose-100 text-rose-900 font-bold text-[10px] rounded-full">Active</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- SCENT FAMILIES CARD -->
+                <div class="bg-white rounded-2xl border border-rose-100 shadow-sm p-6 space-y-4">
+                    <div class="flex justify-between items-center border-b pb-3">
+                        <h3 class="font-serif-heading text-xl font-bold text-rose-950">Fragrance Families</h3>
+                        <button onclick="showToast('Add Fragrance Family feature', 'info')" class="px-3 py-1.5 rose-gold-bg text-rose-950 font-bold text-xs rounded-lg">+ Add Family</button>
+                    </div>
+
+                    <div class="space-y-3 text-xs">
+                        <div class="flex items-center gap-3 p-3 bg-stone-50 rounded-xl border border-stone-200">
+                            <span class="text-2xl">🍋</span>
+                            <div>
+                                <h4 class="font-bold text-rose-950">Fresh & Citrus</h4>
+                                <p class="text-[10px] text-gray-500">Italian Bergamot, Lemon, Mandarin</p>
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-3 p-3 bg-stone-50 rounded-xl border border-stone-200">
+                            <span class="text-2xl">🌸</span>
+                            <div>
+                                <h4 class="font-bold text-rose-950">Sensual Floral</h4>
+                                <p class="text-[10px] text-gray-500">Damask Rose, Jasmine, Peony</p>
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-3 p-3 bg-stone-50 rounded-xl border border-stone-200">
+                            <span class="text-2xl">🌲</span>
+                            <div>
+                                <h4 class="font-bold text-rose-950">Earthy & Woody</h4>
+                                <p class="text-[10px] text-gray-500">Cedarwood, Guaiac, Vetiver</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Scripts -->
+    <script src="js/products.js"></script>
+    <script src="js/app.js"></script>
+</body>
+</html>

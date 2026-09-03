@@ -18,9 +18,6 @@ IDbConnection GetConnection() => new SqlConnection(connectionString);
 app.UseDefaultFiles();
 app.UseStaticFiles();
 
-// Redirect deleted admin-categories.html to admin-dashboard.html
-app.MapGet("/admin-categories.html", () => Results.Redirect("/admin-dashboard.html"));
-
 // API Endpoints for NotchPerfumes Database
 
 // Get All Products
