@@ -44,6 +44,46 @@ app.MapGet("/api/categories", async () =>
     return Results.Ok(categories);
 });
 
+// Get SubCategories
+app.MapGet("/api/subcategories", async () =>
+{
+    using var db = GetConnection();
+    var subcategories = await db.QueryAsync("SELECT * FROM SubCategories ORDER BY Id ASC");
+    return Results.Ok(subcategories);
+});
+
+// Create SubCategory
+app.MapPost("/api/subcategories", async (SubCategoryDto dto) =>
+{
+    if (string.IsNullOrWhiteSpace(dto.MainCategoryId) || string.IsNullOrWhiteSpace(dto.SubCategoryName))
+        return Results.BadRequest(new { message = "MainCategoryId and SubCategoryName are required." });
+
+    using var db = GetConnection();
+    string sql = @"INSERT INTO SubCategories (MainCategoryId, SubCategoryName)
+                   VALUES (@MainCategoryId, @SubCategoryName);
+                   SELECT CAST(SCOPE_IDENTITY() as int);";
+    int id = await db.ExecuteScalarAsync<int>(sql, dto);
+    return Results.Created($"/api/subcategories/{id}", new { Id = id, dto.MainCategoryId, dto.SubCategoryName });
+});
+
+// Update SubCategory
+app.MapPut("/api/subcategories/{id:int}", async (int id, SubCategoryDto dto) =>
+{
+    using var db = GetConnection();
+    string sql = @"UPDATE SubCategories SET MainCategoryId = @MainCategoryId, SubCategoryName = @SubCategoryName WHERE Id = @Id";
+    int rows = await db.ExecuteAsync(sql, new { Id = id, dto.MainCategoryId, dto.SubCategoryName });
+    return rows > 0 ? Results.Ok(new { message = "Updated successfully" }) : Results.NotFound();
+});
+
+// Delete SubCategory
+app.MapDelete("/api/subcategories/{id:int}", async (int id) =>
+{
+    using var db = GetConnection();
+    int rows = await db.ExecuteAsync("DELETE FROM SubCategories WHERE Id = @Id", new { Id = id });
+    return rows > 0 ? Results.Ok(new { message = "Deleted successfully" }) : Results.NotFound();
+});
+
+
 // Get Orders
 app.MapGet("/api/orders", async () =>
 {
@@ -90,4 +130,144 @@ app.MapGet("/api/health", async () =>
     }
 });
 
+// Banners Endpoints
+app.MapGet("/api/banners", async () =>
+{
+    using var db = GetConnection();
+    var banners = await db.QueryAsync("SELECT * FROM Banners ORDER BY Id DESC");
+    return Results.Ok(banners);
+});
+
+app.MapPost("/api/banners", async (BannerDto dto) =>
+{
+    using var db = GetConnection();
+    string sql = @"INSERT INTO Banners (Title, Subtitle, Image, TargetUrl, IsActive)
+                   VALUES (@Title, @Subtitle, @Image, @TargetUrl, @IsActive);
+                   SELECT CAST(SCOPE_IDENTITY() as int);";
+    int id = await db.ExecuteScalarAsync<int>(sql, dto);
+    return Results.Created($"/api/banners/{id}", new { Id = id, dto.Title, dto.Subtitle, dto.Image, dto.TargetUrl, dto.IsActive });
+});
+
+app.MapPut("/api/banners/{id:int}", async (int id, BannerDto dto) =>
+{
+    using var db = GetConnection();
+    string sql = @"UPDATE Banners SET Title = @Title, Subtitle = @Subtitle, Image = @Image, TargetUrl = @TargetUrl, IsActive = @IsActive WHERE Id = @Id";
+    int rows = await db.ExecuteAsync(sql, new { Id = id, dto.Title, dto.Subtitle, dto.Image, dto.TargetUrl, dto.IsActive });
+    return rows > 0 ? Results.Ok() : Results.NotFound();
+});
+
+app.MapDelete("/api/banners/{id:int}", async (int id) =>
+{
+    using var db = GetConnection();
+    int rows = await db.ExecuteAsync("DELETE FROM Banners WHERE Id = @Id", new { Id = id });
+    return rows > 0 ? Results.Ok() : Results.NotFound();
+});
+
+// CategorySpecifications Endpoints
+app.MapGet("/api/categoryspecifications", async () =>
+{
+    using var db = GetConnection();
+    var specs = await db.QueryAsync("SELECT * FROM CategorySpecifications ORDER BY Id ASC");
+    return Results.Ok(specs);
+});
+
+app.MapPost("/api/categoryspecifications", async (CategorySpecDto dto) =>
+{
+    using var db = GetConnection();
+    string sql = @"INSERT INTO CategorySpecifications (CategoryId, SpecName, SpecValues, IsRequired)
+                   VALUES (@CategoryId, @SpecName, @SpecValues, @IsRequired);
+                   SELECT CAST(SCOPE_IDENTITY() as int);";
+    int id = await db.ExecuteScalarAsync<int>(sql, dto);
+    return Results.Created($"/api/categoryspecifications/{id}", new { Id = id, dto.CategoryId, dto.SpecName, dto.SpecValues, dto.IsRequired });
+});
+
+app.MapPut("/api/categoryspecifications/{id:int}", async (int id, CategorySpecDto dto) =>
+{
+    using var db = GetConnection();
+    string sql = @"UPDATE CategorySpecifications SET CategoryId = @CategoryId, SpecName = @SpecName, SpecValues = @SpecValues, IsRequired = @IsRequired WHERE Id = @Id";
+    int rows = await db.ExecuteAsync(sql, new { Id = id, dto.CategoryId, dto.SpecName, dto.SpecValues, dto.IsRequired });
+    return rows > 0 ? Results.Ok() : Results.NotFound();
+});
+
+app.MapDelete("/api/categoryspecifications/{id:int}", async (int id) =>
+{
+    using var db = GetConnection();
+    int rows = await db.ExecuteAsync("DELETE FROM CategorySpecifications WHERE Id = @Id", new { Id = id });
+    return rows > 0 ? Results.Ok() : Results.NotFound();
+});
+
+// Suppliers Endpoints
+app.MapGet("/api/suppliers", async () =>
+{
+    using var db = GetConnection();
+    var suppliers = await db.QueryAsync("SELECT * FROM Suppliers ORDER BY Id DESC");
+    return Results.Ok(suppliers);
+});
+
+app.MapPost("/api/suppliers", async (SupplierDto dto) =>
+{
+    using var db = GetConnection();
+    string sql = @"INSERT INTO Suppliers (SupplierName, ContactPerson, Email, Phone, Address, Status)
+                   VALUES (@SupplierName, @ContactPerson, @Email, @Phone, @Address, @Status);
+                   SELECT CAST(SCOPE_IDENTITY() as int);";
+    int id = await db.ExecuteScalarAsync<int>(sql, dto);
+    return Results.Created($"/api/suppliers/{id}", new { Id = id, dto.SupplierName, dto.ContactPerson, dto.Email, dto.Phone, dto.Address, dto.Status });
+});
+
+app.MapPut("/api/suppliers/{id:int}", async (int id, SupplierDto dto) =>
+{
+    using var db = GetConnection();
+    string sql = @"UPDATE Suppliers SET SupplierName = @SupplierName, ContactPerson = @ContactPerson, Email = @Email, Phone = @Phone, Address = @Address, Status = @Status WHERE Id = @Id";
+    int rows = await db.ExecuteAsync(sql, new { Id = id, dto.SupplierName, dto.ContactPerson, dto.Email, dto.Phone, dto.Address, dto.Status });
+    return rows > 0 ? Results.Ok() : Results.NotFound();
+});
+
+app.MapDelete("/api/suppliers/{id:int}", async (int id) =>
+{
+    using var db = GetConnection();
+    int rows = await db.ExecuteAsync("DELETE FROM Suppliers WHERE Id = @Id", new { Id = id });
+    return rows > 0 ? Results.Ok() : Results.NotFound();
+});
+
+// Customers Endpoints
+app.MapGet("/api/customers", async () =>
+{
+    using var db = GetConnection();
+    var customers = await db.QueryAsync("SELECT * FROM Customers ORDER BY Id DESC");
+    return Results.Ok(customers);
+});
+
+app.MapPost("/api/customers", async (CustomerDto dto) =>
+{
+    using var db = GetConnection();
+    string sql = @"INSERT INTO Customers (CustomerName, Email, Phone, City, TotalOrders, TotalSpent)
+                   VALUES (@CustomerName, @Email, @Phone, @City, @TotalOrders, @TotalSpent);
+                   SELECT CAST(SCOPE_IDENTITY() as int);";
+    int id = await db.ExecuteScalarAsync<int>(sql, dto);
+    return Results.Created($"/api/customers/{id}", new { Id = id, dto.CustomerName, dto.Email, dto.Phone, dto.City, dto.TotalOrders, dto.TotalSpent });
+});
+
+app.MapPut("/api/customers/{id:int}", async (int id, CustomerDto dto) =>
+{
+    using var db = GetConnection();
+    string sql = @"UPDATE Customers SET CustomerName = @CustomerName, Email = @Email, Phone = @Phone, City = @City, TotalOrders = @TotalOrders, TotalSpent = @TotalSpent WHERE Id = @Id";
+    int rows = await db.ExecuteAsync(sql, new { Id = id, dto.CustomerName, dto.Email, dto.Phone, dto.City, dto.TotalOrders, dto.TotalSpent });
+    return rows > 0 ? Results.Ok() : Results.NotFound();
+});
+
+app.MapDelete("/api/customers/{id:int}", async (int id) =>
+{
+    using var db = GetConnection();
+    int rows = await db.ExecuteAsync("DELETE FROM Customers WHERE Id = @Id", new { Id = id });
+    return rows > 0 ? Results.Ok() : Results.NotFound();
+});
+
 app.Run();
+
+public record SubCategoryDto(int? Id, string MainCategoryId, string SubCategoryName);
+public record BannerDto(int? Id, string Title, string Subtitle, string Image, string TargetUrl, bool IsActive);
+public record CategorySpecDto(int? Id, string CategoryId, string SpecName, string SpecValues, bool IsRequired);
+public record SupplierDto(int? Id, string SupplierName, string ContactPerson, string Email, string Phone, string Address, string Status);
+public record CustomerDto(int? Id, string CustomerName, string Email, string Phone, string City, int TotalOrders, decimal TotalSpent);
+
+

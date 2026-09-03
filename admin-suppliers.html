@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Supplier Master | Notch Qatar Perfumes Control Panel</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        rose: { 900: '#5B1E31', 950: '#4A1525' },
+                        rosegold: { 300: '#F3C9BC', 400: '#E5A995', 500: '#D49B85', 600: '#B86B7D' },
+                        blush: { 50: '#FFF5F6', 100: '#FDF0F2' }
+                    }
+                }
+            }
+        }
+    </script>
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body class="bg-blush-50 text-stone-900 antialiased min-h-screen flex flex-col">
+
+    <!-- TOP ADMIN BAR -->
+    <header class="glass-header-rose text-white border-b border-rosegold-500/20 px-6 py-4 flex items-center justify-between sticky top-0 z-50">
+        <div class="flex items-center gap-4">
+            <a href="admin-dashboard.html" class="flex flex-col">
+                <img src="image/notch-logo-white.png" alt="NOTCH Admin" class="h-6 md:h-7 w-auto object-contain mb-1" />
+                <span class="text-[8px] font-semibold tracking-[0.3em] uppercase text-rosegold-400">ADMIN CONTROL PANEL</span>
+            </a>
+        </div>
+        <div class="flex items-center gap-4">
+            <a href="index.html" target="_blank" class="px-3.5 py-1.5 bg-rosegold-400/20 text-rosegold-300 hover:bg-rosegold-400 hover:text-rose-950 rounded-lg text-xs font-bold border border-rosegold-400/30">🌐 Visit Storefront</a>
+            <div class="flex items-center gap-2 pl-4 border-l border-rose-800">
+                <div class="w-8 h-8 rounded-full rose-gold-bg text-rose-950 font-bold flex items-center justify-center text-xs">AD</div>
+                <div class="hidden sm:block text-left">
+                    <div class="text-xs font-bold text-white">Admin Master</div>
+                    <div class="text-[10px] text-rosegold-300">admin@notchperfumes.in</div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <div class="flex-1 flex">
+        <!-- SIDEBAR -->
+        <aside class="w-64 bg-rose-950 text-rose-100/80 border-r border-rosegold-500/20 hidden md:block flex-shrink-0 p-4 space-y-2">
+            <div class="text-[10px] font-bold uppercase tracking-widest text-rosegold-400 px-3 pt-2 mb-2">Master Modules</div>
+            <a href="admin-dashboard.html" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-semibold text-rose-200/80 hover:bg-rose-900/60 hover:text-rosegold-300 transition-colors"><span>📊</span> Overview Dashboard</a>
+            <a href="admin-banners.html" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-semibold text-rose-200/80 hover:bg-rose-900/60 hover:text-rosegold-300 transition-colors"><span>🖼️</span> Banner Image</a>
+            <a href="admin-categories.html" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-semibold text-rose-200/80 hover:bg-rose-900/60 hover:text-rosegold-300 transition-colors"><span>🏷️</span> Categories</a>
+            <a href="admin-subcategories.html" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-semibold text-rose-200/80 hover:bg-rose-900/60 hover:text-rosegold-300 transition-colors"><span>🏷️</span> Sub Categories</a>
+            <a href="admin-category-specifications.html" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-semibold text-rose-200/80 hover:bg-rose-900/60 hover:text-rosegold-300 transition-colors"><span>📋</span> Category Specifications</a>
+            <a href="admin-products.html" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-semibold text-rose-200/80 hover:bg-rose-900/60 hover:text-rosegold-300 transition-colors"><span>🧴</span> Product Master</a>
+            <a href="admin-suppliers.html" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-bold text-rose-950 rose-gold-bg shadow-sm"><span>🚚</span> Supplier Master</a>
+            <a href="admin-customers.html" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-semibold text-rose-200/80 hover:bg-rose-900/60 hover:text-rosegold-300 transition-colors"><span>👥</span> Customer Master</a>
+
+            <div class="text-[10px] font-bold uppercase tracking-widest text-rosegold-400 px-3 pt-4 mb-2">Reports & Operations</div>
+            <a href="admin-inventory.html" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-semibold text-rose-200/80 hover:bg-rose-900/60 hover:text-rosegold-300 transition-colors"><span>🏭</span> Stock & Inventory Master</a>
+            <a href="admin-orders.html" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-semibold text-rose-200/80 hover:bg-rose-900/60 hover:text-rosegold-300 transition-colors"><span>📦</span> Order Management</a>
+            <a href="admin-sales-summary.html" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-semibold text-rose-200/80 hover:bg-rose-900/60 hover:text-rosegold-300 transition-colors"><span>📈</span> Sales Summary Report</a>
+            <a href="admin-sales-detail.html" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-semibold text-rose-200/80 hover:bg-rose-900/60 hover:text-rosegold-300 transition-colors"><span>📑</span> Detailed Sales Log</a>
+            <a href="admin-coupons.html" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-semibold text-rose-200/80 hover:bg-rose-900/60 hover:text-rosegold-300 transition-colors"><span>💳</span> Promo Coupons</a>
+        </aside>
+
+        <!-- MAIN CONTENT -->
+        <main class="flex-1 p-6 md:p-8 space-y-8 overflow-y-auto">
+            <div>
+                <h1 class="font-serif-heading text-3xl font-bold text-rose-950">Supplier Master</h1>
+                <p class="text-xs text-gray-500 mt-1">Manage raw material, bottle, and fragrance essence suppliers.</p>
+            </div>
+
+            <!-- ADD SUPPLIER CARD -->
+            <div class="bg-white rounded-2xl border border-rose-100 shadow-sm p-6 space-y-4">
+                <h3 class="font-serif-heading text-xl font-bold text-rose-950 border-b pb-3">Add Supplier</h3>
+                <form id="supplier-form" onsubmit="handleFormSubmit(event)" class="space-y-4 text-xs">
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <div>
+                            <label class="block font-bold text-rose-950 mb-1">Supplier / Company Name</label>
+                            <input type="text" id="supplierName" required placeholder="e.g. Grasse Fragrances Ltd" class="w-full px-3.5 py-2 border rounded-xl focus:ring-1 focus:ring-rose-950 text-xs" />
+                        </div>
+                        <div>
+                            <label class="block font-bold text-rose-950 mb-1">Contact Person</label>
+                            <input type="text" id="contactPerson" placeholder="e.g. Olivier Pescheux" class="w-full px-3.5 py-2 border rounded-xl focus:ring-1 focus:ring-rose-950 text-xs" />
+                        </div>
+                        <div>
+                            <label class="block font-bold text-rose-950 mb-1">Email Address</label>
+                            <input type="email" id="email" placeholder="e.g. contact@grasse.fr" class="w-full px-3.5 py-2 border rounded-xl focus:ring-1 focus:ring-rose-950 text-xs" />
+                        </div>
+                        <div>
+                            <label class="block font-bold text-rose-950 mb-1">Phone Number</label>
+                            <input type="text" id="phone" placeholder="e.g. +33 4 93 36 00 00" class="w-full px-3.5 py-2 border rounded-xl focus:ring-1 focus:ring-rose-950 text-xs" />
+                        </div>
+                        <div class="md:col-span-2">
+                            <label class="block font-bold text-rose-950 mb-1">Address / Location</label>
+                            <input type="text" id="address" placeholder="e.g. Grasse, Provence-Alpes-Côte d'Azur, France" class="w-full px-3.5 py-2 border rounded-xl focus:ring-1 focus:ring-rose-950 text-xs" />
+                        </div>
+                    </div>
+                    <div>
+                        <button type="submit" class="px-5 py-2.5 rose-gold-bg text-rose-950 font-bold rounded-xl text-xs shadow-sm">+ Save Supplier</button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- SUPPLIERS TABLE -->
+            <div class="bg-white rounded-2xl border border-rose-100 shadow-sm p-6 space-y-4">
+                <h3 class="font-serif-heading text-xl font-bold text-rose-950 border-b pb-3">Suppliers Directory</h3>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left text-xs border-collapse">
+                        <thead>
+                            <tr class="border-b border-stone-200 bg-stone-50 text-stone-900 font-bold">
+                                <th class="py-3 px-4">Supplier Name</th>
+                                <th class="py-3 px-4">Contact</th>
+                                <th class="py-3 px-4">Email & Phone</th>
+                                <th class="py-3 px-4">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="suppliers-table-body" class="divide-y divide-stone-200 bg-white">
+                            <tr><td colspan="4" class="py-6 text-center text-gray-500 italic">No suppliers added yet.</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        let suppliers = [];
+        document.addEventListener('DOMContentLoaded', fetchSuppliers);
+        async function fetchSuppliers() {
+            try {
+                const res = await fetch('/api/suppliers');
+                if (res.ok) { const data = await res.json(); if (Array.isArray(data)) suppliers = data; }
+            } catch (e) {}
+            renderTable();
+        }
+        function renderTable() {
+            const tbody = document.getElementById('suppliers-table-body');
+            tbody.innerHTML = '';
+            if (suppliers.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="4" class="py-6 text-center text-gray-500 italic">No suppliers added yet.</td></tr>';
+                return;
+            }
+            suppliers.forEach(s => {
+                const tr = document.createElement('tr');
+                tr.className = 'hover:bg-stone-50 font-medium';
+                tr.innerHTML = `
+                    <td class="py-3 px-4 font-bold text-rose-950">${s.supplierName || s.SupplierName}</td>
+                    <td class="py-3 px-4">${s.contactPerson || s.ContactPerson || 'N/A'}</td>
+                    <td class="py-3 px-4">${s.email || s.Email || ''} / ${s.phone || s.Phone || ''}</td>
+                    <td class="py-3 px-4"><button onclick="deleteSupplier(${s.id || s.Id})" class="text-red-600 font-bold hover:underline">Delete</button></td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+        async function handleFormSubmit(e) {
+            e.preventDefault();
+            const supplierName = document.getElementById('supplierName').value;
+            const contactPerson = document.getElementById('contactPerson').value;
+            const email = document.getElementById('email').value;
+            const phone = document.getElementById('phone').value;
+            const address = document.getElementById('address').value;
+            const payload = { supplierName, contactPerson, email, phone, address, status: 'Active' };
+            try { await fetch('/api/suppliers', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) }); } catch(e){}
+            suppliers.push({ id: Date.now(), ...payload });
+            document.getElementById('supplier-form').reset();
+            renderTable();
+        }
+        async function deleteSupplier(id) {
+            if (!confirm('Delete supplier?')) return;
+            try { await fetch(`/api/suppliers/${id}`, { method: 'DELETE' }); } catch(e){}
+            suppliers = suppliers.filter(x => (x.id || x.Id) !== id);
+            renderTable();
+        }
+    </script>
+</body>
+</html>

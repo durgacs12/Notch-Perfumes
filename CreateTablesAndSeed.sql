@@ -129,3 +129,78 @@ BEGIN
     ('admin', 'admin@notchperfumes.com', 'Admin@123', 'Admin');
 END;
 GO
+
+-- Create SubCategories Table
+IF NOT EXISTS (SELECT * FROM sys.tables WHERE name = 'SubCategories')
+BEGIN
+    CREATE TABLE SubCategories (
+        Id INT IDENTITY(1,1) PRIMARY KEY,
+        MainCategoryId NVARCHAR(50) NOT NULL,
+        SubCategoryName NVARCHAR(100) NOT NULL,
+        CreatedAt DATETIME DEFAULT GETDATE()
+    );
+END;
+GO
+
+-- Create Banners Table
+IF NOT EXISTS (SELECT * FROM sys.tables WHERE name = 'Banners')
+BEGIN
+    CREATE TABLE Banners (
+        Id INT IDENTITY(1,1) PRIMARY KEY,
+        Title NVARCHAR(150) NOT NULL,
+        Subtitle NVARCHAR(250),
+        Image NVARCHAR(MAX) NOT NULL,
+        TargetUrl NVARCHAR(250),
+        IsActive BIT DEFAULT 1,
+        CreatedAt DATETIME DEFAULT GETDATE()
+    );
+END;
+GO
+
+-- Create CategorySpecifications Table
+IF NOT EXISTS (SELECT * FROM sys.tables WHERE name = 'CategorySpecifications')
+BEGIN
+    CREATE TABLE CategorySpecifications (
+        Id INT IDENTITY(1,1) PRIMARY KEY,
+        CategoryId NVARCHAR(50) NOT NULL,
+        SpecName NVARCHAR(100) NOT NULL,
+        SpecValues NVARCHAR(MAX),
+        IsRequired BIT DEFAULT 0,
+        CreatedAt DATETIME DEFAULT GETDATE()
+    );
+END;
+GO
+
+-- Create Suppliers Table
+IF NOT EXISTS (SELECT * FROM sys.tables WHERE name = 'Suppliers')
+BEGIN
+    CREATE TABLE Suppliers (
+        Id INT IDENTITY(1,1) PRIMARY KEY,
+        SupplierName NVARCHAR(150) NOT NULL,
+        ContactPerson NVARCHAR(100),
+        Email NVARCHAR(150),
+        Phone NVARCHAR(50),
+        Address NVARCHAR(MAX),
+        Status NVARCHAR(50) DEFAULT 'Active',
+        CreatedAt DATETIME DEFAULT GETDATE()
+    );
+END;
+GO
+
+-- Create Customers Table
+IF NOT EXISTS (SELECT * FROM sys.tables WHERE name = 'Customers')
+BEGIN
+    CREATE TABLE Customers (
+        Id INT IDENTITY(1,1) PRIMARY KEY,
+        CustomerName NVARCHAR(150) NOT NULL,
+        Email NVARCHAR(150),
+        Phone NVARCHAR(50),
+        City NVARCHAR(100),
+        TotalOrders INT DEFAULT 0,
+        TotalSpent DECIMAL(18, 2) DEFAULT 0,
+        CreatedAt DATETIME DEFAULT GETDATE()
+    );
+END;
+GO
+
+
