@@ -162,7 +162,7 @@ catch (Exception ex)
 app.UseDefaultFiles();
 app.UseStaticFiles();
 
-// Ensure existing Suppliers table in SQL Server has all MEIL project columns
+// Ensure existing Suppliers table in SQL Server has all Notch Perfumes project columns
 try
 {
     using var migrationDb = GetConnection();
