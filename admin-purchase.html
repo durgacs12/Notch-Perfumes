@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Purchase Entry Master | Notch Qatar Perfumes Control Panel</title>
+    <title>Create Purchase | Notch Qatar Perfumes Control Panel</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
@@ -27,6 +27,14 @@
 </head>
 <body class="bg-blush-50 text-stone-900 antialiased min-h-screen flex flex-col">
 
+    <!-- TOAST NOTIFICATION BANNER -->
+    <div id="toast-notification" class="fixed top-5 right-5 z-50 transform transition-all duration-300 translate-y-[-100%] opacity-0 pointer-events-none">
+        <div id="toast-box" class="flex items-center gap-3 px-5 py-3.5 rounded-xl shadow-xl text-xs font-bold text-white bg-emerald-600 border border-emerald-500">
+            <span id="toast-icon">✅</span>
+            <span id="toast-message">Saved successfully!</span>
+        </div>
+    </div>
+
     <!-- TOP ADMIN BAR -->
     <header class="glass-header-rose text-white border-b border-rosegold-500/20 px-6 py-4 flex items-center justify-between sticky top-0 z-50">
         <div class="flex items-center gap-4">
@@ -41,7 +49,7 @@
                 <div class="w-8 h-8 rounded-full rose-gold-bg text-rose-950 font-bold flex items-center justify-center text-xs">AD</div>
                 <div class="hidden sm:block text-left">
                     <div class="text-xs font-bold text-white">Admin Master</div>
-                    <div class="text-[10px] text-rosegold-300">admin@gmail.com</div>
+                    <div class="text-[10px] text-rosegold-300">admin@notchperfumes.in</div>
                 </div>
                 <button onclick="localStorage.removeItem('adminLoggedIn'); window.location.href='admin-login.html';" class="ml-2 text-xs text-red-300 hover:text-white font-bold bg-red-900/40 px-2.5 py-1 rounded-lg border border-red-500/30">Logout 🚪</button>
             </div>
@@ -49,13 +57,13 @@
     </header>
 
     <div class="flex-1 flex">
-                <!-- SIDEBAR NAVIGATION -->
+        <!-- SIDEBAR NAVIGATION -->
         <aside class="w-64 bg-rose-950 text-rose-100/80 border-r border-rosegold-500/20 hidden md:block flex-shrink-0 p-4 space-y-1.5 overflow-y-auto">
             <a href="admin-dashboard.html" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-semibold transition-colors text-rose-200/80 hover:bg-rose-900/60 hover:text-rosegold-300"><span>📊</span> Overview Dashboard</a>
             <a href="admin-banners.html" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-semibold transition-colors text-rose-200/80 hover:bg-rose-900/60 hover:text-rosegold-300"><span>🖼️</span> Banner Images</a>
 
             <!-- MASTERS COLLAPSIBLE MENU -->
-            <details class="group" >
+            <details class="group">
                 <summary class="w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-xs font-bold text-rosegold-400 hover:bg-rose-900/60 transition-colors cursor-pointer list-none [&::-webkit-details-marker]:hidden select-none">
                     <div class="flex items-center gap-3">
                         <span>📁</span> Masters
@@ -78,7 +86,7 @@
             <a href="admin-verify-payment.html" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-semibold transition-colors text-rose-200/80 hover:bg-rose-900/60 hover:text-rosegold-300"><span>💳</span> Verify Payment</a>
 
             <!-- REPORTS COLLAPSIBLE MENU -->
-            <details class="group" >
+            <details class="group">
                 <summary class="w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-xs font-bold text-rosegold-400 hover:bg-rose-900/60 transition-colors cursor-pointer list-none [&::-webkit-details-marker]:hidden select-none">
                     <div class="flex items-center gap-3">
                         <span>📈</span> Reports
@@ -100,154 +108,745 @@
         </aside>
 
         <!-- MAIN CONTENT -->
-        <main class="flex-1 p-6 md:p-8 space-y-8 overflow-y-auto">
-            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-                <div>
-                    <h1 class="font-serif-heading text-3xl font-bold text-rose-950">Purchase Entry Master</h1>
-                    <p class="text-xs text-gray-500 mt-1">Record supplier purchase invoices, stock arrivals, and procurement costs.</p>
+        <main class="flex-1 p-6 md:p-8 space-y-6 overflow-y-auto">
+
+            <!-- ================= SECTION 1: CREATE / EDIT PURCHASE FORM VIEW ================= -->
+            <div id="view-create-purchase" class="space-y-6">
+                <!-- Page Title Header with Switcher Button -->
+                <div class="flex items-center justify-between">
+                    <h1 id="form-page-title" class="font-serif-heading text-3xl font-bold text-rose-950">Create Purchase</h1>
+                    <button onclick="switchToListView()" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold rounded-lg shadow transition-all flex items-center gap-2">
+                        📋 Purchase List
+                    </button>
                 </div>
-            </div>
 
-            <!-- SUCCESS TOAST -->
-            <div id="toast-msg" class="hidden p-3 rounded-lg text-xs font-bold bg-green-100 text-green-800 border border-green-200"></div>
-
-            <!-- CREATE PURCHASE ENTRY CARD -->
-            <div class="bg-white rounded-2xl border border-rose-100 shadow-sm p-6 space-y-6">
-                <h3 class="font-serif-heading text-xl font-bold text-rose-950 border-b pb-3">+ New Purchase Order Entry</h3>
-                
-                <form onsubmit="handleSavePurchase(event)" class="space-y-4 text-xs">
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <!-- 1. Purchase Details Card -->
+                <div class="bg-white rounded-2xl border border-rose-100 shadow-sm p-6 space-y-4">
+                    <h3 class="font-serif-heading text-lg font-bold text-rose-950 border-b border-gray-100 pb-3">Purchase Details</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs">
                         <div>
-                            <label class="block font-medium text-gray-700 mb-1">Purchase Invoice No *</label>
-                            <input type="text" id="pur-inv-no" required placeholder="e.g. PUR-2026-089" class="w-full bg-white border border-gray-300 p-2.5 rounded-lg focus:outline-none focus:border-rose-900" />
-                        </div>
-                        <div>
-                            <label class="block font-medium text-gray-700 mb-1">Supplier / Vendor *</label>
-                            <select id="pur-supplier" required class="w-full bg-white border border-gray-300 p-2.5 rounded-lg focus:outline-none focus:border-rose-900">
-                                <option value="">-- Select Supplier --</option>
-                                <option value="Grasse Fragrances Ltd">Grasse Fragrances Ltd (France)</option>
-                                <option value="French Rose Oils Co">French Rose Oils Co (Paris)</option>
-                                <option value="Al-Ahli Fragrance Supplies">Al-Ahli Fragrance Supplies (Qatar)</option>
-                            </select>
+                            <label class="block font-medium text-gray-700 mb-1">Purchase No *</label>
+                            <input type="text" id="pur-no" required placeholder="PUR-01" class="w-full bg-gray-100 border border-gray-300 p-2.5 rounded-lg focus:outline-none focus:border-rose-900 font-semibold" />
                         </div>
                         <div>
                             <label class="block font-medium text-gray-700 mb-1">Purchase Date *</label>
                             <input type="date" id="pur-date" required class="w-full bg-white border border-gray-300 p-2.5 rounded-lg focus:outline-none focus:border-rose-900" />
                         </div>
+                        <div>
+                            <label class="block font-medium text-gray-700 mb-1">Batch No *</label>
+                            <input type="text" id="batch-no" required placeholder="BAT-01" class="w-full bg-gray-100 border border-gray-300 p-2.5 rounded-lg focus:outline-none focus:border-rose-900 font-semibold" />
+                        </div>
                     </div>
+                </div>
 
+                <!-- 2. Supplier Card -->
+                <div class="bg-white rounded-2xl border border-rose-100 shadow-sm p-6 space-y-4">
+                    <h3 class="font-serif-heading text-lg font-bold text-rose-950 border-b border-gray-100 pb-3">Supplier</h3>
+                    <div class="text-xs">
+                        <label class="block font-medium text-gray-700 mb-1">Supplier *</label>
+                        <select id="pur-supplier" required class="w-full bg-white border border-gray-300 p-2.5 rounded-lg focus:outline-none focus:border-rose-900">
+                            <option value="">-- Select Supplier --</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- 3. Add Product Card -->
+                <div class="bg-white rounded-2xl border border-rose-100 shadow-sm p-6 space-y-4 text-xs">
+                    <h3 class="font-serif-heading text-lg font-bold text-rose-950 border-b border-gray-100 pb-3">Add Product</h3>
+                    
                     <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
                         <div>
-                            <label class="block font-medium text-gray-700 mb-1">Product / Perfume *</label>
-                            <select id="pur-product" required class="w-full bg-white border border-gray-300 p-2.5 rounded-lg focus:outline-none focus:border-rose-900">
-                                <option value="">-- Select Product --</option>
-                                <option value="Notch Velvet Oud EDP (100ml)">Notch Velvet Oud EDP (100ml)</option>
-                                <option value="Notch Royal Rose EDP (50ml)">Notch Royal Rose EDP (50ml)</option>
-                                <option value="Notch Steele Intense EDP (100ml)">Notch Steele Intense EDP (100ml)</option>
-                                <option value="Notch Celeste EDP (100ml)">Notch Celeste EDP (100ml)</option>
+                            <label class="block font-medium text-gray-700 mb-1">Product *</label>
+                            <select id="item-product" onchange="onProductSelect()" class="w-full bg-white border border-gray-300 p-2.5 rounded-lg focus:outline-none focus:border-rose-900">
+                                <option value="">-- Search Product --</option>
                             </select>
                         </div>
                         <div>
-                            <label class="block font-medium text-gray-700 mb-1">Quantity (Units) *</label>
-                            <input type="number" id="pur-qty" required min="1" oninput="calculateTotal()" placeholder="e.g. 100" class="w-full bg-white border border-gray-300 p-2.5 rounded-lg focus:outline-none focus:border-rose-900" />
+                            <label class="block font-medium text-gray-700 mb-1">Product Code</label>
+                            <input type="text" id="item-code" placeholder="PRD-01" class="w-full bg-gray-50 border border-gray-300 p-2.5 rounded-lg focus:outline-none" />
                         </div>
                         <div>
-                            <label class="block font-medium text-gray-700 mb-1">Unit Purchase Price (QAR) *</label>
-                            <input type="number" id="pur-price" required min="1" step="0.01" oninput="calculateTotal()" placeholder="e.g. 85.00" class="w-full bg-white border border-gray-300 p-2.5 rounded-lg focus:outline-none focus:border-rose-900" />
+                            <label class="block font-medium text-gray-700 mb-1">Size / Variant *</label>
+                            <select id="item-variant" onchange="onVariantChange()" class="w-full bg-white border border-gray-300 p-2.5 rounded-lg focus:outline-none focus:border-rose-900">
+                                <option value="100ML">100ML</option>
+                                <option value="50ML">50ML</option>
+                                <option value="20ML">20ML</option>
+                                <option value="10ML">10ML</option>
+                                <option value="200ML">200ML</option>
+                            </select>
                         </div>
                         <div>
-                            <label class="block font-medium text-gray-700 mb-1">Total Amount (QAR)</label>
-                            <input type="text" id="pur-total" readonly placeholder="QAR 0.00" class="w-full bg-stone-100 font-bold border border-gray-300 p-2.5 rounded-lg text-rose-950 focus:outline-none" />
+                            <label class="block font-medium text-gray-700 mb-1">Variant Code</label>
+                            <input type="text" id="item-variant-code" placeholder="VAR-100ML" class="w-full bg-gray-50 border border-gray-300 p-2.5 rounded-lg focus:outline-none" />
                         </div>
                     </div>
 
-                    <div class="flex justify-end pt-2">
-                        <button type="submit" class="px-6 py-2.5 rose-gold-bg text-rose-950 font-bold rounded-xl shadow hover:opacity-90 transition-all">
-                            Save Purchase Entry
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 pt-2">
+                        <div>
+                            <label class="block font-medium text-gray-700 mb-1">Cost Price ( in INR ) *</label>
+                            <input type="number" id="item-cost" min="0" step="0.01" value="0" oninput="calculateItemDiscounts()" class="w-full bg-white border border-gray-300 p-2.5 rounded-lg focus:outline-none focus:border-rose-900" />
+                        </div>
+                        <div>
+                            <label class="block font-medium text-gray-700 mb-1">Disc %</label>
+                            <input type="number" id="item-disc-pct" min="0" max="100" step="0.01" value="0" oninput="calculateItemDiscounts()" class="w-full bg-white border border-gray-300 p-2.5 rounded-lg focus:outline-none focus:border-rose-900" />
+                        </div>
+                        <div>
+                            <label class="block font-medium text-gray-700 mb-1">Disc Amt (INR)</label>
+                            <input type="number" id="item-disc-amt" min="0" step="0.01" value="0" oninput="calculateItemDiscountsFromAmt()" class="w-full bg-white border border-gray-300 p-2.5 rounded-lg focus:outline-none focus:border-rose-900" />
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 pt-2">
+                        <div>
+                            <label class="block font-medium text-gray-700 mb-1">Quantity *</label>
+                            <input type="number" id="item-qty" min="1" value="1" class="w-full bg-white border border-gray-300 p-2.5 rounded-lg focus:outline-none focus:border-rose-900" />
+                        </div>
+                        <div>
+                            <label class="block font-medium text-gray-700 mb-1">GST %</label>
+                            <select id="item-gst" class="w-full bg-white border border-gray-300 p-2.5 rounded-lg focus:outline-none focus:border-rose-900">
+                                <option value="0">0%</option>
+                                <option value="5">5%</option>
+                                <option value="12">12%</option>
+                                <option value="18" selected>18%</option>
+                                <option value="28">28%</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block font-medium text-gray-700 mb-1">Selling Price (in QAR) *</label>
+                            <input type="number" id="item-selling-qar" min="0" step="0.01" value="0.00" placeholder="e.g. 185.00" class="w-full bg-white border border-gray-300 p-2.5 rounded-lg focus:outline-none focus:border-rose-900 font-semibold" />
+                        </div>
+                    </div>
+
+                    <div class="pt-3">
+                        <button type="button" onclick="addItemToPurchase()" class="px-5 py-2.5 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-lg shadow-sm transition-all flex items-center gap-1.5">
+                            <span>+ Add Item</span>
                         </button>
                     </div>
-                </form>
-            </div>
-
-            <!-- PURCHASE LOG TABLE -->
-            <div class="bg-white rounded-2xl border border-rose-100 shadow-sm p-6 space-y-4">
-                <div class="flex items-center justify-between border-b pb-3">
-                    <h3 class="font-serif-heading text-xl font-bold text-rose-950">Recent Purchase Logs</h3>
-                    <span class="text-xs text-gray-500">Showing last 4 stock orders</span>
                 </div>
 
-                <div class="overflow-x-auto">
-                    <table class="w-full text-left text-xs border-collapse">
-                        <thead>
-                            <tr class="border-b border-stone-200 bg-rose-50/60 text-rose-950 font-bold uppercase text-[10px]">
-                                <th class="py-3 px-4">Invoice No</th>
-                                <th class="py-3 px-4">Supplier</th>
-                                <th class="py-3 px-4">Product</th>
-                                <th class="py-3 px-4">Date</th>
-                                <th class="py-3 px-4">Quantity</th>
-                                <th class="py-3 px-4">Unit Price</th>
-                                <th class="py-3 px-4">Total (QAR)</th>
-                                <th class="py-3 px-4">Status</th>
-                            </tr>
-                        </thead>
-                        <tbody id="purchase-table-body" class="divide-y divide-stone-100 font-medium">
-                            <tr class="hover:bg-rose-50/30">
-                                <td class="py-3.5 px-4 font-bold text-rose-950">PUR-2026-042</td>
-                                <td class="py-3.5 px-4 font-semibold">Grasse Fragrances Ltd</td>
-                                <td class="py-3.5 px-4">Notch Velvet Oud EDP (100ml)</td>
-                                <td class="py-3.5 px-4 text-gray-500">01 Sep 2026</td>
-                                <td class="py-3.5 px-4 font-bold">200 Units</td>
-                                <td class="py-3.5 px-4">QAR 85.00</td>
-                                <td class="py-3.5 px-4 font-bold text-rose-950">QAR 17,000</td>
-                                <td class="py-3.5 px-4"><span class="px-2.5 py-1 bg-emerald-100 text-emerald-800 text-[10px] font-bold rounded-full">Received</span></td>
-                            </tr>
-                            <tr class="hover:bg-rose-50/30">
-                                <td class="py-3.5 px-4 font-bold text-rose-950">PUR-2026-041</td>
-                                <td class="py-3.5 px-4 font-semibold">French Rose Oils Co</td>
-                                <td class="py-3.5 px-4">Notch Royal Rose EDP (50ml)</td>
-                                <td class="py-3.5 px-4 text-gray-500">28 Aug 2026</td>
-                                <td class="py-3.5 px-4 font-bold">150 Units</td>
-                                <td class="py-3.5 px-4">QAR 60.00</td>
-                                <td class="py-3.5 px-4 font-bold text-rose-950">QAR 9,000</td>
-                                <td class="py-3.5 px-4"><span class="px-2.5 py-1 bg-emerald-100 text-emerald-800 text-[10px] font-bold rounded-full">Received</span></td>
-                            </tr>
-                            <tr class="hover:bg-rose-50/30">
-                                <td class="py-3.5 px-4 font-bold text-rose-950">PUR-2026-040</td>
-                                <td class="py-3.5 px-4 font-semibold">Al-Ahli Fragrance Supplies</td>
-                                <td class="py-3.5 px-4">Notch Steele EDP (100ml)</td>
-                                <td class="py-3.5 px-4 text-gray-500">25 Aug 2026</td>
-                                <td class="py-3.5 px-4 font-bold">100 Units</td>
-                                <td class="py-3.5 px-4">QAR 75.00</td>
-                                <td class="py-3.5 px-4 font-bold text-rose-950">QAR 7,500</td>
-                                <td class="py-3.5 px-4"><span class="px-2.5 py-1 bg-amber-100 text-amber-800 text-[10px] font-bold rounded-full">Pending Payment</span></td>
-                            </tr>
-                        </tbody>
-                    </table>
+                <!-- 4. Purchase Items Table Card -->
+                <div class="bg-white rounded-2xl border border-rose-100 shadow-sm p-6 space-y-4 text-xs">
+                    <h3 class="font-serif-heading text-lg font-bold text-rose-950 border-b border-gray-100 pb-3">Purchase Items</h3>
+                    
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left text-xs border-collapse">
+                            <thead>
+                                <tr class="border-b border-stone-200 bg-gray-50 text-stone-700 font-bold uppercase text-[10px]">
+                                    <th class="py-3 px-3">Product</th>
+                                    <th class="py-3 px-3">Variant</th>
+                                    <th class="py-3 px-3 text-right">Rate (INR)</th>
+                                    <th class="py-3 px-3 text-center">Qty</th>
+                                    <th class="py-3 px-3 text-right">Disc %</th>
+                                    <th class="py-3 px-3 text-right">Disc Amt</th>
+                                    <th class="py-3 px-3 text-center">GST %</th>
+                                    <th class="py-3 px-3 text-right">GST Amt</th>
+                                    <th class="py-3 px-3 text-right">Amount (INR)</th>
+                                    <th class="py-3 px-3 text-right">Selling Price</th>
+                                    <th class="py-3 px-3 text-center">Action</th>
+                                </tr>
+                            </thead>
+                            <tbody id="items-table-body" class="divide-y divide-stone-100 font-medium">
+                                <tr>
+                                    <td colspan="11" class="py-6 text-center text-gray-400 italic">No purchase items added yet. Fill above form and click "+ Add Item".</td>
+                                </tr>
+                            </tbody>
+                            <tfoot id="items-table-foot" class="hidden border-t-2 border-stone-200 bg-rose-50/40 font-bold">
+                                <tr>
+                                    <td colspan="8" class="py-3 px-4 text-right uppercase text-[10px] text-gray-600">Grand Total Purchase Amount:</td>
+                                    <td id="grand-total-inr" class="py-3 px-3 text-right text-rose-950 text-sm">₹ 0.00</td>
+                                    <td id="grand-total-qar" class="py-3 px-3 text-right text-emerald-800 text-xs">QAR 0.00</td>
+                                    <td></td>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+
+                    <div class="flex justify-end pt-4">
+                        <button type="button" id="btn-save-purchase" onclick="saveCompletePurchase()" class="px-7 py-3 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl shadow-md transition-all text-xs flex items-center gap-2">
+                            <span>💾</span> <span id="save-btn-text">Save Purchase</span>
+                        </button>
+                    </div>
                 </div>
             </div>
+
+
+            <!-- ================= SECTION 2: PURCHASE LIST VIEW ================= -->
+            <div id="view-purchase-list" class="hidden space-y-6">
+                <!-- Page Title Header with Switcher Button -->
+                <div class="flex items-center justify-between">
+                    <div>
+                        <h1 class="font-serif-heading text-3xl font-bold text-rose-950">Purchase List</h1>
+                        <p class="text-xs text-gray-500 mt-1">Manage and view all registered supplier purchase invoices.</p>
+                    </div>
+                    <button onclick="switchToCreateView()" class="px-5 py-2.5 rose-gold-bg text-rose-950 font-bold text-xs rounded-xl shadow hover:opacity-90 transition-all flex items-center gap-2">
+                        <span>+ New Purchase</span>
+                    </button>
+                </div>
+
+                <!-- Search Card -->
+                <div class="bg-white rounded-2xl border border-rose-100 shadow-sm p-4">
+                    <div class="relative max-w-md">
+                        <input type="text" id="search-invoice" oninput="filterPurchaseList()" placeholder="Search by Invoice No or Supplier..." class="w-full bg-white border border-gray-300 pl-10 pr-4 py-2.5 rounded-xl text-xs focus:outline-none focus:border-rose-900" />
+                        <span class="absolute left-3.5 top-3 text-gray-400 text-xs">🔍</span>
+                    </div>
+                </div>
+
+                <!-- Purchase List Table Card -->
+                <div class="bg-white rounded-2xl border border-rose-100 shadow-sm p-6 space-y-4">
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left text-xs border-collapse">
+                            <thead>
+                                <tr class="border-b border-stone-200 bg-rose-50/60 text-rose-950 font-bold uppercase text-[10px]">
+                                    <th class="py-3.5 px-4">Invoice No</th>
+                                    <th class="py-3.5 px-4">Date</th>
+                                    <th class="py-3.5 px-4">Supplier</th>
+                                    <th class="py-3.5 px-4 text-right">Total (INR)</th>
+                                    <th class="py-3.5 px-4 text-center">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="purchase-list-table-body" class="divide-y divide-stone-100 font-medium">
+                                <!-- Populated dynamically -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
         </main>
     </div>
 
+    <!-- JAVASCRIPT LOGIC -->
     <script>
-        document.getElementById('pur-date').valueAsDate = new Date();
+        // Global State
+        let allPurchases = [];
+        let allSuppliers = [];
+        let allProducts = [];
+        let currentPurchaseItems = [];
+        let editingPurchaseId = null;
 
-        function calculateTotal() {
-            const qty = parseFloat(document.getElementById('pur-qty').value) || 0;
-            const price = parseFloat(document.getElementById('pur-price').value) || 0;
-            const total = qty * price;
-            document.getElementById('pur-total').value = 'QAR ' + total.toLocaleString('en-US', { minimumFractionDigits: 2 });
+        // Predefined Fallback Suppliers if DB empty
+        const defaultSuppliers = [
+            { id: 1, name: 'Jai Veer M Traders' },
+            { id: 2, name: 'Grasse Fragrances Ltd' },
+            { id: 3, name: 'French Rose Oils Co' },
+            { id: 4, name: 'Al-Ahli Fragrance Supplies' }
+        ];
+
+        // Predefined Fallback Products
+        const defaultProducts = [
+            { id: 'P01', name: 'Notch Velvet Oud EDP', code: 'PRD-101', priceInr: 2500, sellingQar: 185 },
+            { id: 'P02', name: 'Notch Royal Rose EDP', code: 'PRD-102', priceInr: 1800, sellingQar: 140 },
+            { id: 'P03', name: 'Notch Steele Intense EDP', code: 'PRD-103', priceInr: 3200, sellingQar: 220 },
+            { id: 'P04', name: 'Notch Celeste EDP', code: 'PRD-104', priceInr: 2800, sellingQar: 195 },
+            { id: 'P05', name: 'Notch Amber Royale EDP', code: 'PRD-105', priceInr: 3500, sellingQar: 250 }
+        ];
+
+        // Default Initial Seed Purchases matching user screenshots & requirements
+        const seedPurchases = [
+            {
+                id: 1,
+                purchaseNo: 'PUR-01',
+                batchNo: 'BAT-01',
+                purchaseDate: '2026-08-29',
+                supplierId: 1,
+                supplierName: 'Jai Veer M Traders',
+                totalAmount: 1000000.00,
+                items: [
+                    { productName: 'Notch Velvet Oud EDP', productCode: 'PRD-101', variant: '100ML', variantCode: 'VAR-100ML', costPrice: 2500, discPercent: 0, discAmt: 0, quantity: 400, gstPercent: 0, gstAmt: 0, totalAmount: 1000000.00, sellingPrice: 185.00 }
+                ]
+            },
+            {
+                id: 2,
+                purchaseNo: 'PUR-02',
+                batchNo: 'BAT-02',
+                purchaseDate: '2026-08-29',
+                supplierId: 1,
+                supplierName: 'Jai Veer M Traders',
+                totalAmount: 700000.00,
+                items: [
+                    { productName: 'Notch Royal Rose EDP', productCode: 'PRD-102', variant: '50ML', variantCode: 'VAR-50ML', costPrice: 1400, discPercent: 0, discAmt: 0, quantity: 500, gstPercent: 0, gstAmt: 0, totalAmount: 700000.00, sellingPrice: 140.00 }
+                ]
+            },
+            {
+                id: 3,
+                purchaseNo: 'PUR-03',
+                batchNo: 'BAT-03',
+                purchaseDate: '2026-08-29',
+                supplierId: 1,
+                supplierName: 'Jai Veer M Traders',
+                totalAmount: 90000.00,
+                items: [
+                    { productName: 'Notch Steele Intense EDP', productCode: 'PRD-103', variant: '100ML', variantCode: 'VAR-100ML', costPrice: 3000, discPercent: 0, discAmt: 0, quantity: 30, gstPercent: 0, gstAmt: 0, totalAmount: 90000.00, sellingPrice: 220.00 }
+                ]
+            }
+        ];
+
+        // Init on page load
+        document.addEventListener('DOMContentLoaded', async () => {
+            document.getElementById('pur-date').valueAsDate = new Date();
+            await loadSuppliers();
+            await loadProducts();
+            await loadPurchases();
+            generateNextNumbers();
+        });
+
+        // View Navigation
+        function switchToCreateView() {
+            document.getElementById('view-create-purchase').classList.remove('hidden');
+            document.getElementById('view-purchase-list').classList.add('hidden');
         }
 
-        function handleSavePurchase(e) {
-            e.preventDefault();
-            const inv = document.getElementById('pur-inv-no').value;
-            const toast = document.getElementById('toast-msg');
-            toast.innerText = '✅ Purchase Entry #' + inv + ' saved successfully!';
-            toast.classList.remove('hidden');
-            setTimeout(() => toast.classList.add('hidden'), 4000);
-            e.target.reset();
+        function switchToListView() {
+            document.getElementById('view-create-purchase').classList.add('hidden');
+            document.getElementById('view-purchase-list').classList.remove('hidden');
+            renderPurchaseListTable();
+        }
+
+        // Notification Helper
+        function showToast(message, isSuccess = true) {
+            const toast = document.getElementById('toast-notification');
+            const toastBox = document.getElementById('toast-box');
+            const toastIcon = document.getElementById('toast-icon');
+            const toastMsg = document.getElementById('toast-message');
+
+            toastMsg.innerText = message;
+            if (isSuccess) {
+                toastBox.className = "flex items-center gap-3 px-5 py-3.5 rounded-xl shadow-xl text-xs font-bold text-white bg-emerald-600 border border-emerald-500";
+                toastIcon.innerText = "✅";
+            } else {
+                toastBox.className = "flex items-center gap-3 px-5 py-3.5 rounded-xl shadow-xl text-xs font-bold text-white bg-rose-600 border border-rose-500";
+                toastIcon.innerText = "⚠️";
+            }
+
+            toast.classList.remove('translate-y-[-100%]', 'opacity-0', 'pointer-events-none');
+            toast.classList.add('translate-y-0', 'opacity-100');
+
+            setTimeout(() => {
+                toast.classList.remove('translate-y-0', 'opacity-100');
+                toast.classList.add('translate-y-[-100%]', 'opacity-0', 'pointer-events-none');
+            }, 3500);
+        }
+
+        // 1. Load Suppliers from API / localStorage / fallback
+        async function loadSuppliers() {
+            const select = document.getElementById('pur-supplier');
+            select.innerHTML = '<option value="">-- Select Supplier --</option>';
+
+            try {
+                const res = await fetch('/api/suppliers');
+                if (res.ok) {
+                    const data = await res.json();
+                    if (data && data.length > 0) {
+                        allSuppliers = data;
+                    }
+                }
+            } catch (e) {
+                console.log('Supplier API unreachable, checking local storage.');
+            }
+
+            if (!allSuppliers || allSuppliers.length === 0) {
+                const local = localStorage.getItem('notch_suppliers');
+                if (local) {
+                    allSuppliers = JSON.parse(local);
+                } else {
+                    allSuppliers = defaultSuppliers;
+                }
+            }
+
+            allSuppliers.forEach(s => {
+                const name = s.supplierName || s.name;
+                const opt = document.createElement('option');
+                opt.value = name;
+                opt.textContent = name;
+                opt.dataset.id = s.id || s.Id || '';
+                select.appendChild(opt);
+            });
+        }
+
+        // 2. Load Products from API / fallback
+        async function loadProducts() {
+            const select = document.getElementById('item-product');
+            select.innerHTML = '<option value="">-- Search Product --</option>';
+
+            try {
+                const res = await fetch('/api/products');
+                if (res.ok) {
+                    const data = await res.json();
+                    if (data && data.length > 0) {
+                        allProducts = data.map((p, idx) => ({
+                            id: p.id || p.Id,
+                            name: p.name || p.Name,
+                            code: p.code || p.ProductCode || `PRD-${100 + idx}`,
+                            priceInr: p.price || p.Price || 2500,
+                            sellingQar: p.sellingPrice || p.SellingPrice || 185
+                        }));
+                    }
+                }
+            } catch (e) {
+                console.log('Products API unreachable, using standard product catalog.');
+            }
+
+            if (!allProducts || allProducts.length === 0) {
+                allProducts = defaultProducts;
+            }
+
+            allProducts.forEach(p => {
+                const opt = document.createElement('option');
+                opt.value = p.name;
+                opt.textContent = p.name;
+                select.appendChild(opt);
+            });
+        }
+
+        function onProductSelect() {
+            const selectedName = document.getElementById('item-product').value;
+            const prod = allProducts.find(p => p.name === selectedName);
+            if (prod) {
+                document.getElementById('item-code').value = prod.code || 'PRD-101';
+                document.getElementById('item-cost').value = prod.priceInr || 2500;
+                document.getElementById('item-selling-qar').value = prod.sellingQar || 185.00;
+                onVariantChange();
+            }
+        }
+
+        function onVariantChange() {
+            const variant = document.getElementById('item-variant').value;
+            document.getElementById('item-variant-code').value = `VAR-${variant}`;
+        }
+
+        // 3. Load Purchases from API / Local Storage / Seed
+        async function loadPurchases() {
+            try {
+                const res = await fetch('/api/purchases');
+                if (res.ok) {
+                    const data = await res.json();
+                    if (data && data.length > 0) {
+                        allPurchases = data;
+                        renderPurchaseListTable();
+                        return;
+                    }
+                }
+            } catch (e) {
+                console.log('Purchases API unreachable, using local store.');
+            }
+
+            const stored = localStorage.getItem('notch_purchases');
+            if (stored) {
+                allPurchases = JSON.parse(stored);
+            } else {
+                allPurchases = seedPurchases;
+                localStorage.setItem('notch_purchases', JSON.stringify(seedPurchases));
+            }
+            renderPurchaseListTable();
+        }
+
+        function generateNextNumbers() {
+            let nextNum = 1;
+            allPurchases.forEach(p => {
+                if (p.purchaseNo && p.purchaseNo.startsWith('PUR-')) {
+                    const num = parseInt(p.purchaseNo.replace('PUR-', ''), 10);
+                    if (!isNaN(num) && num >= nextNum) {
+                        nextNum = num + 1;
+                    }
+                }
+            });
+            const formattedNum = String(nextNum).padStart(2, '0');
+            document.getElementById('pur-no').value = `PUR-${formattedNum}`;
+            document.getElementById('batch-no').value = `BAT-${formattedNum}`;
+        }
+
+        // Calculations for Product Item Add
+        function calculateItemDiscounts() {
+            const cost = parseFloat(document.getElementById('item-cost').value) || 0;
+            const pct = parseFloat(document.getElementById('item-disc-pct').value) || 0;
+            const amt = (cost * pct) / 100;
+            document.getElementById('item-disc-amt').value = amt.toFixed(2);
+        }
+
+        function calculateItemDiscountsFromAmt() {
+            const cost = parseFloat(document.getElementById('item-cost').value) || 0;
+            const amt = parseFloat(document.getElementById('item-disc-amt').value) || 0;
+            if (cost > 0) {
+                const pct = (amt / cost) * 100;
+                document.getElementById('item-disc-pct').value = pct.toFixed(2);
+            }
+        }
+
+        // Add Item to current purchase table
+        function addItemToPurchase() {
+            const productName = document.getElementById('item-product').value;
+            if (!productName) {
+                showToast('Please select a product!', false);
+                return;
+            }
+
+            const productCode = document.getElementById('item-code').value || 'PRD-101';
+            const variant = document.getElementById('item-variant').value;
+            const variantCode = document.getElementById('item-variant-code').value || `VAR-${variant}`;
+            const costPrice = parseFloat(document.getElementById('item-cost').value) || 0;
+            const discPercent = parseFloat(document.getElementById('item-disc-pct').value) || 0;
+            const discAmt = parseFloat(document.getElementById('item-disc-amt').value) || 0;
+            const quantity = parseInt(document.getElementById('item-qty').value, 10) || 1;
+            const gstPercent = parseFloat(document.getElementById('item-gst').value) || 0;
+            const sellingPrice = parseFloat(document.getElementById('item-selling-qar').value) || 0;
+
+            const netCost = Math.max(0, costPrice - discAmt);
+            const gstAmt = (netCost * quantity * gstPercent) / 100;
+            const totalAmount = (netCost * quantity) + gstAmt;
+
+            const newItem = {
+                productName,
+                productCode,
+                variant,
+                variantCode,
+                costPrice,
+                discPercent,
+                discAmt,
+                quantity,
+                gstPercent,
+                gstAmt,
+                totalAmount,
+                sellingPrice
+            };
+
+            currentPurchaseItems.push(newItem);
+            renderCurrentItemsTable();
+            showToast(`Added ${productName} (${variant}) to purchase items!`, true);
+
+            // Reset Item Inputs
+            document.getElementById('item-product').value = '';
+            document.getElementById('item-code').value = '';
+            document.getElementById('item-cost').value = '0';
+            document.getElementById('item-disc-pct').value = '0';
+            document.getElementById('item-disc-amt').value = '0';
+            document.getElementById('item-qty').value = '1';
+            document.getElementById('item-selling-qar').value = '0.00';
+        }
+
+        function removePurchaseItem(index) {
+            currentPurchaseItems.splice(index, 1);
+            renderCurrentItemsTable();
+            showToast('Item removed.', true);
+        }
+
+        function renderCurrentItemsTable() {
+            const tbody = document.getElementById('items-table-body');
+            const tfoot = document.getElementById('items-table-foot');
+
+            if (currentPurchaseItems.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="11" class="py-6 text-center text-gray-400 italic">No purchase items added yet. Fill above form and click "+ Add Item".</td></tr>`;
+                tfoot.classList.add('hidden');
+                return;
+            }
+
+            let grandTotalInr = 0;
+            let grandTotalQar = 0;
+
+            tbody.innerHTML = currentPurchaseItems.map((item, idx) => {
+                grandTotalInr += item.totalAmount;
+                grandTotalQar += (item.sellingPrice * item.quantity);
+
+                return `
+                    <tr class="hover:bg-rose-50/30">
+                        <td class="py-3 px-3 font-bold text-rose-950">${item.productName}</td>
+                        <td class="py-3 px-3 font-semibold text-gray-700">${item.variant}</td>
+                        <td class="py-3 px-3 text-right">₹ ${item.costPrice.toFixed(2)}</td>
+                        <td class="py-3 px-3 text-center font-bold">${item.quantity}</td>
+                        <td class="py-3 px-3 text-right">${item.discPercent}%</td>
+                        <td class="py-3 px-3 text-right">₹ ${item.discAmt.toFixed(2)}</td>
+                        <td class="py-3 px-3 text-center">${item.gstPercent}%</td>
+                        <td class="py-3 px-3 text-right">₹ ${item.gstAmt.toFixed(2)}</td>
+                        <td class="py-3 px-3 text-right font-bold text-rose-950">₹ ${item.totalAmount.toFixed(2)}</td>
+                        <td class="py-3 px-3 text-right font-semibold text-emerald-700">QAR ${item.sellingPrice.toFixed(2)}</td>
+                        <td class="py-3 px-3 text-center">
+                            <button type="button" onclick="removePurchaseItem(${idx})" class="px-2 py-1 bg-red-100 hover:bg-red-200 text-red-700 text-[10px] font-bold rounded">
+                                🗑️ Remove
+                            </button>
+                        </td>
+                    </tr>
+                `;
+            }).join('');
+
+            document.getElementById('grand-total-inr').innerText = `₹ ${grandTotalInr.toLocaleString('en-IN', { minimumFractionDigits: 2 })}`;
+            document.getElementById('grand-total-qar').innerText = `QAR ${grandTotalQar.toLocaleString('en-US', { minimumFractionDigits: 2 })}`;
+            tfoot.classList.remove('hidden');
+        }
+
+        // Save Complete Purchase Record
+        async function saveCompletePurchase() {
+            const purchaseNo = document.getElementById('pur-no').value.trim();
+            const purchaseDate = document.getElementById('pur-date').value;
+            const batchNo = document.getElementById('batch-no').value.trim();
+            const supplierName = document.getElementById('pur-supplier').value;
+
+            if (!purchaseNo) {
+                showToast('Please enter Purchase No!', false);
+                return;
+            }
+            if (!supplierName) {
+                showToast('Please select a Supplier!', false);
+                return;
+            }
+            if (currentPurchaseItems.length === 0) {
+                showToast('Please add at least one product item!', false);
+                return;
+            }
+
+            const totalAmount = currentPurchaseItems.reduce((sum, i) => sum + i.totalAmount, 0);
+
+            const supplierOpt = document.querySelector(`#pur-supplier option[value="${supplierName}"]`);
+            const supplierId = supplierOpt && supplierOpt.dataset.id ? parseInt(supplierOpt.dataset.id, 10) : null;
+
+            const payload = {
+                id: editingPurchaseId || 0,
+                purchaseNo,
+                purchaseDate,
+                batchNo,
+                supplierId,
+                supplierName,
+                totalAmount,
+                items: currentPurchaseItems
+            };
+
+            if (editingPurchaseId) {
+                // UPDATE
+                try {
+                    const res = await fetch(`/api/purchases/${editingPurchaseId}`, {
+                        method: 'PUT',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(payload)
+                    });
+                    if (res.ok) {
+                        showToast(`Purchase #${purchaseNo} updated successfully!`, true);
+                    }
+                } catch (e) {
+                    console.log('Update API failed, updating in local storage');
+                }
+
+                const index = allPurchases.findIndex(p => p.id === editingPurchaseId);
+                if (index !== -1) {
+                    allPurchases[index] = { ...payload, id: editingPurchaseId };
+                }
+            } else {
+                // CREATE
+                let newId = Date.now();
+                try {
+                    const res = await fetch('/api/purchases', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(payload)
+                    });
+                    if (res.ok) {
+                        const created = await res.json();
+                        if (created && created.id) newId = created.id;
+                        showToast(`Purchase #${purchaseNo} created successfully!`, true);
+                    }
+                } catch (e) {
+                    console.log('Create API failed, saving to local storage');
+                }
+
+                allPurchases.unshift({ ...payload, id: newId });
+                showToast(`Purchase #${purchaseNo} saved successfully!`, true);
+            }
+
+            localStorage.setItem('notch_purchases', JSON.stringify(allPurchases));
+
+            // Reset Form & Switch to List View
+            resetForm();
+            switchToListView();
+        }
+
+        function resetForm() {
+            editingPurchaseId = null;
+            currentPurchaseItems = [];
+            document.getElementById('form-page-title').innerText = 'Create Purchase';
+            document.getElementById('save-btn-text').innerText = 'Save Purchase';
+            document.getElementById('pur-supplier').value = '';
             document.getElementById('pur-date').valueAsDate = new Date();
-            document.getElementById('pur-total').value = 'QAR 0.00';
+            renderCurrentItemsTable();
+            generateNextNumbers();
+        }
+
+        // Render Purchase List Table
+        function renderPurchaseListTable(filteredList = null) {
+            const list = filteredList || allPurchases;
+            const tbody = document.getElementById('purchase-list-table-body');
+
+            if (list.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="5" class="py-6 text-center text-gray-400">No purchase records found.</td></tr>`;
+                return;
+            }
+
+            tbody.innerHTML = list.map(p => {
+                const dateStr = p.purchaseDate ? new Date(p.purchaseDate).toLocaleDateString('en-US') : 'N/A';
+                const formattedTotal = (p.totalAmount || 0).toLocaleString('en-IN', { minimumFractionDigits: 2 });
+
+                return `
+                    <tr class="hover:bg-rose-50/30">
+                        <td class="py-3.5 px-4 font-bold text-rose-950">${p.purchaseNo}</td>
+                        <td class="py-3.5 px-4 text-gray-600">${dateStr}</td>
+                        <td class="py-3.5 px-4 font-semibold text-stone-800">${p.supplierName}</td>
+                        <td class="py-3.5 px-4 text-right font-bold text-rose-950">₹ ${formattedTotal}</td>
+                        <td class="py-3.5 px-4 text-center space-x-2">
+                            <button onclick="editPurchase(${p.id})" class="px-3 py-1.5 bg-amber-500 hover:bg-amber-600 text-white font-bold rounded-lg text-xs shadow-sm transition-all">
+                                Edit
+                            </button>
+                            <button onclick="deletePurchase(${p.id}, '${p.purchaseNo}')" class="px-3 py-1.5 bg-red-600 hover:bg-red-700 text-white font-bold rounded-lg text-xs shadow-sm transition-all">
+                                Delete
+                            </button>
+                        </td>
+                    </tr>
+                `;
+            }).join('');
+        }
+
+        // Filter Purchase List by search query
+        function filterPurchaseList() {
+            const query = document.getElementById('search-invoice').value.toLowerCase().trim();
+            const filtered = allPurchases.filter(p => 
+                (p.purchaseNo && p.purchaseNo.toLowerCase().includes(query)) ||
+                (p.supplierName && p.supplierName.toLowerCase().includes(query))
+            );
+            renderPurchaseListTable(filtered);
+        }
+
+        // Edit Purchase Action
+        function editPurchase(id) {
+            const purchase = allPurchases.find(p => p.id === id);
+            if (!purchase) return;
+
+            editingPurchaseId = id;
+            document.getElementById('form-page-title').innerText = 'Edit Purchase';
+            document.getElementById('save-btn-text').innerText = 'Update Purchase';
+
+            document.getElementById('pur-no').value = purchase.purchaseNo;
+            document.getElementById('batch-no').value = purchase.batchNo || 'BAT-01';
+            if (purchase.purchaseDate) {
+                const dateVal = new Date(purchase.purchaseDate).toISOString().split('T')[0];
+                document.getElementById('pur-date').value = dateVal;
+            }
+            document.getElementById('pur-supplier').value = purchase.supplierName;
+
+            currentPurchaseItems = purchase.items ? JSON.parse(JSON.stringify(purchase.items)) : [];
+            renderCurrentItemsTable();
+            switchToCreateView();
+        }
+
+        // Delete Purchase Action
+        async function deletePurchase(id, purchaseNo) {
+            if (!confirm(`Are you sure you want to delete Purchase #${purchaseNo}?`)) return;
+
+            try {
+                await fetch(`/api/purchases/${id}`, { method: 'DELETE' });
+            } catch (e) {
+                console.log('Delete API call failed, removing from local storage');
+            }
+
+            allPurchases = allPurchases.filter(p => p.id !== id);
+            localStorage.setItem('notch_purchases', JSON.stringify(allPurchases));
+
+            showToast(`Purchase #${purchaseNo} deleted successfully!`, true);
+            renderPurchaseListTable();
         }
     </script>
 </body>
