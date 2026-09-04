@@ -138,11 +138,6 @@
                             <label class="block font-medium text-gray-600 mb-1">Customer</label>
                             <select id="sales-customer" class="w-full bg-white border border-stone-300 p-2.5 rounded-lg focus:outline-none focus:border-rose-900">
                                 <option value="Walk-in Customer">Search Customer / Walk-in</option>
-                                <option value="Mohammed Al-Kuwari">Mohammed Al-Kuwari (+974 5512 3456)</option>
-                                <option value="Fatima Al-Thani">Fatima Al-Thani (+974 6612 9876)</option>
-                                <option value="Salem Al-Marri">Salem Al-Marri (+974 3344 5566)</option>
-                                <option value="Rohan Kapoor">Rohan Kapoor (+974 5011 2233)</option>
-                                <option value="Ananya Sharma">Ananya Sharma (+974 5599 8877)</option>
                             </select>
                         </div>
                     </div>
@@ -297,25 +292,8 @@
                                 </tr>
                             </thead>
                             <tbody id="sales-history-tbody" class="divide-y divide-stone-100 font-medium">
-                                <tr class="hover:bg-rose-50/30">
-                                    <td class="py-3.5 px-4 font-mono font-bold text-rose-950">SAL-01</td>
-                                    <td class="py-3.5 px-4 text-gray-500">04 Sep 2026</td>
-                                    <td class="py-3.5 px-4 font-semibold">Mohammed Al-Kuwari</td>
-                                    <td class="py-3.5 px-4"><span class="px-2 py-0.5 bg-stone-100 text-stone-800 rounded font-bold">Cash</span></td>
-                                    <td class="py-3.5 px-4 text-center font-bold">2</td>
-                                    <td class="py-3.5 px-4 text-right font-bold text-emerald-700">QAR 540.00</td>
-                                    <td class="py-3.5 px-4 text-center"><span class="px-2.5 py-1 bg-emerald-100 text-emerald-800 font-bold rounded-full text-[10px]">Paid</span></td>
-                                    <td class="py-3.5 px-4 text-center"><button onclick="alert('Printing Invoice #SAL-01')" class="text-blue-600 hover:underline font-bold">Print Invoice 🖨️</button></td>
-                                </tr>
-                                <tr class="hover:bg-rose-50/30">
-                                    <td class="py-3.5 px-4 font-mono font-bold text-rose-950">SAL-02</td>
-                                    <td class="py-3.5 px-4 text-gray-500">03 Sep 2026</td>
-                                    <td class="py-3.5 px-4 font-semibold">Fatima Al-Thani</td>
-                                    <td class="py-3.5 px-4"><span class="px-2 py-0.5 bg-blue-100 text-blue-800 rounded font-bold">Card</span></td>
-                                    <td class="py-3.5 px-4 text-center font-bold">1</td>
-                                    <td class="py-3.5 px-4 text-right font-bold text-emerald-700">QAR 320.00</td>
-                                    <td class="py-3.5 px-4 text-center"><span class="px-2.5 py-1 bg-emerald-100 text-emerald-800 font-bold rounded-full text-[10px]">Paid</span></td>
-                                    <td class="py-3.5 px-4 text-center"><button onclick="alert('Printing Invoice #SAL-02')" class="text-blue-600 hover:underline font-bold">Print Invoice 🖨️</button></td>
+                                <tr>
+                                    <td colspan="8" class="py-6 px-4 text-center text-stone-500 italic">No sales transactions recorded yet.</td>
                                 </tr>
                             </tbody>
                         </table>
@@ -326,6 +304,7 @@
     </div>
 
     <!-- JAVASCRIPT BILLING LOGIC ENGINE -->
+    <script src="js/products.js"></script>
     <script>
         let addedItems = [];
         let currentSalesCounter = 1;
@@ -491,6 +470,101 @@
             currentSalesCounter++;
             initSalesForm();
         }
+
+        async function loadCustomerMasterOptions() {
+            const select = document.getElementById('sales-customer');
+            if (!select) return;
+            try {
+                const res = await fetch('/api/customers');
+                let customers = [];
+                if (res.ok) {
+                    customers = await res.json();
+                }
+                
+                let html = '<option value="Walk-in Customer">Search Customer / Walk-in</option>';
+                if (Array.isArray(customers) && customers.length > 0) {
+                    customers.forEach(c => {
+                        const fName = c.firstName || c.FirstName || '';
+                        const lName = c.lastName || c.LastName || '';
+                        const name = `${fName} ${lName}`.trim() || c.email || c.Email || `Customer #${c.id || c.Id}`;
+                        const phone = c.mobileNumber || c.MobileNumber || '';
+                        const phoneStr = phone ? ` (${phone})` : '';
+                        html += `<option value="${name}">${name}${phoneStr}</option>`;
+                    });
+                }
+                select.innerHTML = html;
+            } catch (e) {
+                console.error('Error loading customer master:', e);
+            }
+        }
+
+        async function loadProductMasterOptions() {
+            const select = document.getElementById('item-product');
+            if (!select) return;
+            try {
+                let products = [];
+
+                // 1. Try from localStorage (Product Master custom products)
+                const saved = localStorage.getItem('notch_custom_products');
+                if (saved) {
+                    try {
+                        const parsed = JSON.parse(saved);
+                        if (Array.isArray(parsed) && parsed.length > 0) {
+                            products = parsed;
+                        }
+                    } catch(e) {}
+                }
+
+                // 2. Fetch from API if needed
+                if (!products || products.length === 0) {
+                    try {
+                        const res = await fetch('/api/products');
+                        if (res.ok) {
+                            const data = await res.json();
+                            if (Array.isArray(data) && data.length > 0) {
+                                products = data;
+                            }
+                        }
+                    } catch(e) {}
+                }
+
+                // 3. Fallback to default catalog from products.js
+                if (!products || products.length === 0) {
+                    if (typeof getProductsList === 'function') {
+                        products = getProductsList();
+                    } else if (typeof PRODUCTS !== 'undefined' && Array.isArray(PRODUCTS)) {
+                        products = PRODUCTS;
+                    }
+                }
+
+                // Standard catalog fallback if still empty
+                if (!products || products.length === 0) {
+                    products = [
+                        { name: 'Notch Velvet Oud EDP', price: 295, stock: 180 },
+                        { name: 'Notch Royal Rose EDP', price: 245, stock: 120 },
+                        { name: 'Notch Steele Intense EDP', price: 320, stock: 45 },
+                        { name: 'Notch Celeste EDP', price: 275, stock: 95 },
+                        { name: 'Notch Discovery Gift Set', price: 495, stock: 30 }
+                    ];
+                }
+
+                let html = '<option value="">Search Product</option>';
+                products.forEach(p => {
+                    const name = p.name || p.Name || 'Product';
+                    const price = p.price || p.Price || 0;
+                    const stock = (p.stock !== undefined && p.stock !== null) ? (p.stock || p.Stock) : 100;
+                    html += `<option value="${name}" data-price="${price}" data-stock="${stock}">${name}</option>`;
+                });
+                select.innerHTML = html;
+            } catch (e) {
+                console.error('Error loading products master:', e);
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            loadCustomerMasterOptions();
+            loadProductMasterOptions();
+        });
     </script>
 </body>
 </html>
