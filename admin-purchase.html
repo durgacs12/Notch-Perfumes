@@ -254,7 +254,7 @@
                                 <tr>
                                     <td colspan="8" class="py-3 px-4 text-right uppercase text-[10px] text-gray-600">Grand Total Purchase Amount:</td>
                                     <td id="grand-total-inr" class="py-3 px-3 text-right text-rose-950 text-sm">₹ 0.00</td>
-                                    <td id="grand-total-qar" class="py-3 px-3 text-right text-emerald-800 text-xs">QAR 0.00</td>
+                                    <td id="grand-total-qar" class="py-3 px-3 text-right text-emerald-800 text-xs" title="Total Expected Sales Value in QAR">QAR 0.00</td>
                                     <td></td>
                                 </tr>
                             </tfoot>
@@ -660,6 +660,7 @@
                 grandTotalInr += item.totalAmount;
                 grandTotalQar += (item.sellingPrice * item.quantity);
 
+                const lineTotalDisc = item.discAmt * item.quantity;
                 return `
                     <tr class="hover:bg-rose-50/30">
                         <td class="py-3 px-3 font-bold text-rose-950">${item.productName}</td>
@@ -667,7 +668,7 @@
                         <td class="py-3 px-3 text-right">₹ ${item.costPrice.toFixed(2)}</td>
                         <td class="py-3 px-3 text-center font-bold">${item.quantity}</td>
                         <td class="py-3 px-3 text-right">${item.discPercent}%</td>
-                        <td class="py-3 px-3 text-right">₹ ${item.discAmt.toFixed(2)}</td>
+                        <td class="py-3 px-3 text-right">₹ ${lineTotalDisc.toFixed(2)}</td>
                         <td class="py-3 px-3 text-center">${item.gstPercent}%</td>
                         <td class="py-3 px-3 text-right">₹ ${item.gstAmt.toFixed(2)}</td>
                         <td class="py-3 px-3 text-right font-bold text-rose-950">₹ ${item.totalAmount.toFixed(2)}</td>

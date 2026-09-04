@@ -111,17 +111,6 @@ BEGIN
 END;
 GO
 
--- Seed Sample Products Data
-IF NOT EXISTS (SELECT * FROM Products)
-BEGIN
-    INSERT INTO Products (Id, Name, Subtitle, Category, ScentFamily, Price, OriginalPrice, Rating, ReviewsCount, Badge, Image, TopNotes, HeartNotes, BaseNotes, Perfumer, Description) VALUES
-    ('notch-raw-men', 'Notch Raw Eau De Parfum', 'For Men • Fresh & Citrus Woody', 'men', 'citrus', 119.00, 139.00, 4.8, 420, 'Bestseller', 'https://images.unsplash.com/photo-1594035910387-fea47794261f?auto=format&fit=crop&w=800&q=80', 'Bergamot, Lemon, Crisp Watery Accord', 'Violet Leaves, Geranium, Lavender', 'Guaiac Wood, Patchouli, Cashmeran', 'Olivier Pescheux (Qatar)', 'Notch Raw draws inspiration from rain washing over lush foliage. A vibrant blend of citrus top notes paired with rich woody undertones.'),
-    ('notch-celeste-women', 'Notch Celeste Eau De Parfum', 'For Women • Elegant Floral Amber', 'women', 'floral', 119.00, 139.00, 4.9, 512, 'Bestseller', 'https://images.unsplash.com/photo-1541643600914-78b084683601?auto=format&fit=crop&w=800&q=80', 'Mandarin, Green Pear, Grapefruit, Peach', 'Jasmine, Sambac, Waterlily, Orange Blossom', 'White Musk, Patchouli, Sandalwood, Amber', 'Harry Fremont (Qatar)', 'Notch Celeste evokes the carefree joy of a sunny spring afternoon. Vibrant fruity accents blend seamlessly into a rich heart of jasmine.'),
-    ('notch-amalfi-bleue', 'Notch Amalfi Bleue EDP', 'Unisex • Mediterranean Aquatic Fresh', 'unisex', 'oceanic', 139.00, 169.00, 4.9, 380, 'Trending', 'https://images.unsplash.com/photo-1523293182086-7651a899d37f?auto=format&fit=crop&w=800&q=80', 'Citrus Zest, Apple, Sea Breeze Accord', 'Clary Sage, Violet Leaf, Fig Tree', 'Ambergris, Driftwood, Vetiver', 'Jordi Fernandez (Qatar)', 'Transport yourself to the sun-drenched cliffs of the Italian coastline. Fresh ocean breezes meet aromatic Mediterranean herbs.'),
-    ('notch-steele-men', 'Notch Steele Eau De Parfum', 'For Men • Intense Spiced Leather & Wood', 'men', 'woody', 119.00, 129.00, 4.7, 295, 'Popular', 'https://images.unsplash.com/photo-1508746829417-e6f548d8d6ed?auto=format&fit=crop&w=800&q=80', 'Pink Pepper, Bergamot, Cardamom', 'Nutmeg, Pimento, Cistus', 'Smoky Leather, Cedarwood, Vanilla', 'Fabrice Pellegrin (Qatar)', 'Notch Steele embodies charisma and strength. A warm, spicy heart layered with opulent leather and smoky woods.');
-END;
-GO
-
 -- Seed Admin User
 IF NOT EXISTS (SELECT * FROM Users WHERE Username = 'admin')
 BEGIN

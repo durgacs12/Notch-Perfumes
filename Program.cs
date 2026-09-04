@@ -189,7 +189,11 @@ try
                 ALTER TABLE Suppliers ADD AccountNumber NVARCHAR(50);
             IF NOT EXISTS (SELECT * FROM sys.columns WHERE object_id = OBJECT_ID('Suppliers') AND name = 'IFSC')
                 ALTER TABLE Suppliers ADD IFSC NVARCHAR(50);
-        END
+        END;
+
+        -- Clean any legacy dummy sample products
+        DELETE FROM OrderItems WHERE ProductId IN ('notch-oud-royale', 'notch-raw-men', 'notch-celeste-women', 'notch-amalfi-bleue', 'notch-steele-men', 'notch-nox-him', 'notch-noura-her', 'notch-discovery-kit', 'notch-nude-women');
+        DELETE FROM Products WHERE Id IN ('notch-oud-royale', 'notch-raw-men', 'notch-celeste-women', 'notch-amalfi-bleue', 'notch-steele-men', 'notch-nox-him', 'notch-noura-her', 'notch-discovery-kit', 'notch-nude-women');
     ");
 }
 catch (Exception ex)
