@@ -121,8 +121,9 @@
                             <input type="text" id="bannerSubtitle" placeholder="e.g. Up to 30% Off on Selected Scents" class="w-full px-3.5 py-2 border rounded-xl focus:ring-1 focus:ring-rose-950 text-xs" />
                         </div>
                         <div>
-                            <label class="block font-bold text-rose-950 mb-1">Image URL</label>
-                            <input type="text" id="bannerImage" required placeholder="e.g. https://images.unsplash.com/photo-..." class="w-full px-3.5 py-2 border rounded-xl focus:ring-1 focus:ring-rose-950 text-xs" />
+                            <label class="block font-bold text-rose-950 mb-1">Banner Image</label>
+                            <input type="file" id="bannerFile" accept="image/*" class="w-full bg-white border border-gray-300 p-1.5 rounded-xl text-xs mb-2 focus:ring-1 focus:ring-rose-950" />
+                            <input type="text" id="bannerImage" placeholder="Or Image URL" class="w-full px-3.5 py-2 border rounded-xl focus:ring-1 focus:ring-rose-950 text-xs bg-white" />
                         </div>
                         <div>
                             <label class="block font-bold text-rose-950 mb-1">Target Link URL</label>
@@ -184,8 +185,8 @@
                 tr.className = 'hover:bg-stone-50 font-medium';
                 tr.innerHTML = `
                     <td class="py-3 px-4"><img src="${b.image || b.Image}" class="h-12 w-24 object-cover rounded-lg border" /></td>
-                    <td class="py-3 px-4"><div class="font-bold text-rose-950">${b.title || b.Title}</div><div class="text-[10px] text-gray-500">${b.subtitle || b.Subtitle || ''}</div></td>
-                    <td class="py-3 px-4 text-blue-600">${b.targetUrl || b.TargetUrl || 'N/A'}</td>
+                    <td class="py-3 px-4"><div class="font-bold text-rose-950">${escapeHtml(b.title || b.Title)}</div><div class="text-[10px] text-gray-500">${escapeHtml(b.subtitle || b.Subtitle || '')}</div></td>
+                    <td class="py-3 px-4 text-blue-600">${escapeHtml(b.targetUrl || b.TargetUrl || 'N/A')}</td>
                     <td class="py-3 px-4">
                         <button onclick="deleteBanner(${b.id || b.Id})" class="text-red-600 font-bold hover:underline">Delete</button>
                     </td>
@@ -197,20 +198,39 @@
             e.preventDefault();
             const title = document.getElementById('bannerTitle').value;
             const subtitle = document.getElementById('bannerSubtitle').value;
-            const image = document.getElementById('bannerImage').value;
+            const fileInput = document.getElementById('bannerFile').files[0];
+            const urlInput = document.getElementById('bannerImage').value.trim();
             const targetUrl = document.getElementById('bannerTarget').value;
-            const payload = { title, subtitle, image, targetUrl, isActive: true };
-            try {
-                const res = await fetch('/api/banners', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
-                if (res.ok) {
-                    await fetchBanners();
-                    document.getElementById('banner-form').reset();
-                    return;
-                }
-            } catch (err) {}
-            banners.push({ id: Date.now(), ...payload });
-            document.getElementById('banner-form').reset();
-            renderTable();
+
+            if (!fileInput && !urlInput) {
+                alert('Please select an image file or enter an Image URL.');
+                return;
+            }
+
+            async function saveBanner(imgSrc) {
+                const payload = { title, subtitle, image: imgSrc, targetUrl, isActive: true };
+                try {
+                    const res = await fetch('/api/banners', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
+                    if (res.ok) {
+                        await fetchBanners();
+                        document.getElementById('banner-form').reset();
+                        return;
+                    }
+                } catch (err) {}
+                banners.push({ id: Date.now(), ...payload });
+                document.getElementById('banner-form').reset();
+                renderTable();
+            }
+
+            if (fileInput) {
+                const reader = new FileReader();
+                reader.onload = async function(evt) {
+                    await saveBanner(evt.target.result);
+                };
+                reader.readAsDataURL(fileInput);
+            } else {
+                await saveBanner(urlInput);
+            }
         }
         async function deleteBanner(id) {
             if (!confirm('Delete banner?')) return;
@@ -223,6 +243,18 @@
             } catch (e) {}
             banners = banners.filter(x => (x.id || x.Id) !== id);
             renderTable();
+        }
+        function escapeHtml(str) {
+            if (!str) return '';
+            return String(str).replace(/[&<>"']/g, function(m) {
+                return {
+                    '&': '&amp;',
+                    '<': '&lt;',
+                    '>': '&gt;',
+                    '"': '&quot;',
+                    "'": '&#039;'
+                }[m];
+            });
         }
     </script>
 </body>
