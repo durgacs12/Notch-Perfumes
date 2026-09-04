@@ -39,6 +39,20 @@
         .btn-back-grey:hover {
             background-color: #5c636a;
         }
+        .btn-edit-yellow {
+            background-color: #ffc107;
+            color: #000000;
+        }
+        .btn-edit-yellow:hover {
+            background-color: #ffca2c;
+        }
+        .btn-delete-red {
+            background-color: #dc3545;
+            color: #ffffff;
+        }
+        .btn-delete-red:hover {
+            background-color: #bb2d3b;
+        }
     </style>
 </head>
 <body class="bg-blush-50 text-stone-900 antialiased min-h-screen flex flex-col">
@@ -117,7 +131,7 @@
         <!-- MAIN CONTENT -->
         <main class="flex-1 p-6 md:p-8 space-y-8 overflow-y-auto">
             <div>
-                <h1 class="font-serif-heading text-3xl font-bold text-rose-950">Create Customer</h1>
+                <h1 class="font-serif-heading text-3xl font-bold text-rose-950" id="form-title">Create Customer</h1>
                 <p class="text-xs text-gray-500 mt-1">Manage customer profiles and credentials.</p>
             </div>
 
@@ -174,7 +188,8 @@
                     </div>
 
                     <div class="flex items-center gap-3 pt-2">
-                        <button type="submit" class="btn-create-green px-5 py-2.5 font-semibold rounded-lg text-xs transition-colors">Create</button>
+                        <button type="submit" id="save-btn" class="btn-create-green px-5 py-2.5 font-semibold rounded-lg text-xs transition-colors">Create</button>
+                        <button type="button" id="cancel-btn" onclick="resetForm()" class="hidden bg-stone-200 hover:bg-stone-300 text-stone-800 px-4 py-2.5 font-semibold rounded-lg text-xs transition-colors">Cancel</button>
                         <button type="button" onclick="scrollToTable()" class="btn-back-grey px-4 py-2.5 font-semibold rounded-lg text-xs transition-colors">Back to List</button>
                     </div>
                 </form>
@@ -191,7 +206,7 @@
                                 <th class="py-3 px-4">Email</th>
                                 <th class="py-3 px-4">Mobile & Gender</th>
                                 <th class="py-3 px-4">City</th>
-                                <th class="py-3 px-4">Actions</th>
+                                <th class="py-3 px-4 text-center">Actions</th>
                             </tr>
                         </thead>
                         <tbody id="customers-table-body" class="divide-y divide-stone-200 bg-white">
@@ -226,16 +241,23 @@
                 return;
             }
             customers.forEach(c => {
+                const id = c.id || c.Id;
                 const tr = document.createElement('tr');
                 tr.className = 'hover:bg-stone-50 font-medium';
                 const fullName = `${c.firstName || c.FirstName || ''} ${c.lastName || c.LastName || ''}`.trim() || 'N/A';
+                const cityStr = c.city || c.City || 'N/A';
+                const postcodeStr = c.postcode || c.Postcode || '';
+                const cityPostcode = postcodeStr ? `${cityStr} - ${postcodeStr}` : cityStr;
                 tr.innerHTML = `
-                    <td class="py-3 px-4 font-bold text-rose-950">${fullName}</td>
-                    <td class="py-3 px-4 text-blue-600">${c.email || c.Email || ''}</td>
-                    <td class="py-3 px-4">${c.mobileNumber || c.MobileNumber || 'N/A'} (${c.gender || c.Gender || 'N/A'})</td>
-                    <td class="py-3 px-4">${c.city || c.City || 'N/A'}</td>
-                    <td class="py-3 px-4">
-                        <button onclick="deleteCustomer(${c.id || c.Id})" class="text-red-600 font-bold hover:underline">Delete</button>
+                    <td class="py-3 px-4 font-bold text-rose-950">${escapeHtml(fullName)}</td>
+                    <td class="py-3 px-4 text-blue-600">${escapeHtml(c.email || c.Email || '')}</td>
+                    <td class="py-3 px-4">${escapeHtml(c.mobileNumber || c.MobileNumber || 'N/A')} (${escapeHtml(c.gender || c.Gender || 'N/A')})</td>
+                    <td class="py-3 px-4">${escapeHtml(cityPostcode)}</td>
+                    <td class="py-3 px-4 text-center">
+                        <div class="flex items-center justify-center gap-2">
+                            <button onclick="editCustomer('${id}')" class="btn-edit-yellow px-3 py-1 text-xs font-bold rounded-lg shadow-xs">Edit</button>
+                            <button onclick="deleteCustomer('${id}')" class="btn-delete-red px-3 py-1 text-xs font-bold rounded-lg shadow-xs">Delete</button>
+                        </div>
                     </td>
                 `;
                 tbody.appendChild(tr);
@@ -244,6 +266,7 @@
 
         async function handleFormSubmit(e) {
             e.preventDefault();
+            const editId = document.getElementById('editing-id').value;
             const firstName = document.getElementById('firstName').value.trim();
             const lastName = document.getElementById('lastName').value.trim();
             const email = document.getElementById('email').value.trim();
@@ -255,24 +278,68 @@
 
             const payload = { firstName, lastName, email, mobileNumber, gender, address, city, postcode: '', password };
 
-            try {
-                const res = await fetch('/api/customers', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(payload)
-                });
-                if (res.ok) {
-                    await fetchCustomers();
-                    document.getElementById('customer-form').reset();
-                    scrollToTable();
-                    return;
-                }
-            } catch (err) {}
+            if (editId) {
+                const idNum = isNaN(editId) ? editId : parseInt(editId);
+                try {
+                    const res = await fetch(`/api/customers/${idNum}`, {
+                        method: 'PUT',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(payload)
+                    });
+                    if (res.ok) {
+                        await fetchCustomers();
+                        resetForm();
+                        scrollToTable();
+                        return;
+                    }
+                } catch (err) {}
 
-            customers.push({ id: Date.now(), ...payload });
-            document.getElementById('customer-form').reset();
+                const idx = customers.findIndex(x => String(x.id || x.Id) === String(editId));
+                if (idx !== -1) {
+                    customers[idx] = { ...customers[idx], ...payload };
+                }
+            } else {
+                try {
+                    const res = await fetch('/api/customers', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(payload)
+                    });
+                    if (res.ok) {
+                        await fetchCustomers();
+                        resetForm();
+                        scrollToTable();
+                        return;
+                    }
+                } catch (err) {}
+
+                customers.push({ id: Date.now(), ...payload });
+            }
+
+            resetForm();
             renderTable();
             scrollToTable();
+        }
+
+        function editCustomer(id) {
+            const c = customers.find(x => String(x.id || x.Id) === String(id));
+            if (!c) return;
+
+            document.getElementById('editing-id').value = id;
+            document.getElementById('firstName').value = c.firstName || c.FirstName || '';
+            document.getElementById('lastName').value = c.lastName || c.LastName || '';
+            document.getElementById('email').value = c.email || c.Email || '';
+            document.getElementById('mobileNumber').value = c.mobileNumber || c.MobileNumber || '';
+            document.getElementById('gender').value = c.gender || c.Gender || '';
+            document.getElementById('address').value = c.address || c.Address || '';
+            document.getElementById('city').value = c.city || c.City || '';
+            document.getElementById('password').value = c.password || c.Password || '';
+
+            document.getElementById('form-title').textContent = 'Edit Customer Profile';
+            document.getElementById('save-btn').textContent = 'Update Customer';
+            document.getElementById('cancel-btn').classList.remove('hidden');
+
+            window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
         async function deleteCustomer(id) {
@@ -284,12 +351,33 @@
                     return;
                 }
             } catch (e) {}
-            customers = customers.filter(x => (x.id || x.Id) !== id);
+            customers = customers.filter(x => String(x.id || x.Id) !== String(id));
             renderTable();
+        }
+
+        function resetForm() {
+            document.getElementById('editing-id').value = '';
+            document.getElementById('customer-form').reset();
+            document.getElementById('form-title').textContent = 'Create Customer';
+            document.getElementById('save-btn').textContent = 'Create';
+            document.getElementById('cancel-btn').classList.add('hidden');
         }
 
         function scrollToTable() {
             document.getElementById('customers-list-section').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function escapeHtml(str) {
+            if (!str) return '';
+            return String(str).replace(/[&<>"']/g, function(m) {
+                return {
+                    '&': '&amp;',
+                    '<': '&lt;',
+                    '>': '&gt;',
+                    '"': '&quot;',
+                    "'": '&#039;'
+                }[m];
+            });
         }
     </script>
 </body>
