@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Purchase Entry Master | Notch Qatar Perfumes Control Panel</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        rose: { 900: '#5B1E31', 950: '#4A1525' },
+                        rosegold: { 300: '#F3C9BC', 400: '#E5A995', 500: '#D49B85', 600: '#B86B7D' },
+                        blush: { 50: '#FFF5F6', 100: '#FDF0F2' }
+                    }
+                }
+            }
+        }
+    </script>
+    <script>
+        if (localStorage.getItem('adminLoggedIn') !== 'true') {
+            window.location.href = 'admin-login.html';
+        }
+    </script>
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body class="bg-blush-50 text-stone-900 antialiased min-h-screen flex flex-col">
+
+    <!-- TOP ADMIN BAR -->
+    <header class="glass-header-rose text-white border-b border-rosegold-500/20 px-6 py-4 flex items-center justify-between sticky top-0 z-50">
+        <div class="flex items-center gap-4">
+            <a href="admin-dashboard.html" class="flex flex-col">
+                <img src="image/notch-logo-white.png" alt="NOTCH Admin" class="h-6 md:h-7 w-auto object-contain mb-1" />
+                <span class="text-[8px] font-semibold tracking-[0.3em] uppercase text-rosegold-400">ADMIN CONTROL PANEL</span>
+            </a>
+        </div>
+        <div class="flex items-center gap-4">
+            <a href="index.html" target="_blank" class="px-3.5 py-1.5 bg-rosegold-400/20 text-rosegold-300 hover:bg-rosegold-400 hover:text-rose-950 rounded-lg text-xs font-bold border border-rosegold-400/30">🌐 Visit Storefront</a>
+            <div class="flex items-center gap-2 pl-4 border-l border-rose-800">
+                <div class="w-8 h-8 rounded-full rose-gold-bg text-rose-950 font-bold flex items-center justify-center text-xs">AD</div>
+                <div class="hidden sm:block text-left">
+                    <div class="text-xs font-bold text-white">Admin Master</div>
+                    <div class="text-[10px] text-rosegold-300">admin@gmail.com</div>
+                </div>
+                <button onclick="localStorage.removeItem('adminLoggedIn'); window.location.href='admin-login.html';" class="ml-2 text-xs text-red-300 hover:text-white font-bold bg-red-900/40 px-2.5 py-1 rounded-lg border border-red-500/30">Logout 🚪</button>
+            </div>
+        </div>
+    </header>
+
+    <div class="flex-1 flex">
+                <!-- SIDEBAR NAVIGATION -->
+        <aside class="w-64 bg-rose-950 text-rose-100/80 border-r border-rosegold-500/20 hidden md:block flex-shrink-0 p-4 space-y-1.5 overflow-y-auto">
+            <a href="admin-dashboard.html" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-semibold transition-colors text-rose-200/80 hover:bg-rose-900/60 hover:text-rosegold-300"><span>📊</span> Overview Dashboard</a>
+            <a href="admin-banners.html" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-semibold transition-colors text-rose-200/80 hover:bg-rose-900/60 hover:text-rosegold-300"><span>🖼️</span> Banner Images</a>
+
+            <!-- MASTERS COLLAPSIBLE MENU -->
+            <details class="group" >
+                <summary class="w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-xs font-bold text-rosegold-400 hover:bg-rose-900/60 transition-colors cursor-pointer list-none [&::-webkit-details-marker]:hidden select-none">
+                    <div class="flex items-center gap-3">
+                        <span>📁</span> Masters
+                    </div>
+                    <span class="text-[10px] transition-transform duration-200 inline-block group-open:rotate-180">▼</span>
+                </summary>
+                <div class="pl-3 pr-1 py-1 space-y-1">
+                    <a href="admin-categories.html" class="flex items-center gap-2.5 px-3 py-2 rounded-xl text-[11px] font-semibold transition-colors text-rose-200/80 hover:bg-rose-900/60 hover:text-rosegold-300"><span>🏷️</span> Categories</a>
+                    <a href="admin-subcategories.html" class="flex items-center gap-2.5 px-3 py-2 rounded-xl text-[11px] font-semibold transition-colors text-rose-200/80 hover:bg-rose-900/60 hover:text-rosegold-300"><span>🏷️</span> Sub Categories</a>
+                    <a href="admin-category-specifications.html" class="flex items-center gap-2.5 px-3 py-2 rounded-xl text-[11px] font-semibold transition-colors text-rose-200/80 hover:bg-rose-900/60 hover:text-rosegold-300"><span>📋</span> Category Specification</a>
+                    <a href="admin-products.html" class="flex items-center gap-2.5 px-3 py-2 rounded-xl text-[11px] font-semibold transition-colors text-rose-200/80 hover:bg-rose-900/60 hover:text-rosegold-300"><span>🧴</span> Product Master</a>
+                    <a href="admin-customers.html" class="flex items-center gap-2.5 px-3 py-2 rounded-xl text-[11px] font-semibold transition-colors text-rose-200/80 hover:bg-rose-900/60 hover:text-rosegold-300"><span>👥</span> Customer Master</a>
+                    <a href="admin-suppliers.html" class="flex items-center gap-2.5 px-3 py-2 rounded-xl text-[11px] font-semibold transition-colors text-rose-200/80 hover:bg-rose-900/60 hover:text-rosegold-300"><span>🚚</span> Supplier Master</a>
+                </div>
+            </details>
+
+            <a href="admin-purchase.html" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-semibold transition-colors text-rose-950 rose-gold-bg shadow-sm font-bold"><span>🛒</span> Purchase</a>
+            <a href="admin-add-images.html" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-semibold transition-colors text-rose-200/80 hover:bg-rose-900/60 hover:text-rosegold-300"><span>📸</span> Add Images</a>
+            <a href="admin-orders.html" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-semibold transition-colors text-rose-200/80 hover:bg-rose-900/60 hover:text-rosegold-300"><span>📦</span> Sales</a>
+            <a href="admin-verify-payment.html" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-semibold transition-colors text-rose-200/80 hover:bg-rose-900/60 hover:text-rosegold-300"><span>💳</span> Verify Payment</a>
+
+            <!-- REPORTS COLLAPSIBLE MENU -->
+            <details class="group" >
+                <summary class="w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-xs font-bold text-rosegold-400 hover:bg-rose-900/60 transition-colors cursor-pointer list-none [&::-webkit-details-marker]:hidden select-none">
+                    <div class="flex items-center gap-3">
+                        <span>📈</span> Reports
+                    </div>
+                    <span class="text-[10px] transition-transform duration-200 inline-block group-open:rotate-180">▼</span>
+                </summary>
+                <div class="pl-3 pr-1 py-1 space-y-1">
+                    <a href="admin-sales-summary.html" class="flex items-center gap-2.5 px-3 py-2 rounded-xl text-[11px] font-semibold transition-colors text-rose-200/80 hover:bg-rose-900/60 hover:text-rosegold-300"><span>📈</span> Sales Summary</a>
+                    <a href="admin-sales-detail.html" class="flex items-center gap-2.5 px-3 py-2 rounded-xl text-[11px] font-semibold transition-colors text-rose-200/80 hover:bg-rose-900/60 hover:text-rosegold-300"><span>📑</span> Sales Detail</a>
+                    <a href="admin-purchase-detail.html" class="flex items-center gap-2.5 px-3 py-2 rounded-xl text-[11px] font-semibold transition-colors text-rose-200/80 hover:bg-rose-900/60 hover:text-rosegold-300"><span>🛒</span> Purchase Detail</a>
+                    <a href="admin-purchase-summary.html" class="flex items-center gap-2.5 px-3 py-2 rounded-xl text-[11px] font-semibold transition-colors text-rose-200/80 hover:bg-rose-900/60 hover:text-rosegold-300"><span>📉</span> Purchase Summary</a>
+                    <a href="admin-inventory.html" class="flex items-center gap-2.5 px-3 py-2 rounded-xl text-[11px] font-semibold transition-colors text-rose-200/80 hover:bg-rose-900/60 hover:text-rosegold-300"><span>🏭</span> Stock</a>
+                </div>
+            </details>
+
+            <div class="pt-6 border-t border-rose-900 text-[10px] text-rose-300/50 px-3">
+                Notch Qatar Perfumes Admin v2.4
+            </div>
+        </aside>
+
+        <!-- MAIN CONTENT -->
+        <main class="flex-1 p-6 md:p-8 space-y-8 overflow-y-auto">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                <div>
+                    <h1 class="font-serif-heading text-3xl font-bold text-rose-950">Purchase Entry Master</h1>
+                    <p class="text-xs text-gray-500 mt-1">Record supplier purchase invoices, stock arrivals, and procurement costs.</p>
+                </div>
+            </div>
+
+            <!-- SUCCESS TOAST -->
+            <div id="toast-msg" class="hidden p-3 rounded-lg text-xs font-bold bg-green-100 text-green-800 border border-green-200"></div>
+
+            <!-- CREATE PURCHASE ENTRY CARD -->
+            <div class="bg-white rounded-2xl border border-rose-100 shadow-sm p-6 space-y-6">
+                <h3 class="font-serif-heading text-xl font-bold text-rose-950 border-b pb-3">+ New Purchase Order Entry</h3>
+                
+                <form onsubmit="handleSavePurchase(event)" class="space-y-4 text-xs">
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <div>
+                            <label class="block font-medium text-gray-700 mb-1">Purchase Invoice No *</label>
+                            <input type="text" id="pur-inv-no" required placeholder="e.g. PUR-2026-089" class="w-full bg-white border border-gray-300 p-2.5 rounded-lg focus:outline-none focus:border-rose-900" />
+                        </div>
+                        <div>
+                            <label class="block font-medium text-gray-700 mb-1">Supplier / Vendor *</label>
+                            <select id="pur-supplier" required class="w-full bg-white border border-gray-300 p-2.5 rounded-lg focus:outline-none focus:border-rose-900">
+                                <option value="">-- Select Supplier --</option>
+                                <option value="Grasse Fragrances Ltd">Grasse Fragrances Ltd (France)</option>
+                                <option value="French Rose Oils Co">French Rose Oils Co (Paris)</option>
+                                <option value="Al-Ahli Fragrance Supplies">Al-Ahli Fragrance Supplies (Qatar)</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block font-medium text-gray-700 mb-1">Purchase Date *</label>
+                            <input type="date" id="pur-date" required class="w-full bg-white border border-gray-300 p-2.5 rounded-lg focus:outline-none focus:border-rose-900" />
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                        <div>
+                            <label class="block font-medium text-gray-700 mb-1">Product / Perfume *</label>
+                            <select id="pur-product" required class="w-full bg-white border border-gray-300 p-2.5 rounded-lg focus:outline-none focus:border-rose-900">
+                                <option value="">-- Select Product --</option>
+                                <option value="Notch Velvet Oud EDP (100ml)">Notch Velvet Oud EDP (100ml)</option>
+                                <option value="Notch Royal Rose EDP (50ml)">Notch Royal Rose EDP (50ml)</option>
+                                <option value="Notch Steele Intense EDP (100ml)">Notch Steele Intense EDP (100ml)</option>
+                                <option value="Notch Celeste EDP (100ml)">Notch Celeste EDP (100ml)</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block font-medium text-gray-700 mb-1">Quantity (Units) *</label>
+                            <input type="number" id="pur-qty" required min="1" oninput="calculateTotal()" placeholder="e.g. 100" class="w-full bg-white border border-gray-300 p-2.5 rounded-lg focus:outline-none focus:border-rose-900" />
+                        </div>
+                        <div>
+                            <label class="block font-medium text-gray-700 mb-1">Unit Purchase Price (QAR) *</label>
+                            <input type="number" id="pur-price" required min="1" step="0.01" oninput="calculateTotal()" placeholder="e.g. 85.00" class="w-full bg-white border border-gray-300 p-2.5 rounded-lg focus:outline-none focus:border-rose-900" />
+                        </div>
+                        <div>
+                            <label class="block font-medium text-gray-700 mb-1">Total Amount (QAR)</label>
+                            <input type="text" id="pur-total" readonly placeholder="QAR 0.00" class="w-full bg-stone-100 font-bold border border-gray-300 p-2.5 rounded-lg text-rose-950 focus:outline-none" />
+                        </div>
+                    </div>
+
+                    <div class="flex justify-end pt-2">
+                        <button type="submit" class="px-6 py-2.5 rose-gold-bg text-rose-950 font-bold rounded-xl shadow hover:opacity-90 transition-all">
+                            Save Purchase Entry
+                        </button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- PURCHASE LOG TABLE -->
+            <div class="bg-white rounded-2xl border border-rose-100 shadow-sm p-6 space-y-4">
+                <div class="flex items-center justify-between border-b pb-3">
+                    <h3 class="font-serif-heading text-xl font-bold text-rose-950">Recent Purchase Logs</h3>
+                    <span class="text-xs text-gray-500">Showing last 4 stock orders</span>
+                </div>
+
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left text-xs border-collapse">
+                        <thead>
+                            <tr class="border-b border-stone-200 bg-rose-50/60 text-rose-950 font-bold uppercase text-[10px]">
+                                <th class="py-3 px-4">Invoice No</th>
+                                <th class="py-3 px-4">Supplier</th>
+                                <th class="py-3 px-4">Product</th>
+                                <th class="py-3 px-4">Date</th>
+                                <th class="py-3 px-4">Quantity</th>
+                                <th class="py-3 px-4">Unit Price</th>
+                                <th class="py-3 px-4">Total (QAR)</th>
+                                <th class="py-3 px-4">Status</th>
+                            </tr>
+                        </thead>
+                        <tbody id="purchase-table-body" class="divide-y divide-stone-100 font-medium">
+                            <tr class="hover:bg-rose-50/30">
+                                <td class="py-3.5 px-4 font-bold text-rose-950">PUR-2026-042</td>
+                                <td class="py-3.5 px-4 font-semibold">Grasse Fragrances Ltd</td>
+                                <td class="py-3.5 px-4">Notch Velvet Oud EDP (100ml)</td>
+                                <td class="py-3.5 px-4 text-gray-500">01 Sep 2026</td>
+                                <td class="py-3.5 px-4 font-bold">200 Units</td>
+                                <td class="py-3.5 px-4">QAR 85.00</td>
+                                <td class="py-3.5 px-4 font-bold text-rose-950">QAR 17,000</td>
+                                <td class="py-3.5 px-4"><span class="px-2.5 py-1 bg-emerald-100 text-emerald-800 text-[10px] font-bold rounded-full">Received</span></td>
+                            </tr>
+                            <tr class="hover:bg-rose-50/30">
+                                <td class="py-3.5 px-4 font-bold text-rose-950">PUR-2026-041</td>
+                                <td class="py-3.5 px-4 font-semibold">French Rose Oils Co</td>
+                                <td class="py-3.5 px-4">Notch Royal Rose EDP (50ml)</td>
+                                <td class="py-3.5 px-4 text-gray-500">28 Aug 2026</td>
+                                <td class="py-3.5 px-4 font-bold">150 Units</td>
+                                <td class="py-3.5 px-4">QAR 60.00</td>
+                                <td class="py-3.5 px-4 font-bold text-rose-950">QAR 9,000</td>
+                                <td class="py-3.5 px-4"><span class="px-2.5 py-1 bg-emerald-100 text-emerald-800 text-[10px] font-bold rounded-full">Received</span></td>
+                            </tr>
+                            <tr class="hover:bg-rose-50/30">
+                                <td class="py-3.5 px-4 font-bold text-rose-950">PUR-2026-040</td>
+                                <td class="py-3.5 px-4 font-semibold">Al-Ahli Fragrance Supplies</td>
+                                <td class="py-3.5 px-4">Notch Steele EDP (100ml)</td>
+                                <td class="py-3.5 px-4 text-gray-500">25 Aug 2026</td>
+                                <td class="py-3.5 px-4 font-bold">100 Units</td>
+                                <td class="py-3.5 px-4">QAR 75.00</td>
+                                <td class="py-3.5 px-4 font-bold text-rose-950">QAR 7,500</td>
+                                <td class="py-3.5 px-4"><span class="px-2.5 py-1 bg-amber-100 text-amber-800 text-[10px] font-bold rounded-full">Pending Payment</span></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        document.getElementById('pur-date').valueAsDate = new Date();
+
+        function calculateTotal() {
+            const qty = parseFloat(document.getElementById('pur-qty').value) || 0;
+            const price = parseFloat(document.getElementById('pur-price').value) || 0;
+            const total = qty * price;
+            document.getElementById('pur-total').value = 'QAR ' + total.toLocaleString('en-US', { minimumFractionDigits: 2 });
+        }
+
+        function handleSavePurchase(e) {
+            e.preventDefault();
+            const inv = document.getElementById('pur-inv-no').value;
+            const toast = document.getElementById('toast-msg');
+            toast.innerText = '✅ Purchase Entry #' + inv + ' saved successfully!';
+            toast.classList.remove('hidden');
+            setTimeout(() => toast.classList.add('hidden'), 4000);
+            e.target.reset();
+            document.getElementById('pur-date').valueAsDate = new Date();
+            document.getElementById('pur-total').value = 'QAR 0.00';
+        }
+    </script>
+</body>
+</html>
