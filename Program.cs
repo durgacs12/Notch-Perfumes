@@ -117,6 +117,41 @@ try
                 CreatedAt DATETIME DEFAULT GETDATE()
             );
         END;
+
+        IF NOT EXISTS (SELECT * FROM sys.tables WHERE name = 'Purchases')
+        BEGIN
+            CREATE TABLE Purchases (
+                Id INT IDENTITY(1,1) PRIMARY KEY,
+                PurchaseNo NVARCHAR(50) NOT NULL,
+                PurchaseDate DATETIME NOT NULL,
+                BatchNo NVARCHAR(50) NOT NULL,
+                SupplierId INT NULL,
+                SupplierName NVARCHAR(150) NOT NULL,
+                TotalAmount DECIMAL(18, 2) DEFAULT 0,
+                CreatedAt DATETIME DEFAULT GETDATE()
+            );
+        END;
+
+        IF NOT EXISTS (SELECT * FROM sys.tables WHERE name = 'PurchaseItems')
+        BEGIN
+            CREATE TABLE PurchaseItems (
+                Id INT IDENTITY(1,1) PRIMARY KEY,
+                PurchaseId INT NOT NULL,
+                PurchaseNo NVARCHAR(50),
+                ProductName NVARCHAR(150) NOT NULL,
+                ProductCode NVARCHAR(50),
+                Variant NVARCHAR(50),
+                VariantCode NVARCHAR(50),
+                CostPrice DECIMAL(18, 2) DEFAULT 0,
+                DiscPercent DECIMAL(18, 2) DEFAULT 0,
+                DiscAmt DECIMAL(18, 2) DEFAULT 0,
+                Quantity INT DEFAULT 1,
+                GstPercent DECIMAL(18, 2) DEFAULT 0,
+                GstAmt DECIMAL(18, 2) DEFAULT 0,
+                TotalAmount DECIMAL(18, 2) DEFAULT 0,
+                SellingPrice DECIMAL(18, 2) DEFAULT 0
+            );
+        END;
     ");
 }
 catch (Exception ex)
@@ -475,16 +510,196 @@ app.MapDelete("/api/customers/{id:int}", async (int id) =>
     return rows > 0 ? Results.Ok() : Results.NotFound();
 });
 
+// Purchases Endpoints
+app.MapGet("/api/purchases", async () =>
+{
+    try
+    {
+        using var db = GetConnection();
+        var purchases = (await db.QueryAsync<dynamic>("SELECT * FROM Purchases ORDER BY Id DESC")).ToList();
+        var items = (await db.QueryAsync<dynamic>("SELECT * FROM PurchaseItems")).ToList();
+
+        var result = purchases.Select(p => new
+        {
+            id = (int)p.Id,
+            purchaseNo = (string)p.PurchaseNo,
+            purchaseDate = (DateTime)p.PurchaseDate,
+            batchNo = (string)p.BatchNo,
+            supplierId = p.SupplierId != null ? (int?)p.SupplierId : null,
+            supplierName = (string)p.SupplierName,
+            totalAmount = (decimal)p.TotalAmount,
+            createdAt = (DateTime)p.CreatedAt,
+            items = items.Where(i => (int)i.PurchaseId == (int)p.Id).Select(i => new {
+                id = (int)i.Id,
+                purchaseId = (int)i.PurchaseId,
+                purchaseNo = (string)i.PurchaseNo,
+                productName = (string)i.ProductName,
+                productCode = (string)i.ProductCode,
+                variant = (string)i.Variant,
+                variantCode = (string)i.VariantCode,
+                costPrice = (decimal)i.CostPrice,
+                discPercent = (decimal)i.DiscPercent,
+                discAmt = (decimal)i.DiscAmt,
+                quantity = (int)i.Quantity,
+                gstPercent = (decimal)i.GstPercent,
+                gstAmt = (decimal)i.GstAmt,
+                totalAmount = (decimal)i.TotalAmount,
+                sellingPrice = (decimal)i.SellingPrice
+            }).ToList()
+        });
+
+        return Results.Ok(result);
+    }
+    catch (Exception ex)
+    {
+        return Results.Problem(ex.Message);
+    }
+});
+
+app.MapGet("/api/purchases/{id:int}", async (int id) =>
+{
+    using var db = GetConnection();
+    var purchase = await db.QueryFirstOrDefaultAsync<dynamic>("SELECT * FROM Purchases WHERE Id = @Id", new { Id = id });
+    if (purchase is null) return Results.NotFound();
+
+    var items = await db.QueryAsync<dynamic>("SELECT * FROM PurchaseItems WHERE PurchaseId = @Id", new { Id = id });
+
+    return Results.Ok(new
+    {
+        id = (int)purchase.Id,
+        purchaseNo = (string)purchase.PurchaseNo,
+        purchaseDate = (DateTime)purchase.PurchaseDate,
+        batchNo = (string)purchase.BatchNo,
+        supplierId = purchase.SupplierId != null ? (int?)purchase.SupplierId : null,
+        supplierName = (string)purchase.SupplierName,
+        totalAmount = (decimal)purchase.TotalAmount,
+        createdAt = (DateTime)purchase.CreatedAt,
+        items
+    });
+});
+
+app.MapPost("/api/purchases", async (PurchaseDto dto) =>
+{
+    using var db = GetConnection();
+    string sqlPur = @"INSERT INTO Purchases (PurchaseNo, PurchaseDate, BatchNo, SupplierId, SupplierName, TotalAmount)
+                      VALUES (@PurchaseNo, @PurchaseDate, @BatchNo, @SupplierId, @SupplierName, @TotalAmount);
+                      SELECT CAST(SCOPE_IDENTITY() as int);";
+    int purchaseId = await db.ExecuteScalarAsync<int>(sqlPur, dto);
+
+    if (dto.Items != null && dto.Items.Any())
+    {
+        string sqlItem = @"INSERT INTO PurchaseItems (PurchaseId, PurchaseNo, ProductName, ProductCode, Variant, VariantCode, CostPrice, DiscPercent, DiscAmt, Quantity, GstPercent, GstAmt, TotalAmount, SellingPrice)
+                           VALUES (@PurchaseId, @PurchaseNo, @ProductName, @ProductCode, @Variant, @VariantCode, @CostPrice, @DiscPercent, @DiscAmt, @Quantity, @GstPercent, @GstAmt, @TotalAmount, @SellingPrice);";
+        foreach (var item in dto.Items)
+        {
+            await db.ExecuteAsync(sqlItem, new
+            {
+                PurchaseId = purchaseId,
+                PurchaseNo = dto.PurchaseNo,
+                item.ProductName,
+                item.ProductCode,
+                item.Variant,
+                item.VariantCode,
+                item.CostPrice,
+                item.DiscPercent,
+                item.DiscAmt,
+                item.Quantity,
+                item.GstPercent,
+                item.GstAmt,
+                item.TotalAmount,
+                item.SellingPrice
+            });
+        }
+    }
+
+    return Results.Created($"/api/purchases/{purchaseId}", dto with { Id = purchaseId });
+});
+
+app.MapPut("/api/purchases/{id:int}", async (int id, PurchaseDto dto) =>
+{
+    using var db = GetConnection();
+    string sqlPur = @"UPDATE Purchases SET PurchaseNo = @PurchaseNo, PurchaseDate = @PurchaseDate, BatchNo = @BatchNo, 
+                      SupplierId = @SupplierId, SupplierName = @SupplierName, TotalAmount = @TotalAmount 
+                      WHERE Id = @Id";
+    int rows = await db.ExecuteAsync(sqlPur, new { Id = id, dto.PurchaseNo, dto.PurchaseDate, dto.BatchNo, dto.SupplierId, dto.SupplierName, dto.TotalAmount });
+    if (rows == 0) return Results.NotFound();
+
+    await db.ExecuteAsync("DELETE FROM PurchaseItems WHERE PurchaseId = @Id", new { Id = id });
+
+    if (dto.Items != null && dto.Items.Any())
+    {
+        string sqlItem = @"INSERT INTO PurchaseItems (PurchaseId, PurchaseNo, ProductName, ProductCode, Variant, VariantCode, CostPrice, DiscPercent, DiscAmt, Quantity, GstPercent, GstAmt, TotalAmount, SellingPrice)
+                           VALUES (@PurchaseId, @PurchaseNo, @ProductName, @ProductCode, @Variant, @VariantCode, @CostPrice, @DiscPercent, @DiscAmt, @Quantity, @GstPercent, @GstAmt, @TotalAmount, @SellingPrice);";
+        foreach (var item in dto.Items)
+        {
+            await db.ExecuteAsync(sqlItem, new
+            {
+                PurchaseId = id,
+                PurchaseNo = dto.PurchaseNo,
+                item.ProductName,
+                item.ProductCode,
+                item.Variant,
+                item.VariantCode,
+                item.CostPrice,
+                item.DiscPercent,
+                item.DiscAmt,
+                item.Quantity,
+                item.GstPercent,
+                item.GstAmt,
+                item.TotalAmount,
+                item.SellingPrice
+            });
+        }
+    }
+
+    return Results.Ok(new { message = "Purchase updated successfully" });
+});
+
+app.MapDelete("/api/purchases/{id:int}", async (int id) =>
+{
+    using var db = GetConnection();
+    await db.ExecuteAsync("DELETE FROM PurchaseItems WHERE PurchaseId = @Id", new { Id = id });
+    int rows = await db.ExecuteAsync("DELETE FROM Purchases WHERE Id = @Id", new { Id = id });
+    return rows > 0 ? Results.Ok(new { message = "Purchase deleted successfully" }) : Results.NotFound();
+});
+
 app.Run();
 
 public record SubCategoryDto(int? Id, string MainCategoryId, string SubCategoryName);
 public record BannerDto(int? Id, string Title, string Subtitle, string Image, string TargetUrl, bool IsActive);
 public record CategorySpecDto(int? Id, string CategoryId, string SpecName, string SpecValues, bool IsRequired);
-//public record SupplierDto(int? Id, string SupplierName, string ContactPerson, string Email, string Phone, string Address, string Status);
 public record CustomerDto(int? Id, string FirstName, string LastName, string Email, string MobileNumber, string Gender, string Address, string City, string Postcode, string Password);
 public record CategoryDto(string? Id, string CategoryName, string? SubCategories, string? Note);
-
 public record SupplierDto(int? Id, string SupplierCode, string SupplierName, string Type, string Status, string Country, string State, string City, string Address, string PostalCode, string Phone, string Email, string GSTIN, string BankName, string AccountNumber, string IFSC);
-//public record CustomerDto(int? Id, string CustomerName, string Email, string Phone, string City, int TotalOrders, decimal TotalSpent);
+
+public record PurchaseItemDto(
+    int? Id,
+    int? PurchaseId,
+    string? PurchaseNo,
+    string ProductName,
+    string? ProductCode,
+    string? Variant,
+    string? VariantCode,
+    decimal CostPrice,
+    decimal DiscPercent,
+    decimal DiscAmt,
+    int Quantity,
+    decimal GstPercent,
+    decimal GstAmt,
+    decimal TotalAmount,
+    decimal SellingPrice
+);
+
+public record PurchaseDto(
+    int? Id,
+    string PurchaseNo,
+    DateTime PurchaseDate,
+    string BatchNo,
+    int? SupplierId,
+    string SupplierName,
+    decimal TotalAmount,
+    List<PurchaseItemDto>? Items
+);
+
 
 
