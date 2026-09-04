@@ -18,7 +18,22 @@
             }
         }
     </script>
-    <link rel="stylesheet" href="css/styles.css">
+    <style>
+        .btn-edit-yellow {
+            background-color: #ffc107;
+            color: #000000;
+        }
+        .btn-edit-yellow:hover {
+            background-color: #ffca2c;
+        }
+        .btn-delete-red {
+            background-color: #dc3545;
+            color: #ffffff;
+        }
+        .btn-delete-red:hover {
+            background-color: #bb2d3b;
+        }
+    </style>
 </head>
 <body class="bg-blush-50 text-stone-900 antialiased min-h-screen flex flex-col">
 
@@ -72,8 +87,9 @@
 
             <!-- ADD SPECIFICATION CARD -->
             <div class="bg-white rounded-2xl border border-rose-100 shadow-sm p-6 space-y-4">
-                <h3 class="font-serif-heading text-xl font-bold text-rose-950 border-b pb-3">Add Specification Field</h3>
+                <h3 class="font-serif-heading text-xl font-bold text-rose-950 border-b pb-3" id="form-title">Add Specification Field</h3>
                 <form id="spec-form" onsubmit="handleFormSubmit(event)" class="space-y-4 text-xs">
+                    <input type="hidden" id="editing-id" value="" />
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                         <div>
                             <label class="block font-bold text-rose-950 mb-1">Target Category</label>
@@ -93,8 +109,9 @@
                             <input type="text" id="specValues" placeholder="e.g. Woody, Citrus, Floral, Amber" class="w-full px-3.5 py-2 border rounded-xl focus:ring-1 focus:ring-rose-950 text-xs" />
                         </div>
                     </div>
-                    <div>
-                        <button type="submit" class="px-5 py-2.5 rose-gold-bg text-rose-950 font-bold rounded-xl text-xs shadow-sm">+ Add Specification</button>
+                    <div class="flex items-center gap-3 pt-2">
+                        <button type="submit" id="save-btn" class="px-5 py-2.5 rose-gold-bg text-rose-950 font-bold rounded-xl text-xs shadow-sm">+ Add Specification</button>
+                        <button type="button" id="cancel-btn" onclick="resetForm()" class="hidden bg-stone-200 hover:bg-stone-300 text-stone-800 px-4 py-2.5 font-semibold rounded-xl text-xs transition-colors">Cancel</button>
                     </div>
                 </form>
             </div>
@@ -109,7 +126,7 @@
                                 <th class="py-3 px-4">Category</th>
                                 <th class="py-3 px-4">Specification Name</th>
                                 <th class="py-3 px-4">Values</th>
-                                <th class="py-3 px-4">Actions</th>
+                                <th class="py-3 px-4 text-center">Actions</th>
                             </tr>
                         </thead>
                         <tbody id="specs-table-body" class="divide-y divide-stone-200 bg-white">
@@ -139,33 +156,103 @@
                 return;
             }
             specs.forEach(s => {
+                const id = s.id || s.Id;
                 const tr = document.createElement('tr');
                 tr.className = 'hover:bg-stone-50 font-medium';
                 tr.innerHTML = `
-                    <td class="py-3 px-4 font-bold text-rose-950">${s.categoryId || s.CategoryId}</td>
-                    <td class="py-3 px-4">${s.specName || s.SpecName}</td>
-                    <td class="py-3 px-4 text-gray-600">${s.specValues || s.SpecValues || 'Any'}</td>
-                    <td class="py-3 px-4"><button onclick="deleteSpec(${s.id || s.Id})" class="text-red-600 font-bold hover:underline">Delete</button></td>
+                    <td class="py-3 px-4 font-bold text-rose-950">${escapeHtml(s.categoryId || s.CategoryId)}</td>
+                    <td class="py-3 px-4">${escapeHtml(s.specName || s.SpecName)}</td>
+                    <td class="py-3 px-4 text-gray-600">${escapeHtml(s.specValues || s.SpecValues || 'Any')}</td>
+                    <td class="py-3 px-4 text-center">
+                        <div class="flex items-center justify-center gap-2">
+                            <button onclick="editSpec('${id}')" class="btn-edit-yellow px-3 py-1 text-xs font-bold rounded-lg shadow-xs">Edit</button>
+                            <button onclick="deleteSpec('${id}')" class="btn-delete-red px-3 py-1 text-xs font-bold rounded-lg shadow-xs">Delete</button>
+                        </div>
+                    </td>
                 `;
                 tbody.appendChild(tr);
             });
         }
         async function handleFormSubmit(e) {
             e.preventDefault();
+            const editId = document.getElementById('editing-id').value;
             const categoryId = document.getElementById('categoryId').value;
-            const specName = document.getElementById('specName').value;
-            const specValues = document.getElementById('specValues').value;
+            const specName = document.getElementById('specName').value.trim();
+            const specValues = document.getElementById('specValues').value.trim();
             const payload = { categoryId, specName, specValues, isRequired: false };
-            try { await fetch('/api/categoryspecifications', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) }); } catch(e){}
-            specs.push({ id: Date.now(), ...payload });
-            document.getElementById('spec-form').reset();
+
+            if (editId) {
+                const idNum = isNaN(editId) ? editId : parseInt(editId);
+                try {
+                    await fetch(`/api/categoryspecifications/${idNum}`, {
+                        method: 'PUT',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(payload)
+                    });
+                } catch(e){}
+
+                const idx = specs.findIndex(x => String(x.id || x.Id) === String(editId));
+                if (idx !== -1) {
+                    specs[idx] = { ...specs[idx], ...payload };
+                }
+            } else {
+                let newId = Date.now();
+                try {
+                    const res = await fetch('/api/categoryspecifications', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(payload)
+                    });
+                    if (res.ok) {
+                        const data = await res.json();
+                        if (data.id || data.Id) newId = data.id || data.Id;
+                    }
+                } catch(e){}
+                specs.push({ id: newId, ...payload });
+            }
+
+            resetForm();
             renderTable();
+        }
+        function editSpec(id) {
+            const spec = specs.find(x => String(x.id || x.Id) === String(id));
+            if (!spec) return;
+
+            document.getElementById('editing-id').value = id;
+            document.getElementById('categoryId').value = spec.categoryId || spec.CategoryId || 'MEN';
+            document.getElementById('specName').value = spec.specName || spec.SpecName || '';
+            document.getElementById('specValues').value = spec.specValues || spec.SpecValues || '';
+
+            document.getElementById('form-title').textContent = 'Edit Specification Field';
+            document.getElementById('save-btn').textContent = 'Update Specification';
+            document.getElementById('cancel-btn').classList.remove('hidden');
+
+            window.scrollTo({ top: 0, behavior: 'smooth' });
         }
         async function deleteSpec(id) {
             if (!confirm('Delete specification?')) return;
             try { await fetch(`/api/categoryspecifications/${id}`, { method: 'DELETE' }); } catch(e){}
-            specs = specs.filter(x => (x.id || x.Id) !== id);
+            specs = specs.filter(x => String(x.id || x.Id) !== String(id));
             renderTable();
+        }
+        function resetForm() {
+            document.getElementById('editing-id').value = '';
+            document.getElementById('spec-form').reset();
+            document.getElementById('form-title').textContent = 'Add Specification Field';
+            document.getElementById('save-btn').textContent = '+ Add Specification';
+            document.getElementById('cancel-btn').classList.add('hidden');
+        }
+        function escapeHtml(str) {
+            if (!str) return '';
+            return String(str).replace(/[&<>"']/g, function(m) {
+                return {
+                    '&': '&amp;',
+                    '<': '&lt;',
+                    '>': '&gt;',
+                    '"': '&quot;',
+                    "'": '&#039;'
+                }[m];
+            });
         }
     </script>
 </body>
