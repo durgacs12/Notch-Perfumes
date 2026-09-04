@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Banner Image Master | Notch Qatar Perfumes Control Panel</title>
+    <title>8.4 Purchase Summary | Notch Qatar Perfumes Control Panel</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
@@ -52,7 +52,7 @@
                         <!-- SIDEBAR NAVIGATION -->
         <aside class="w-64 bg-rose-950 text-rose-100/80 border-r border-rosegold-500/20 hidden md:block flex-shrink-0 p-4 space-y-1.5 overflow-y-auto">
             <a href="admin-dashboard.html" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-semibold transition-colors text-rose-200/80 hover:bg-rose-900/60 hover:text-rosegold-300"><span>📊</span> Overview Dashboard</a>
-            <a href="admin-banners.html" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-semibold transition-colors text-rose-950 rose-gold-bg shadow-sm font-bold"><span>🖼️</span> Banner Images</a>
+            <a href="admin-banners.html" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-semibold transition-colors text-rose-200/80 hover:bg-rose-900/60 hover:text-rosegold-300"><span>🖼️</span> Banner Images</a>
 
             <!-- MASTERS COLLAPSIBLE MENU -->
             <details class="group" >
@@ -77,7 +77,7 @@
             <a href="admin-verify-payment.html" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-semibold transition-colors text-rose-200/80 hover:bg-rose-900/60 hover:text-rosegold-300"><span>💳</span> Verify Payment</a>
 
             <!-- REPORTS COLLAPSIBLE MENU -->
-            <details class="group" >
+            <details class="group" open>
                 <summary class="w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-xs font-bold text-rosegold-400 hover:bg-rose-900/60 transition-colors cursor-pointer list-none [&::-webkit-details-marker]:hidden select-none">
                     <div class="flex items-center gap-3">
                         <span>📈</span> Reports
@@ -88,7 +88,7 @@
                     <a href="admin-sales-summary.html" class="flex items-center gap-2.5 px-3 py-2 rounded-xl text-[11px] font-semibold transition-colors text-rose-200/80 hover:bg-rose-900/60 hover:text-rosegold-300"><span>📈</span> Sales Summary</a>
                     <a href="admin-sales-detail.html" class="flex items-center gap-2.5 px-3 py-2 rounded-xl text-[11px] font-semibold transition-colors text-rose-200/80 hover:bg-rose-900/60 hover:text-rosegold-300"><span>📑</span> Sales Detail</a>
                     <a href="admin-purchase-detail.html" class="flex items-center gap-2.5 px-3 py-2 rounded-xl text-[11px] font-semibold transition-colors text-rose-200/80 hover:bg-rose-900/60 hover:text-rosegold-300"><span>🛒</span> Purchase Detail</a>
-                    <a href="admin-purchase-summary.html" class="flex items-center gap-2.5 px-3 py-2 rounded-xl text-[11px] font-semibold transition-colors text-rose-200/80 hover:bg-rose-900/60 hover:text-rosegold-300"><span>📉</span> Purchase Summary</a>
+                    <a href="admin-purchase-summary.html" class="flex items-center gap-2.5 px-3 py-2 rounded-xl text-[11px] font-semibold transition-colors text-rose-950 rose-gold-bg shadow-sm font-bold"><span>📉</span> Purchase Summary</a>
                     <a href="admin-inventory.html" class="flex items-center gap-2.5 px-3 py-2 rounded-xl text-[11px] font-semibold transition-colors text-rose-200/80 hover:bg-rose-900/60 hover:text-rosegold-300"><span>🏭</span> Stock</a>
                 </div>
             </details>
@@ -101,55 +101,61 @@
         <!-- MAIN CONTENT -->
         <main class="flex-1 p-6 md:p-8 space-y-8 overflow-y-auto">
             <div>
-                <h1 class="font-serif-heading text-3xl font-bold text-rose-950">Banner Image Master</h1>
-                <p class="text-xs text-gray-500 mt-1">Manage storefront hero banners, promo slides, and banner images.</p>
+                <h1 class="font-serif-heading text-3xl font-bold text-rose-950">8.4 Purchase Summary Report</h1>
+                <p class="text-xs text-gray-500 mt-1">Vendor-wise and monthly summary of raw material procurement and fragrance manufacturing expenses.</p>
             </div>
 
-            <!-- ADD BANNER CARD -->
-            <div class="bg-white rounded-2xl border border-rose-100 shadow-sm p-6 space-y-4">
-                <h3 class="font-serif-heading text-xl font-bold text-rose-950 border-b pb-3">Add Hero Banner Image</h3>
-                <form id="banner-form" onsubmit="handleFormSubmit(event)" class="space-y-4 text-xs">
-                    <input type="hidden" id="editing-id" value="" />
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div>
-                            <label class="block font-bold text-rose-950 mb-1">Banner Title</label>
-                            <input type="text" id="bannerTitle" required placeholder="e.g. Summer Perfume Luxury Sale" class="w-full px-3.5 py-2 border rounded-xl focus:ring-1 focus:ring-rose-950 text-xs" />
-                        </div>
-                        <div>
-                            <label class="block font-bold text-rose-950 mb-1">Subtitle / Tagline</label>
-                            <input type="text" id="bannerSubtitle" placeholder="e.g. Up to 30% Off on Selected Scents" class="w-full px-3.5 py-2 border rounded-xl focus:ring-1 focus:ring-rose-950 text-xs" />
-                        </div>
-                        <div>
-                            <label class="block font-bold text-rose-950 mb-1">Image URL</label>
-                            <input type="text" id="bannerImage" required placeholder="e.g. https://images.unsplash.com/photo-..." class="w-full px-3.5 py-2 border rounded-xl focus:ring-1 focus:ring-rose-950 text-xs" />
-                        </div>
-                        <div>
-                            <label class="block font-bold text-rose-950 mb-1">Target Link URL</label>
-                            <input type="text" id="bannerTarget" placeholder="e.g. collections.html" class="w-full px-3.5 py-2 border rounded-xl focus:ring-1 focus:ring-rose-950 text-xs" />
-                        </div>
-                    </div>
-                    <div>
-                        <button type="submit" class="px-5 py-2.5 rose-gold-bg text-rose-950 font-bold rounded-xl text-xs shadow-sm">+ Save Banner Image</button>
-                    </div>
-                </form>
+            <!-- SUMMARY STAT CARDS -->
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-6">
+                <div class="bg-white p-5 rounded-2xl border border-rose-100 shadow-sm space-y-1">
+                    <div class="text-xs text-gray-500 font-bold">Total Purchases (August 2026)</div>
+                    <div class="text-2xl font-bold text-rose-950">QAR 28,500</div>
+                </div>
+                <div class="bg-white p-5 rounded-2xl border border-rose-100 shadow-sm space-y-1">
+                    <div class="text-xs text-gray-500 font-bold">Active Vendors / Suppliers</div>
+                    <div class="text-2xl font-bold text-blue-600">3 Suppliers</div>
+                </div>
+                <div class="bg-white p-5 rounded-2xl border border-rose-100 shadow-sm space-y-1">
+                    <div class="text-xs text-gray-500 font-bold">Top Material Category</div>
+                    <div class="text-2xl font-bold text-emerald-600">French Oils & Glassware</div>
+                </div>
             </div>
 
-            <!-- BANNERS TABLE CARD -->
+            <!-- SUPPLIER PURCHASE SUMMARY TABLE -->
             <div class="bg-white rounded-2xl border border-rose-100 shadow-sm p-6 space-y-4">
-                <h3 class="font-serif-heading text-xl font-bold text-rose-950 border-b pb-3">Active Banners</h3>
+                <h3 class="font-serif-heading text-xl font-bold text-rose-950 border-b pb-3">Monthly Supplier Expense Summary</h3>
                 <div class="overflow-x-auto">
                     <table class="w-full text-left text-xs border-collapse">
                         <thead>
                             <tr class="border-b border-stone-200 bg-stone-50 text-stone-900 font-bold">
-                                <th class="py-3 px-4">Preview</th>
-                                <th class="py-3 px-4">Title & Subtitle</th>
-                                <th class="py-3 px-4">Target Link</th>
-                                <th class="py-3 px-4">Actions</th>
+                                <th class="py-3 px-4">Supplier Code</th>
+                                <th class="py-3 px-4">Supplier Name</th>
+                                <th class="py-3 px-4">Total Orders</th>
+                                <th class="py-3 px-4">Category</th>
+                                <th class="py-3 px-4 font-right">Total Purchase Amount (QAR)</th>
                             </tr>
                         </thead>
-                        <tbody id="banners-table-body" class="divide-y divide-stone-200 bg-white">
-                            <tr>
-                                <td colspan="4" class="py-6 text-center text-gray-500 italic">No banners added yet.</td>
+                        <tbody class="divide-y divide-stone-200 bg-white font-medium">
+                            <tr class="hover:bg-stone-50">
+                                <td class="py-3.5 px-4 font-mono text-stone-700">S01</td>
+                                <td class="py-3.5 px-4 font-bold text-rose-950">Grasse Fragrances Ltd</td>
+                                <td class="py-3.5 px-4">4 Orders</td>
+                                <td class="py-3.5 px-4">Fragrance Oil Concentrate</td>
+                                <td class="py-3.5 px-4 font-bold text-emerald-700">QAR 12,000</td>
+                            </tr>
+                            <tr class="hover:bg-stone-50">
+                                <td class="py-3.5 px-4 font-mono text-stone-700">S02</td>
+                                <td class="py-3.5 px-4 font-bold text-rose-950">Doha Luxury Glassware</td>
+                                <td class="py-3.5 px-4">3 Orders</td>
+                                <td class="py-3.5 px-4">Bottle Packaging</td>
+                                <td class="py-3.5 px-4 font-bold text-emerald-700">QAR 7,500</td>
+                            </tr>
+                            <tr class="hover:bg-stone-50">
+                                <td class="py-3.5 px-4 font-mono text-stone-700">S03</td>
+                                <td class="py-3.5 px-4 font-bold text-rose-950">Oman Oud & Amber Suppliers</td>
+                                <td class="py-3.5 px-4">2 Orders</td>
+                                <td class="py-3.5 px-4">Oud & Essential Oils</td>
+                                <td class="py-3.5 px-4 font-bold text-emerald-700">QAR 9,000</td>
                             </tr>
                         </tbody>
                     </table>
@@ -157,72 +163,5 @@
             </div>
         </main>
     </div>
-
-    <script>
-        let banners = [];
-        document.addEventListener('DOMContentLoaded', fetchBanners);
-        async function fetchBanners() {
-            try {
-                const res = await fetch('/api/banners');
-                if (res.ok) {
-                    const data = await res.json();
-                    if (Array.isArray(data)) banners = data;
-                }
-            } catch (e) { console.log('Offline mode for banners'); }
-            renderTable();
-        }
-        function renderTable() {
-            const tbody = document.getElementById('banners-table-body');
-            tbody.innerHTML = '';
-            if (banners.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="4" class="py-6 text-center text-gray-500 italic">No banners added yet.</td></tr>';
-                return;
-            }
-            banners.forEach(b => {
-                const tr = document.createElement('tr');
-                tr.className = 'hover:bg-stone-50 font-medium';
-                tr.innerHTML = `
-                    <td class="py-3 px-4"><img src="${b.image || b.Image}" class="h-12 w-24 object-cover rounded-lg border" /></td>
-                    <td class="py-3 px-4"><div class="font-bold text-rose-950">${b.title || b.Title}</div><div class="text-[10px] text-gray-500">${b.subtitle || b.Subtitle || ''}</div></td>
-                    <td class="py-3 px-4 text-blue-600">${b.targetUrl || b.TargetUrl || 'N/A'}</td>
-                    <td class="py-3 px-4">
-                        <button onclick="deleteBanner(${b.id || b.Id})" class="text-red-600 font-bold hover:underline">Delete</button>
-                    </td>
-                `;
-                tbody.appendChild(tr);
-            });
-        }
-        async function handleFormSubmit(e) {
-            e.preventDefault();
-            const title = document.getElementById('bannerTitle').value;
-            const subtitle = document.getElementById('bannerSubtitle').value;
-            const image = document.getElementById('bannerImage').value;
-            const targetUrl = document.getElementById('bannerTarget').value;
-            const payload = { title, subtitle, image, targetUrl, isActive: true };
-            try {
-                const res = await fetch('/api/banners', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
-                if (res.ok) {
-                    await fetchBanners();
-                    document.getElementById('banner-form').reset();
-                    return;
-                }
-            } catch (err) {}
-            banners.push({ id: Date.now(), ...payload });
-            document.getElementById('banner-form').reset();
-            renderTable();
-        }
-        async function deleteBanner(id) {
-            if (!confirm('Delete banner?')) return;
-            try {
-                const res = await fetch(`/api/banners/${id}`, { method: 'DELETE' });
-                if (res.ok) {
-                    await fetchBanners();
-                    return;
-                }
-            } catch (e) {}
-            banners = banners.filter(x => (x.id || x.Id) !== id);
-            renderTable();
-        }
-    </script>
 </body>
 </html>

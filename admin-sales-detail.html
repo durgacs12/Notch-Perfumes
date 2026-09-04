@@ -52,24 +52,53 @@
     </header>
 
     <div class="flex-1 flex">
-        <!-- SIDEBAR -->
-        <aside class="w-64 bg-rose-950 text-rose-100/80 border-r border-rosegold-500/20 hidden md:block flex-shrink-0 p-4 space-y-2">
-            <div class="text-[10px] font-bold uppercase tracking-widest text-rosegold-400 px-3 pt-2 mb-2">Master Modules</div>
-            <a href="admin-dashboard.html" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-semibold text-rose-200/80 hover:bg-rose-900/60 hover:text-rosegold-300 transition-colors"><span>📊</span> Overview Dashboard</a>
-            <a href="admin-banners.html" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-semibold text-rose-200/80 hover:bg-rose-900/60 hover:text-rosegold-300 transition-colors"><span>🖼️</span> Banner Image</a>
-            <a href="admin-categories.html" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-semibold text-rose-200/80 hover:bg-rose-900/60 hover:text-rosegold-300 transition-colors"><span>🏷️</span> Categories</a>
-            <a href="admin-subcategories.html" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-semibold text-rose-200/80 hover:bg-rose-900/60 hover:text-rosegold-300 transition-colors"><span>🏷️</span> Sub Categories</a>
-            <a href="admin-category-specifications.html" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-semibold text-rose-200/80 hover:bg-rose-900/60 hover:text-rosegold-300 transition-colors"><span>📋</span> Category Specifications</a>
-            <a href="admin-products.html" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-semibold text-rose-200/80 hover:bg-rose-900/60 hover:text-rosegold-300 transition-colors"><span>🧴</span> Product Master</a>
-            <a href="admin-suppliers.html" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-semibold text-rose-200/80 hover:bg-rose-900/60 hover:text-rosegold-300 transition-colors"><span>🚚</span> Supplier Master</a>
-            <a href="admin-customers.html" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-semibold text-rose-200/80 hover:bg-rose-900/60 hover:text-rosegold-300 transition-colors"><span>👥</span> Customer Master</a>
+                        <!-- SIDEBAR NAVIGATION -->
+        <aside class="w-64 bg-rose-950 text-rose-100/80 border-r border-rosegold-500/20 hidden md:block flex-shrink-0 p-4 space-y-1.5 overflow-y-auto">
+            <a href="admin-dashboard.html" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-semibold transition-colors text-rose-200/80 hover:bg-rose-900/60 hover:text-rosegold-300"><span>📊</span> Overview Dashboard</a>
+            <a href="admin-banners.html" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-semibold transition-colors text-rose-200/80 hover:bg-rose-900/60 hover:text-rosegold-300"><span>🖼️</span> Banner Images</a>
 
-            <div class="text-[10px] font-bold uppercase tracking-widest text-rosegold-400 px-3 pt-4 mb-2">Reports & Operations</div>
-            <a href="admin-inventory.html" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-semibold text-rose-200/80 hover:bg-rose-900/60 hover:text-rosegold-300 transition-colors"><span>🏭</span> Stock & Inventory Master</a>
-            <a href="admin-orders.html" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-semibold text-rose-200/80 hover:bg-rose-900/60 hover:text-rosegold-300 transition-colors"><span>📦</span> Order Management</a>
-            <a href="admin-sales-summary.html" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-semibold text-rose-200/80 hover:bg-rose-900/60 hover:text-rosegold-300 transition-colors"><span>📈</span> Sales Summary Report</a>
-            <a href="admin-sales-detail.html" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-bold text-rose-950 rose-gold-bg shadow-sm"><span>📑</span> Detailed Sales Log</a>
-            <a href="admin-coupons.html" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-semibold text-rose-200/80 hover:bg-rose-900/60 hover:text-rosegold-300 transition-colors"><span>💳</span> Promo Coupons</a>
+            <!-- MASTERS COLLAPSIBLE MENU -->
+            <details class="group" >
+                <summary class="w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-xs font-bold text-rosegold-400 hover:bg-rose-900/60 transition-colors cursor-pointer list-none [&::-webkit-details-marker]:hidden select-none">
+                    <div class="flex items-center gap-3">
+                        <span>📁</span> Masters
+                    </div>
+                    <span class="text-[10px] transition-transform duration-200 inline-block group-open:rotate-180">▼</span>
+                </summary>
+                <div class="pl-3 pr-1 py-1 space-y-1">
+                    <a href="admin-categories.html" class="flex items-center gap-2.5 px-3 py-2 rounded-xl text-[11px] font-semibold transition-colors text-rose-200/80 hover:bg-rose-900/60 hover:text-rosegold-300"><span>🏷️</span> Categories</a>
+                    <a href="admin-subcategories.html" class="flex items-center gap-2.5 px-3 py-2 rounded-xl text-[11px] font-semibold transition-colors text-rose-200/80 hover:bg-rose-900/60 hover:text-rosegold-300"><span>🏷️</span> Sub Categories</a>
+                    <a href="admin-category-specifications.html" class="flex items-center gap-2.5 px-3 py-2 rounded-xl text-[11px] font-semibold transition-colors text-rose-200/80 hover:bg-rose-900/60 hover:text-rosegold-300"><span>📋</span> Category Specification</a>
+                    <a href="admin-products.html" class="flex items-center gap-2.5 px-3 py-2 rounded-xl text-[11px] font-semibold transition-colors text-rose-200/80 hover:bg-rose-900/60 hover:text-rosegold-300"><span>🧴</span> Product Master</a>
+                    <a href="admin-customers.html" class="flex items-center gap-2.5 px-3 py-2 rounded-xl text-[11px] font-semibold transition-colors text-rose-200/80 hover:bg-rose-900/60 hover:text-rosegold-300"><span>👥</span> Customer Master</a>
+                </div>
+            </details>
+
+            <a href="admin-suppliers.html" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-semibold transition-colors text-rose-200/80 hover:bg-rose-900/60 hover:text-rosegold-300"><span>🚚</span> Purchase</a>
+            <a href="admin-add-images.html" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-semibold transition-colors text-rose-200/80 hover:bg-rose-900/60 hover:text-rosegold-300"><span>📸</span> Add Images</a>
+            <a href="admin-orders.html" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-semibold transition-colors text-rose-200/80 hover:bg-rose-900/60 hover:text-rosegold-300"><span>📦</span> Sales</a>
+            <a href="admin-verify-payment.html" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-semibold transition-colors text-rose-200/80 hover:bg-rose-900/60 hover:text-rosegold-300"><span>💳</span> Verify Payment</a>
+
+            <!-- REPORTS COLLAPSIBLE MENU -->
+            <details class="group" open>
+                <summary class="w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-xs font-bold text-rosegold-400 hover:bg-rose-900/60 transition-colors cursor-pointer list-none [&::-webkit-details-marker]:hidden select-none">
+                    <div class="flex items-center gap-3">
+                        <span>📈</span> Reports
+                    </div>
+                    <span class="text-[10px] transition-transform duration-200 inline-block group-open:rotate-180">▼</span>
+                </summary>
+                <div class="pl-3 pr-1 py-1 space-y-1">
+                    <a href="admin-sales-summary.html" class="flex items-center gap-2.5 px-3 py-2 rounded-xl text-[11px] font-semibold transition-colors text-rose-200/80 hover:bg-rose-900/60 hover:text-rosegold-300"><span>📈</span> Sales Summary</a>
+                    <a href="admin-sales-detail.html" class="flex items-center gap-2.5 px-3 py-2 rounded-xl text-[11px] font-semibold transition-colors text-rose-950 rose-gold-bg shadow-sm font-bold"><span>📑</span> Sales Detail</a>
+                    <a href="admin-purchase-detail.html" class="flex items-center gap-2.5 px-3 py-2 rounded-xl text-[11px] font-semibold transition-colors text-rose-200/80 hover:bg-rose-900/60 hover:text-rosegold-300"><span>🛒</span> Purchase Detail</a>
+                    <a href="admin-purchase-summary.html" class="flex items-center gap-2.5 px-3 py-2 rounded-xl text-[11px] font-semibold transition-colors text-rose-200/80 hover:bg-rose-900/60 hover:text-rosegold-300"><span>📉</span> Purchase Summary</a>
+                    <a href="admin-inventory.html" class="flex items-center gap-2.5 px-3 py-2 rounded-xl text-[11px] font-semibold transition-colors text-rose-200/80 hover:bg-rose-900/60 hover:text-rosegold-300"><span>🏭</span> Stock</a>
+                </div>
+            </details>
+
+            <div class="pt-6 border-t border-rose-900 text-[10px] text-rose-300/50 px-3">
+                Notch Qatar Perfumes Admin v2.4
+            </div>
         </aside>
 
         <!-- MAIN CONTENT -->
