@@ -273,11 +273,25 @@
                 const res = await fetch('/api/suppliers');
                 if (res.ok) { 
                     const data = await res.json(); 
-                    if (Array.isArray(data)) suppliers = data; 
+                    if (Array.isArray(data) && data.length > 0) {
+                        suppliers = data;
+                        localStorage.setItem('notch_suppliers', JSON.stringify(data));
+                    }
                 }
             } catch (e) {
                 console.error(e);
             }
+
+            if (!suppliers || suppliers.length === 0) {
+                const local = localStorage.getItem('notch_suppliers');
+                if (local) {
+                    try {
+                        const parsed = JSON.parse(local);
+                        if (Array.isArray(parsed)) suppliers = parsed;
+                    } catch(e) {}
+                }
+            }
+
             renderTable();
             if (!editingSupplierId) {
                 updateDefaultSupplierCode();
@@ -596,6 +610,18 @@
                     showNotification("Network or server error while saving supplier.", false);
                 }
             }
+
+            // Sync payload with localStorage notch_suppliers immediately
+            try {
+                let localSuppliers = JSON.parse(localStorage.getItem('notch_suppliers') || '[]');
+                const existingIdx = localSuppliers.findIndex(x => (x.supplierCode || x.SupplierCode) === payload.supplierCode);
+                if (existingIdx >= 0) {
+                    localSuppliers[existingIdx] = { ...localSuppliers[existingIdx], ...payload };
+                } else {
+                    localSuppliers.push(payload);
+                }
+                localStorage.setItem('notch_suppliers', JSON.stringify(localSuppliers));
+            } catch(e) {}
 
             cancelEdit();
             await fetchSuppliers();

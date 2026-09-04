@@ -429,34 +429,49 @@
         // 1. Load Suppliers from API / localStorage / fallback
         async function loadSuppliers() {
             const select = document.getElementById('pur-supplier');
+            if (!select) return;
             select.innerHTML = '<option value="">-- Select Supplier --</option>';
+            let list = [];
 
             try {
                 const res = await fetch('/api/suppliers');
                 if (res.ok) {
                     const data = await res.json();
-                    if (data && data.length > 0) {
-                        allSuppliers = data;
+                    if (Array.isArray(data) && data.length > 0) {
+                        list = data;
+                        localStorage.setItem('notch_suppliers', JSON.stringify(data));
                     }
                 }
             } catch (e) {
                 console.log('Supplier API unreachable, checking local storage.');
             }
 
-            if (!allSuppliers || allSuppliers.length === 0) {
+            if (!list || list.length === 0) {
                 const local = localStorage.getItem('notch_suppliers');
                 if (local) {
-                    allSuppliers = JSON.parse(local);
-                } else {
-                    allSuppliers = defaultSuppliers;
+                    try {
+                        const parsed = JSON.parse(local);
+                        if (Array.isArray(parsed) && parsed.length > 0) {
+                            list = parsed;
+                        }
+                    } catch(e) {}
                 }
             }
 
-            allSuppliers.forEach(s => {
-                const name = s.supplierName || s.name;
+            if (!list || list.length === 0) {
+                list = defaultSuppliers;
+            }
+
+            allSuppliers = list;
+
+            list.forEach(s => {
+                const name = s.supplierName || s.SupplierName || s.name || s.Name || '';
+                const code = s.supplierCode || s.SupplierCode || s.code || s.Code || '';
+                if (!name) return;
+
                 const opt = document.createElement('option');
                 opt.value = name;
-                opt.textContent = name;
+                opt.textContent = code ? `${name} (${code})` : name;
                 opt.dataset.id = s.id || s.Id || '';
                 select.appendChild(opt);
             });
