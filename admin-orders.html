@@ -3,36 +3,27 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Order Management Master | Notch Qatar Perfumes Admin</title>
+    <title>Sales Billing Master | Notch Qatar Perfumes Admin</title>
     
-    <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
             theme: {
                 extend: {
                     colors: {
-                        rose: {
-                            900: '#5B1E31',
-                            950: '#4A1525',
-                        },
-                        rosegold: {
-                            300: '#F3C9BC',
-                            400: '#E5A995',
-                            500: '#D49B85',
-                            600: '#B86B7D',
-                        },
-                        blush: {
-                            50: '#FFF5F6',
-                            100: '#FDF0F2',
-                        }
+                        rose: { 900: '#5B1E31', 950: '#4A1525' },
+                        rosegold: { 300: '#F3C9BC', 400: '#E5A995', 500: '#D49B85', 600: '#B86B7D' },
+                        blush: { 50: '#FFF5F6', 100: '#FDF0F2' }
                     }
                 }
             }
         }
     </script>
-    
-    <!-- Custom CSS -->
+    <script>
+        if (localStorage.getItem('adminLoggedIn') !== 'true') {
+            window.location.href = 'admin-login.html';
+        }
+    </script>
     <link rel="stylesheet" href="css/styles.css">
 </head>
 <body class="bg-blush-50 text-stone-900 antialiased min-h-screen flex flex-col">
@@ -46,21 +37,28 @@
             </a>
         </div>
         <div class="flex items-center gap-4">
-            <a href="index.html" target="_blank" class="px-3.5 py-1.5 bg-rosegold-400/20 text-rosegold-300 hover:bg-rosegold-400 hover:text-rose-950 rounded-lg text-xs font-bold transition-all border border-rosegold-400/30">
+            <a href="index.html" target="_blank" class="px-3.5 py-1.5 bg-rosegold-400/20 text-rosegold-300 hover:bg-rosegold-400 hover:text-rose-950 rounded-lg text-xs font-bold border border-rosegold-400/30">
                 🌐 Visit Storefront
             </a>
-            <div class="w-8 h-8 rounded-full rose-gold-bg text-rose-950 font-bold flex items-center justify-center text-xs">AD</div>
+            <div class="flex items-center gap-2 pl-4 border-l border-rose-800">
+                <div class="w-8 h-8 rounded-full rose-gold-bg text-rose-950 font-bold flex items-center justify-center text-xs">AD</div>
+                <div class="hidden sm:block text-left">
+                    <div class="text-xs font-bold text-white">Admin Master</div>
+                    <div class="text-[10px] text-rosegold-300">admin@gmail.com</div>
+                </div>
+                <button onclick="localStorage.removeItem('adminLoggedIn'); window.location.href='admin-login.html';" class="ml-2 text-xs text-red-300 hover:text-white font-bold bg-red-900/40 px-2.5 py-1 rounded-lg border border-red-500/30">Logout 🚪</button>
+            </div>
         </div>
     </header>
 
     <div class="flex-1 flex">
-                                        <!-- SIDEBAR NAVIGATION -->
+        <!-- SIDEBAR NAVIGATION -->
         <aside class="w-64 bg-rose-950 text-rose-100/80 border-r border-rosegold-500/20 hidden md:block flex-shrink-0 p-4 space-y-1.5 overflow-y-auto">
             <a href="admin-dashboard.html" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-semibold transition-colors text-rose-200/80 hover:bg-rose-900/60 hover:text-rosegold-300"><span>📊</span> Overview Dashboard</a>
             <a href="admin-banners.html" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-semibold transition-colors text-rose-200/80 hover:bg-rose-900/60 hover:text-rosegold-300"><span>🖼️</span> Banner Images</a>
 
             <!-- MASTERS COLLAPSIBLE MENU -->
-            <details class="group" >
+            <details class="group">
                 <summary class="w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-xs font-bold text-rosegold-400 hover:bg-rose-900/60 transition-colors cursor-pointer list-none [&::-webkit-details-marker]:hidden select-none">
                     <div class="flex items-center gap-3">
                         <span>📁</span> Masters
@@ -83,7 +81,7 @@
             <a href="admin-verify-payment.html" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-semibold transition-colors text-rose-200/80 hover:bg-rose-900/60 hover:text-rosegold-300"><span>💳</span> Verify Payment</a>
 
             <!-- REPORTS COLLAPSIBLE MENU -->
-            <details class="group" >
+            <details class="group">
                 <summary class="w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-xs font-bold text-rosegold-400 hover:bg-rose-900/60 transition-colors cursor-pointer list-none [&::-webkit-details-marker]:hidden select-none">
                     <div class="flex items-center gap-3">
                         <span>📈</span> Reports
@@ -106,204 +104,391 @@
 
         <!-- MAIN CONTENT -->
         <main class="flex-1 p-6 md:p-8 space-y-6 overflow-y-auto">
+            <!-- PAGE HEADER WITH TOGGLE BUTTON -->
             <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-                <div>
-                    <h1 class="font-serif-heading text-3xl font-bold text-rose-950">Order Management Master</h1>
-                    <p class="text-xs text-gray-500 mt-1">Track customer purchases, fulfillment status, and printable invoices.</p>
+                <div class="flex items-center gap-3">
+                    <span class="text-2xl">📑</span>
+                    <div>
+                        <h1 id="page-heading-title" class="font-serif-heading text-3xl font-bold text-rose-950">Create Sales</h1>
+                        <p class="text-xs text-gray-500 mt-0.5">Generate sales billing invoices, apply discounts, and manage orders.</p>
+                    </div>
+                </div>
+
+                <button onclick="toggleSalesView()" id="toggle-view-btn" class="px-4 py-2 border border-blue-400 text-blue-700 bg-blue-50/80 hover:bg-blue-100 rounded-xl text-xs font-bold flex items-center gap-1.5 transition-all shadow-sm">
+                    <span>📑 View Sales</span>
+                </button>
+            </div>
+
+            <!-- SUCCESS TOAST -->
+            <div id="toast-msg" class="hidden p-3 rounded-lg text-xs font-bold bg-green-100 text-green-800 border border-green-200"></div>
+
+            <!-- SECTION 1: CREATE SALES FORM VIEW -->
+            <div id="create-sales-section" class="space-y-6">
+                <!-- TOP SALES DETAILS CARD -->
+                <div class="bg-white rounded-2xl border border-rose-100 shadow-sm p-6 space-y-4">
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs">
+                        <div>
+                            <label class="block font-medium text-gray-600 mb-1">Invoice No</label>
+                            <input type="text" id="sales-invoice-no" readonly class="w-full bg-stone-100 font-mono font-bold text-gray-700 border border-stone-200 p-2.5 rounded-lg focus:outline-none" />
+                        </div>
+                        <div>
+                            <label class="block font-medium text-gray-600 mb-1">Date</label>
+                            <input type="date" id="sales-date" class="w-full bg-white border border-stone-300 p-2.5 rounded-lg focus:outline-none focus:border-rose-900" />
+                        </div>
+                        <div>
+                            <label class="block font-medium text-gray-600 mb-1">Customer</label>
+                            <select id="sales-customer" class="w-full bg-white border border-stone-300 p-2.5 rounded-lg focus:outline-none focus:border-rose-900">
+                                <option value="Walk-in Customer">Search Customer / Walk-in</option>
+                                <option value="Mohammed Al-Kuwari">Mohammed Al-Kuwari (+974 5512 3456)</option>
+                                <option value="Fatima Al-Thani">Fatima Al-Thani (+974 6612 9876)</option>
+                                <option value="Salem Al-Marri">Salem Al-Marri (+974 3344 5566)</option>
+                                <option value="Rohan Kapoor">Rohan Kapoor (+974 5011 2233)</option>
+                                <option value="Ananya Sharma">Ananya Sharma (+974 5599 8877)</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs">
+                        <div>
+                            <label class="block font-medium text-gray-600 mb-1">Payment</label>
+                            <select id="sales-payment" class="w-full bg-white border border-stone-300 p-2.5 rounded-lg focus:outline-none focus:border-rose-900">
+                                <option value="Cash">Cash</option>
+                                <option value="Card (Debit/Credit)">Card (Debit/Credit)</option>
+                                <option value="UPI / Bank Transfer">UPI / Bank Transfer</option>
+                                <option value="Credit / On Account">Credit / On Account</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ADD ITEM ROW CONTAINER -->
+                <div class="bg-white rounded-2xl border border-rose-100 shadow-sm p-6 space-y-4">
+                    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-8 gap-3 text-xs items-end">
+                        <div class="md:col-span-2">
+                            <label class="block font-medium text-gray-600 mb-1">Product</label>
+                            <select id="item-product" onchange="onProductSelect()" class="w-full bg-white border border-stone-300 p-2 rounded-lg focus:outline-none focus:border-rose-900">
+                                <option value="">Search Product</option>
+                                <option value="Notch Velvet Oud EDP" data-price="295" data-stock="180">Notch Velvet Oud EDP</option>
+                                <option value="Notch Royal Rose EDP" data-price="245" data-stock="120">Notch Royal Rose EDP</option>
+                                <option value="Notch Steele Intense EDP" data-price="320" data-stock="45">Notch Steele Intense EDP</option>
+                                <option value="Notch Celeste EDP" data-price="275" data-stock="95">Notch Celeste EDP</option>
+                                <option value="Notch Discovery Gift Set" data-price="495" data-stock="30">Notch Discovery Gift Set</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block font-medium text-gray-600 mb-1">Variant</label>
+                            <select id="item-variant" class="w-full bg-white border border-stone-300 p-2 rounded-lg focus:outline-none focus:border-rose-900">
+                                <option value="100ml">100ml</option>
+                                <option value="50ml">50ml</option>
+                                <option value="30ml">30ml</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block font-medium text-gray-600 mb-1">Batch</label>
+                            <select id="item-batch" class="w-full bg-white border border-stone-300 p-2 rounded-lg focus:outline-none focus:border-rose-900">
+                                <option value="BATCH-2026-A">BATCH-2026-A</option>
+                                <option value="BATCH-2026-B">BATCH-2026-B</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block font-medium text-gray-600 mb-1">Stock</label>
+                            <input type="text" id="item-stock" readonly placeholder="0" class="w-full bg-stone-100 text-center font-bold border border-stone-200 p-2 rounded-lg" />
+                        </div>
+                        <div>
+                            <label class="block font-medium text-gray-600 mb-1">Price</label>
+                            <input type="number" id="item-price" oninput="calculateItemTotals()" placeholder="0.00" class="w-full bg-white text-right border border-stone-300 p-2 rounded-lg focus:outline-none" />
+                        </div>
+                        <div>
+                            <label class="block font-medium text-gray-600 mb-1">Qty</label>
+                            <input type="number" id="item-qty" value="1" min="1" oninput="calculateItemTotals()" class="w-full bg-white text-center border border-stone-300 p-2 rounded-lg focus:outline-none" />
+                        </div>
+                        <div>
+                            <label class="block font-medium text-gray-600 mb-1">Disc %</label>
+                            <input type="number" id="item-disc-pct" value="0" min="0" max="100" oninput="calculateItemTotals()" class="w-full bg-white text-center border border-stone-300 p-2 rounded-lg focus:outline-none" />
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-8 gap-3 text-xs items-center pt-1">
+                        <div>
+                            <label class="block font-medium text-gray-600 mb-1">Disc Amt</label>
+                            <input type="number" id="item-disc-amt" value="0" min="0" oninput="calculateItemTotalsFromAmt()" class="w-full bg-white text-right border border-stone-300 p-2 rounded-lg focus:outline-none" />
+                        </div>
+                        <div class="md:col-span-2 pt-5">
+                            <button type="button" onclick="addItemToSalesTable()" class="w-full px-5 py-2.5 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl shadow-sm transition-all flex items-center justify-center gap-1.5">
+                                <span>+ Add Item</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ADDED ITEMS TABLE (BLACK HEADER BAR AS REQUESTED) -->
+                <div class="bg-white rounded-2xl border border-rose-100 shadow-sm overflow-hidden">
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left text-xs border-collapse">
+                            <thead>
+                                <tr class="bg-stone-900 text-white font-bold text-[11px] uppercase tracking-wider">
+                                    <th class="py-3 px-4">Product</th>
+                                    <th class="py-3 px-4">Variant</th>
+                                    <th class="py-3 px-4">Batch</th>
+                                    <th class="py-3 px-4 text-right">Price</th>
+                                    <th class="py-3 px-4 text-center">Qty</th>
+                                    <th class="py-3 px-4 text-center">Disc %</th>
+                                    <th class="py-3 px-4 text-right">Disc Amt</th>
+                                    <th class="py-3 px-4 text-right">GST / Tax</th>
+                                    <th class="py-3 px-4 text-right">Net</th>
+                                    <th class="py-3 px-4 text-center">Action</th>
+                                </tr>
+                            </thead>
+                            <tbody id="sales-items-tbody" class="divide-y divide-stone-100 font-medium">
+                                <tr>
+                                    <td colspan="10" class="py-8 text-center text-gray-400 italic">No products added to bill yet. Select a product above and click "+ Add Item".</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- BOTTOM CALCULATION SUMMARY & SAVE BUTTON -->
+                <div class="flex flex-col md:flex-row items-start justify-between gap-6">
+                    <div class="pt-2">
+                        <button onclick="saveSalesBill()" class="px-8 py-3 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl shadow-md transition-all flex items-center gap-2 text-sm">
+                            <span>💾 Save Sales Invoice</span>
+                        </button>
+                    </div>
+
+                    <!-- SUMMARY CARD (RIGHT ALIGNED) -->
+                    <div class="w-full md:w-80 bg-rose-50/50 p-5 rounded-2xl border border-rose-100 shadow-sm space-y-2 text-xs">
+                        <div class="flex justify-between items-center text-gray-600">
+                            <span>Discount :</span>
+                            <span id="summary-discount" class="font-bold text-red-600">QAR 0.00</span>
+                        </div>
+                        <div class="flex justify-between items-center text-gray-600">
+                            <span>GST / Tax :</span>
+                            <span id="summary-gst" class="font-bold text-blue-600">QAR 0.00</span>
+                        </div>
+                        <hr class="border-rose-200 my-2" />
+                        <div class="flex justify-between items-center text-base font-bold text-stone-900">
+                            <span>Total :</span>
+                            <span id="summary-total" class="text-emerald-700 text-lg">QAR 0.00</span>
+                        </div>
+                    </div>
                 </div>
             </div>
 
-            <!-- ORDER STATUS TABS -->
-            <div class="flex flex-wrap gap-2">
-                <button onclick="filterOrdersByStatus('all', this)" class="order-tab-btn px-4 py-2 bg-rose-950 text-rosegold-300 rounded-xl text-xs font-bold uppercase shadow-sm">All Orders</button>
-                <button onclick="filterOrdersByStatus('processing', this)" class="order-tab-btn px-4 py-2 bg-white text-gray-700 hover:bg-gray-100 rounded-xl text-xs font-bold uppercase border border-stone-200">Processing</button>
-                <button onclick="filterOrdersByStatus('shipped', this)" class="order-tab-btn px-4 py-2 bg-white text-gray-700 hover:bg-gray-100 rounded-xl text-xs font-bold uppercase border border-stone-200">Shipped</button>
-                <button onclick="filterOrdersByStatus('delivered', this)" class="order-tab-btn px-4 py-2 bg-white text-gray-700 hover:bg-gray-100 rounded-xl text-xs font-bold uppercase border border-stone-200">Delivered</button>
-            </div>
+            <!-- SECTION 2: VIEW SALES HISTORY LIST VIEW (HIDDEN BY DEFAULT, TOGGLED ON CLICK) -->
+            <div id="view-sales-section" class="hidden space-y-6">
+                <div class="bg-white rounded-2xl border border-rose-100 shadow-sm p-6 space-y-4">
+                    <div class="flex items-center justify-between border-b pb-3">
+                        <h3 class="font-serif-heading text-xl font-bold text-rose-950">Sales Transaction History</h3>
+                        <span class="text-xs text-gray-500">All registered storefront & POS billing records</span>
+                    </div>
 
-            <!-- ORDERS TABLE -->
-            <div class="bg-white rounded-2xl border border-rose-100 shadow-sm overflow-hidden">
-                <div class="overflow-x-auto">
-                    <table class="w-full text-left text-xs">
-                        <thead class="bg-rose-50/80 text-rose-950 uppercase font-bold text-[10px] tracking-wider border-b border-rose-100">
-                            <tr>
-                                <th class="p-4">Order ID & Date</th>
-                                <th class="p-4">Customer Details</th>
-                                <th class="p-4">Perfumes Ordered</th>
-                                <th class="p-4">Payment Method</th>
-                                <th class="p-4">Total</th>
-                                <th class="p-4">Fulfillment Status</th>
-                                <th class="p-4">Invoice</th>
-                            </tr>
-                        </thead>
-                        <tbody id="orders-table-body" class="divide-y divide-gray-100 font-medium"></tbody>
-                    </table>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left text-xs border-collapse">
+                            <thead>
+                                <tr class="bg-rose-50/60 text-rose-950 font-bold uppercase text-[10px] border-b border-rose-100">
+                                    <th class="py-3 px-4">Invoice No</th>
+                                    <th class="py-3 px-4">Date</th>
+                                    <th class="py-3 px-4">Customer</th>
+                                    <th class="py-3 px-4">Payment</th>
+                                    <th class="py-3 px-4 text-center">Items</th>
+                                    <th class="py-3 px-4 text-right">Net Amount</th>
+                                    <th class="py-3 px-4 text-center">Status</th>
+                                    <th class="py-3 px-4 text-center">Action</th>
+                                </tr>
+                            </thead>
+                            <tbody id="sales-history-tbody" class="divide-y divide-stone-100 font-medium">
+                                <tr class="hover:bg-rose-50/30">
+                                    <td class="py-3.5 px-4 font-mono font-bold text-rose-950">SAL-20260904004917</td>
+                                    <td class="py-3.5 px-4 text-gray-500">04 Sep 2026</td>
+                                    <td class="py-3.5 px-4 font-semibold">Mohammed Al-Kuwari</td>
+                                    <td class="py-3.5 px-4"><span class="px-2 py-0.5 bg-stone-100 text-stone-800 rounded font-bold">Cash</span></td>
+                                    <td class="py-3.5 px-4 text-center font-bold">2</td>
+                                    <td class="py-3.5 px-4 text-right font-bold text-emerald-700">QAR 540.00</td>
+                                    <td class="py-3.5 px-4 text-center"><span class="px-2.5 py-1 bg-emerald-100 text-emerald-800 font-bold rounded-full text-[10px]">Paid</span></td>
+                                    <td class="py-3.5 px-4 text-center"><button onclick="alert('Printing Invoice #SAL-20260904004917')" class="text-blue-600 hover:underline font-bold">Print Invoice 🖨️</button></td>
+                                </tr>
+                                <tr class="hover:bg-rose-50/30">
+                                    <td class="py-3.5 px-4 font-mono font-bold text-rose-950">SAL-20260903004820</td>
+                                    <td class="py-3.5 px-4 text-gray-500">03 Sep 2026</td>
+                                    <td class="py-3.5 px-4 font-semibold">Fatima Al-Thani</td>
+                                    <td class="py-3.5 px-4"><span class="px-2 py-0.5 bg-blue-100 text-blue-800 rounded font-bold">Card</span></td>
+                                    <td class="py-3.5 px-4 text-center font-bold">1</td>
+                                    <td class="py-3.5 px-4 text-right font-bold text-emerald-700">QAR 320.00</td>
+                                    <td class="py-3.5 px-4 text-center"><span class="px-2.5 py-1 bg-emerald-100 text-emerald-800 font-bold rounded-full text-[10px]">Paid</span></td>
+                                    <td class="py-3.5 px-4 text-center"><button onclick="alert('Printing Invoice #SAL-20260903004820')" class="text-blue-600 hover:underline font-bold">Print Invoice 🖨️</button></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
         </main>
     </div>
 
-    <!-- INVOICE MODAL -->
-    <div id="invoice-modal" class="hidden fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
-        <div class="bg-white rounded-2xl max-w-xl w-full p-6 relative shadow-2xl space-y-4">
-            <button onclick="closeInvoiceModal()" class="absolute top-4 right-4 text-gray-400 hover:text-gray-600 font-bold">✕</button>
-            <div id="invoice-modal-content"></div>
-        </div>
-    </div>
-
-    <!-- Scripts -->
-    <script src="js/products.js"></script>
-    <script src="js/app.js"></script>
+    <!-- JAVASCRIPT BILLING LOGIC ENGINE -->
     <script>
-        const ORDERS = [
-            {
-                id: "NOTCH-8941",
-                date: "31 Aug 2026",
-                customer: "Mohammed Al-Kuwari",
-                phone: "+974 5512 3456",
-                address: "Villa 14, Street 840, Zone 55, Doha, Qatar",
-                items: "Notch Raw Eau De Parfum (100 ml)",
-                payment: "Debit / Credit Card",
-                total: 2495,
-                status: "processing"
-            },
-            {
-                id: "NOTCH-8940",
-                date: "30 Aug 2026",
-                customer: "Fatima Al-Thani",
-                phone: "+974 6623 4567",
-                address: "Apartment 302, West Bay Towers, Doha, Qatar",
-                items: "Notch Celeste Eau De Parfum (100 ml)",
-                payment: "Credit Card (Visa)",
-                total: 3495,
-                status: "shipped"
-            },
-            {
-                id: "NOTCH-8939",
-                date: "29 Aug 2026",
-                customer: "Salem Al-Marri",
-                phone: "+974 3334 5678",
-                address: "Building 12, Street 300, Al Rayyan, Qatar",
-                items: "Notch Discovery Gift Box (5 x 5ml)",
-                payment: "Cash on Delivery",
-                total: 995,
-                status: "delivered"
-            }
-        ];
+        let addedItems = [];
 
-        let currentOrders = [...ORDERS];
-
-        document.addEventListener('DOMContentLoaded', () => {
-            renderOrdersTable(currentOrders);
-        });
-
-        function renderOrdersTable(items) {
-            const body = document.getElementById('orders-table-body');
-            if (!body) return;
-
-            body.innerHTML = items.map(o => `
-                <tr class="hover:bg-rose-50/30">
-                    <td class="p-4">
-                        <div class="font-bold text-rose-950">${o.id}</div>
-                        <div class="text-[10px] text-gray-400">${o.date}</div>
-                    </td>
-                    <td class="p-4">
-                        <div class="font-bold text-gray-900">${o.customer}</div>
-                        <div class="text-[10px] text-gray-500">${o.phone}</div>
-                    </td>
-                    <td class="p-4 text-gray-800">${o.items}</td>
-                    <td class="p-4 text-gray-600">${o.payment}</td>
-                    <td class="p-4 font-bold text-rose-950">QAR ${o.total.toLocaleString('en-US')}</td>
-                    <td class="p-4">
-                        <select onchange="updateOrderStatus('${o.id}', this.value)" class="bg-stone-50 border border-stone-200 text-xs font-bold p-1.5 rounded-lg focus:outline-none focus:border-rosegold-400">
-                            <option value="processing" ${o.status==='processing'?'selected':''}>Processing</option>
-                            <option value="shipped" ${o.status==='shipped'?'selected':''}>Shipped</option>
-                            <option value="delivered" ${o.status==='delivered'?'selected':''}>Delivered</option>
-                        </select>
-                    </td>
-                    <td class="p-4">
-                        <button onclick="openInvoice('${o.id}')" class="px-3 py-1 bg-rose-50 text-rose-950 font-bold rounded-lg hover:bg-rose-100 transition-colors">Invoice</button>
-                    </td>
-                </tr>
-            `).join('');
+        function initSalesForm() {
+            const dateStr = new Date().toISOString().slice(0, 10);
+            document.getElementById('sales-date').value = dateStr;
+            const randomNum = Math.floor(1000000000 + Math.random() * 900000000);
+            document.getElementById('sales-invoice-no').value = 'SAL-' + dateStr.replace(/-/g, '') + randomNum.toString().slice(0, 6);
         }
 
-        function filterOrdersByStatus(status, btn) {
-            document.querySelectorAll('.order-tab-btn').forEach(b => {
-                b.className = 'order-tab-btn px-4 py-2 bg-white text-gray-700 hover:bg-gray-100 rounded-xl text-xs font-bold uppercase border border-stone-200';
+        initSalesForm();
+
+        function toggleSalesView() {
+            const createSec = document.getElementById('create-sales-section');
+            const viewSec = document.getElementById('view-sales-section');
+            const btn = document.getElementById('toggle-view-btn');
+            const heading = document.getElementById('page-heading-title');
+
+            if (createSec.classList.contains('hidden')) {
+                createSec.classList.remove('hidden');
+                viewSec.classList.add('hidden');
+                btn.innerHTML = '<span>📑 View Sales</span>';
+                heading.innerText = 'Create Sales';
+            } else {
+                createSec.classList.add('hidden');
+                viewSec.classList.remove('hidden');
+                btn.innerHTML = '<span>+ Create Sales</span>';
+                heading.innerText = 'Sales Transactions';
+            }
+        }
+
+        function onProductSelect() {
+            const sel = document.getElementById('item-product');
+            const opt = sel.options[sel.selectedIndex];
+            if (opt && opt.dataset.price) {
+                document.getElementById('item-price').value = opt.dataset.price;
+                document.getElementById('item-stock').value = opt.dataset.stock;
+                calculateItemTotals();
+            } else {
+                document.getElementById('item-price').value = '';
+                document.getElementById('item-stock').value = '0';
+                document.getElementById('item-disc-amt').value = '0';
+            }
+        }
+
+        function calculateItemTotals() {
+            const price = parseFloat(document.getElementById('item-price').value) || 0;
+            const qty = parseFloat(document.getElementById('item-qty').value) || 1;
+            const discPct = parseFloat(document.getElementById('item-disc-pct').value) || 0;
+            const discAmt = (price * qty) * (discPct / 100);
+            document.getElementById('item-disc-amt').value = discAmt.toFixed(2);
+        }
+
+        function calculateItemTotalsFromAmt() {
+            const price = parseFloat(document.getElementById('item-price').value) || 0;
+            const qty = parseFloat(document.getElementById('item-qty').value) || 1;
+            const discAmt = parseFloat(document.getElementById('item-disc-amt').value) || 0;
+            const totalGross = price * qty;
+            if (totalGross > 0) {
+                const discPct = (discAmt / totalGross) * 100;
+                document.getElementById('item-disc-pct').value = discPct.toFixed(1);
+            }
+        }
+
+        function addItemToSalesTable() {
+            const prod = document.getElementById('item-product').value;
+            const variant = document.getElementById('item-variant').value;
+            const batch = document.getElementById('item-batch').value;
+            const price = parseFloat(document.getElementById('item-price').value) || 0;
+            const qty = parseFloat(document.getElementById('item-qty').value) || 1;
+            const discPct = parseFloat(document.getElementById('item-disc-pct').value) || 0;
+            const discAmt = parseFloat(document.getElementById('item-disc-amt').value) || 0;
+
+            if (!prod) {
+                alert('Please select a product first!');
+                return;
+            }
+
+            const gross = price * qty;
+            const net = gross - discAmt;
+            const gst = 0;
+
+            addedItems.push({
+                product: prod,
+                variant: variant,
+                batch: batch,
+                price: price,
+                qty: qty,
+                discPct: discPct,
+                discAmt: discAmt,
+                gst: gst,
+                net: net
             });
-            btn.className = 'order-tab-btn px-4 py-2 bg-rose-950 text-rosegold-300 rounded-xl text-xs font-bold uppercase shadow-sm';
 
-            if (status === 'all') currentOrders = [...ORDERS];
-            else currentOrders = ORDERS.filter(o => o.status === status);
-
-            renderOrdersTable(currentOrders);
+            renderAddedItemsTable();
+            document.getElementById('item-product').value = '';
+            document.getElementById('item-price').value = '';
+            document.getElementById('item-stock').value = '0';
+            document.getElementById('item-qty').value = '1';
+            document.getElementById('item-disc-pct').value = '0';
+            document.getElementById('item-disc-amt').value = '0';
         }
 
-        function updateOrderStatus(orderId, newStatus) {
-            const order = ORDERS.find(o => o.id === orderId);
-            if (order) {
-                order.status = newStatus;
-                showToast(`Order ${orderId} updated to ${newStatus.toUpperCase()}`, 'success');
+        function removeItem(idx) {
+            addedItems.splice(idx, 1);
+            renderAddedItemsTable();
+        }
+
+        function renderAddedItemsTable() {
+            const tbody = document.getElementById('sales-items-tbody');
+            if (addedItems.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="10" class="py-8 text-center text-gray-400 italic">No products added to bill yet. Select a product above and click "+ Add Item".</td></tr>';
+                document.getElementById('summary-discount').innerText = 'QAR 0.00';
+                document.getElementById('summary-gst').innerText = 'QAR 0.00';
+                document.getElementById('summary-total').innerText = 'QAR 0.00';
+                return;
             }
+
+            let html = '';
+            let totalDisc = 0;
+            let totalNet = 0;
+            let totalGst = 0;
+
+            addedItems.forEach((item, index) => {
+                totalDisc += item.discAmt;
+                totalNet += item.net;
+                totalGst += item.gst;
+
+                html += `<tr class="hover:bg-rose-50/20">
+                    <td class="py-3 px-4 font-bold text-rose-950">${item.product}</td>
+                    <td class="py-3 px-4">${item.variant}</td>
+                    <td class="py-3 px-4 text-gray-500">${item.batch}</td>
+                    <td class="py-3 px-4 text-right">QAR ${item.price.toFixed(2)}</td>
+                    <td class="py-3 px-4 text-center font-bold">${item.qty}</td>
+                    <td class="py-3 px-4 text-center">${item.discPct}%</td>
+                    <td class="py-3 px-4 text-right text-red-600 font-semibold">QAR ${item.discAmt.toFixed(2)}</td>
+                    <td class="py-3 px-4 text-right text-gray-500">QAR ${item.gst.toFixed(2)}</td>
+                    <td class="py-3 px-4 text-right font-bold text-emerald-700">QAR ${item.net.toFixed(2)}</td>
+                    <td class="py-3 px-4 text-center"><button onclick="removeItem(${index})" class="text-red-500 hover:text-red-700 font-bold text-sm">❌</button></td>
+                </tr>`;
+            });
+
+            tbody.innerHTML = html;
+            document.getElementById('summary-discount').innerText = 'QAR ' + totalDisc.toFixed(2);
+            document.getElementById('summary-gst').innerText = 'QAR ' + totalGst.toFixed(2);
+            document.getElementById('summary-total').innerText = 'QAR ' + totalNet.toFixed(2);
         }
 
-        function openInvoice(orderId) {
-            const order = ORDERS.find(o => o.id === orderId);
-            if (!order) return;
+        function saveSalesBill() {
+            if (addedItems.length === 0) {
+                alert('Please add at least one item to save the sales bill!');
+                return;
+            }
+            const inv = document.getElementById('sales-invoice-no').value;
+            const toast = document.getElementById('toast-msg');
+            toast.innerText = '✅ Sales Invoice #' + inv + ' saved & printed successfully!';
+            toast.classList.remove('hidden');
+            setTimeout(() => toast.classList.add('hidden'), 4000);
 
-            const modal = document.getElementById('invoice-modal');
-            const content = document.getElementById('invoice-modal-content');
-
-            content.innerHTML = `
-                <div class="space-y-4 text-xs">
-                    <div class="flex justify-between border-b pb-3">
-                        <div>
-                            <h2 class="font-serif-heading text-2xl font-bold text-rose-950">NOTCH QATAR PERFUMES</h2>
-                            <p class="text-[10px] text-gray-400">Official Tax Invoice</p>
-                        </div>
-                        <div class="text-right">
-                            <div class="font-bold text-gray-900">${order.id}</div>
-                            <div class="text-gray-500">${order.date}</div>
-                        </div>
-                    </div>
-
-                    <div class="grid grid-cols-2 gap-4 bg-rose-50/50 p-3 rounded-lg">
-                        <div>
-                            <span class="font-bold text-rose-900 block">Billed To:</span>
-                            <span class="font-bold text-gray-900">${order.customer}</span>
-                            <p class="text-gray-500 text-[11px]">${order.address}</p>
-                        </div>
-                        <div>
-                            <span class="font-bold text-rose-900 block">Payment Method:</span>
-                            <span>${order.payment}</span>
-                        </div>
-                    </div>
-
-                    <div class="border-t pt-3 space-y-2">
-                        <div class="flex justify-between font-bold text-gray-900">
-                            <span>${order.items}</span>
-                            <span>QAR ${order.total.toLocaleString('en-US')}</span>
-                        </div>
-                        <div class="flex justify-between text-gray-500">
-                            <span>Shipping Fee</span>
-                            <span class="text-emerald-600 font-bold">FREE</span>
-                        </div>
-                        <div class="flex justify-between text-base font-bold text-rose-950 pt-2 border-t">
-                            <span>Total Amount Paid</span>
-                            <span>QAR ${order.total.toLocaleString('en-US')}</span>
-                        </div>
-                    </div>
-
-                    <button onclick="window.print()" class="w-full py-3 rose-gold-bg text-rose-950 font-bold text-xs uppercase rounded-xl">🖨️ Print Invoice</button>
-                </div>
-            `;
-
-            modal.classList.remove('hidden');
-        }
-
-        function closeInvoiceModal() {
-            document.getElementById('invoice-modal').classList.add('hidden');
+            addedItems = [];
+            renderAddedItemsTable();
+            initSalesForm();
         }
     </script>
 </body>
