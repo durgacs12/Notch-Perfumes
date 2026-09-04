@@ -65,26 +65,51 @@
     </header>
 
     <div class="flex-1 flex">
-        <!-- SIDEBAR NAVIGATION -->
-        <aside class="w-64 bg-rose-950 text-rose-100/80 border-r border-rosegold-500/20 hidden md:block flex-shrink-0 p-4 space-y-2">
-            <div class="text-[10px] font-bold uppercase tracking-widest text-rosegold-400 px-3 pt-2 mb-2">Master Modules</div>
-            <a href="admin-dashboard.html" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-bold text-rose-950 rose-gold-bg shadow-sm"><span>📊</span> Overview Dashboard</a>
-            <a href="admin-banners.html" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-semibold text-rose-200/80 hover:bg-rose-900/60 hover:text-rosegold-300 transition-colors"><span>🖼️</span> Banner Image</a>
-            <a href="admin-categories.html" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-semibold text-rose-200/80 hover:bg-rose-900/60 hover:text-rosegold-300 transition-colors"><span>🏷️</span> Categories</a>
-            <a href="admin-subcategories.html" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-semibold text-rose-200/80 hover:bg-rose-900/60 hover:text-rosegold-300 transition-colors"><span>🏷️</span> Sub Categories</a>
-            <a href="admin-category-specifications.html" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-semibold text-rose-200/80 hover:bg-rose-900/60 hover:text-rosegold-300 transition-colors"><span>📋</span> Category Specifications</a>
-            <a href="admin-products.html" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-semibold text-rose-200/80 hover:bg-rose-900/60 hover:text-rosegold-300 transition-colors"><span>🧴</span> Product Master</a>
-            <a href="admin-suppliers.html" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-semibold text-rose-200/80 hover:bg-rose-900/60 hover:text-rosegold-300 transition-colors"><span>🚚</span> Supplier Master</a>
-            <a href="admin-customers.html" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-semibold text-rose-200/80 hover:bg-rose-900/60 hover:text-rosegold-300 transition-colors"><span>👥</span> Customer Master</a>
+                        <!-- SIDEBAR NAVIGATION -->
+        <aside class="w-64 bg-rose-950 text-rose-100/80 border-r border-rosegold-500/20 hidden md:block flex-shrink-0 p-4 space-y-1.5 overflow-y-auto">
+            <a href="admin-dashboard.html" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-semibold transition-colors text-rose-950 rose-gold-bg shadow-sm font-bold"><span>📊</span> Overview Dashboard</a>
+            <a href="admin-banners.html" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-semibold transition-colors text-rose-200/80 hover:bg-rose-900/60 hover:text-rosegold-300"><span>🖼️</span> Banner Images</a>
 
-            <div class="text-[10px] font-bold uppercase tracking-widest text-rosegold-400 px-3 pt-4 mb-2">Reports & Operations</div>
-            <a href="admin-inventory.html" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-semibold text-rose-200/80 hover:bg-rose-900/60 hover:text-rosegold-300 transition-colors"><span>🏭</span> Stock & Inventory Master</a>
-            <a href="admin-orders.html" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-semibold text-rose-200/80 hover:bg-rose-900/60 hover:text-rosegold-300 transition-colors"><span>📦</span> Order Management</a>
-            <a href="admin-sales-summary.html" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-semibold text-rose-200/80 hover:bg-rose-900/60 hover:text-rosegold-300 transition-colors"><span>📈</span> Sales Summary Report</a>
-            <a href="admin-sales-detail.html" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-semibold text-rose-200/80 hover:bg-rose-900/60 hover:text-rosegold-300 transition-colors"><span>📑</span> Detailed Sales Log</a>
-            <a href="admin-coupons.html" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-semibold text-rose-200/80 hover:bg-rose-900/60 hover:text-rosegold-300 transition-colors"><span>💳</span> Promo Coupons</a>
+            <!-- MASTERS COLLAPSIBLE MENU -->
+            <details class="group" >
+                <summary class="w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-xs font-bold text-rosegold-400 hover:bg-rose-900/60 transition-colors cursor-pointer list-none [&::-webkit-details-marker]:hidden select-none">
+                    <div class="flex items-center gap-3">
+                        <span>📁</span> Masters
+                    </div>
+                    <span class="text-[10px] transition-transform duration-200 inline-block group-open:rotate-180">▼</span>
+                </summary>
+                <div class="pl-3 pr-1 py-1 space-y-1">
+                    <a href="admin-categories.html" class="flex items-center gap-2.5 px-3 py-2 rounded-xl text-[11px] font-semibold transition-colors text-rose-200/80 hover:bg-rose-900/60 hover:text-rosegold-300"><span>🏷️</span> Categories</a>
+                    <a href="admin-subcategories.html" class="flex items-center gap-2.5 px-3 py-2 rounded-xl text-[11px] font-semibold transition-colors text-rose-200/80 hover:bg-rose-900/60 hover:text-rosegold-300"><span>🏷️</span> Sub Categories</a>
+                    <a href="admin-category-specifications.html" class="flex items-center gap-2.5 px-3 py-2 rounded-xl text-[11px] font-semibold transition-colors text-rose-200/80 hover:bg-rose-900/60 hover:text-rosegold-300"><span>📋</span> Category Specification</a>
+                    <a href="admin-products.html" class="flex items-center gap-2.5 px-3 py-2 rounded-xl text-[11px] font-semibold transition-colors text-rose-200/80 hover:bg-rose-900/60 hover:text-rosegold-300"><span>🧴</span> Product Master</a>
+                    <a href="admin-customers.html" class="flex items-center gap-2.5 px-3 py-2 rounded-xl text-[11px] font-semibold transition-colors text-rose-200/80 hover:bg-rose-900/60 hover:text-rosegold-300"><span>👥</span> Customer Master</a>
+                </div>
+            </details>
 
-            <div class="pt-8 border-t border-rose-900 text-[10px] text-rose-300/50 px-3">
+            <a href="admin-suppliers.html" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-semibold transition-colors text-rose-200/80 hover:bg-rose-900/60 hover:text-rosegold-300"><span>🚚</span> Purchase</a>
+            <a href="admin-add-images.html" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-semibold transition-colors text-rose-200/80 hover:bg-rose-900/60 hover:text-rosegold-300"><span>📸</span> Add Images</a>
+            <a href="admin-orders.html" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-semibold transition-colors text-rose-200/80 hover:bg-rose-900/60 hover:text-rosegold-300"><span>📦</span> Sales</a>
+            <a href="admin-verify-payment.html" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-semibold transition-colors text-rose-200/80 hover:bg-rose-900/60 hover:text-rosegold-300"><span>💳</span> Verify Payment</a>
+
+            <!-- REPORTS COLLAPSIBLE MENU -->
+            <details class="group" >
+                <summary class="w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-xs font-bold text-rosegold-400 hover:bg-rose-900/60 transition-colors cursor-pointer list-none [&::-webkit-details-marker]:hidden select-none">
+                    <div class="flex items-center gap-3">
+                        <span>📈</span> Reports
+                    </div>
+                    <span class="text-[10px] transition-transform duration-200 inline-block group-open:rotate-180">▼</span>
+                </summary>
+                <div class="pl-3 pr-1 py-1 space-y-1">
+                    <a href="admin-sales-summary.html" class="flex items-center gap-2.5 px-3 py-2 rounded-xl text-[11px] font-semibold transition-colors text-rose-200/80 hover:bg-rose-900/60 hover:text-rosegold-300"><span>📈</span> Sales Summary</a>
+                    <a href="admin-sales-detail.html" class="flex items-center gap-2.5 px-3 py-2 rounded-xl text-[11px] font-semibold transition-colors text-rose-200/80 hover:bg-rose-900/60 hover:text-rosegold-300"><span>📑</span> Sales Detail</a>
+                    <a href="admin-purchase-detail.html" class="flex items-center gap-2.5 px-3 py-2 rounded-xl text-[11px] font-semibold transition-colors text-rose-200/80 hover:bg-rose-900/60 hover:text-rosegold-300"><span>🛒</span> Purchase Detail</a>
+                    <a href="admin-purchase-summary.html" class="flex items-center gap-2.5 px-3 py-2 rounded-xl text-[11px] font-semibold transition-colors text-rose-200/80 hover:bg-rose-900/60 hover:text-rosegold-300"><span>📉</span> Purchase Summary</a>
+                    <a href="admin-inventory.html" class="flex items-center gap-2.5 px-3 py-2 rounded-xl text-[11px] font-semibold transition-colors text-rose-200/80 hover:bg-rose-900/60 hover:text-rosegold-300"><span>🏭</span> Stock</a>
+                </div>
+            </details>
+
+            <div class="pt-6 border-t border-rose-900 text-[10px] text-rose-300/50 px-3">
                 Notch Qatar Perfumes Admin v2.4
             </div>
         </aside>
@@ -95,7 +120,7 @@
             <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                 <div>
                     <h1 class="font-serif-heading text-3xl font-bold text-rose-950">Dashboard Master Overview</h1>
-                    <p class="text-xs text-gray-500 mt-1">Real-time performance analytics for Notch Qatar Perfumes storefront.</p>
+                    <p class="text-xs text-gray-500 mt-1">Real-time performance analytics & complete management modules for Notch Qatar Perfumes.</p>
                 </div>
                 <div class="flex gap-2">
                     <a href="admin-products.html" class="px-4 py-2.5 rose-gold-bg text-rose-950 font-bold text-xs rounded-xl uppercase tracking-wider shadow-sm hover:opacity-90 transition-opacity">
@@ -112,7 +137,7 @@
                         <span>Total Revenue</span>
                         <span class="p-2 rounded-lg bg-rose-50 text-rose-900">💰</span>
                     </div>
-                    <div class="text-2xl font-bold text-rose-950">QAR  12,450</div>
+                    <div class="text-2xl font-bold text-rose-950">QAR 12,450</div>
                     <div class="text-[11px] text-emerald-600 font-semibold flex items-center gap-1">
                         <span>↑ 18.5%</span> <span class="text-gray-400 font-normal">vs last month</span>
                     </div>
@@ -155,14 +180,222 @@
                 </div>
             </div>
 
+            <!-- SECTION 1: MASTER MODULES -->
+            <div class="space-y-4">
+                <div class="flex items-center justify-between border-b border-rose-200/60 pb-3">
+                    <div>
+                        <h2 class="font-serif-heading text-xl font-bold text-rose-950 flex items-center gap-2">
+                            <span>👑</span> Master Management Modules
+                        </h2>
+                        <p class="text-xs text-gray-500 mt-0.5">Quick access to configure banners, categories, products, suppliers, and customer profiles.</p>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+                    <!-- Master Card 1: Banner Image -->
+                    <a href="admin-banners.html" class="group bg-white p-5 rounded-2xl border border-rose-100 shadow-sm hover:shadow-md hover:border-rose-300 transition-all flex flex-col justify-between space-y-3">
+                        <div class="flex items-start justify-between">
+                            <div class="w-10 h-10 rounded-xl bg-rose-50 text-rose-900 flex items-center justify-center text-xl group-hover:scale-110 transition-transform">🖼️</div>
+                            <span class="text-[10px] font-bold uppercase tracking-wider text-rose-800 bg-rose-50 px-2 py-0.5 rounded-full">Hero Banners</span>
+                        </div>
+                        <div>
+                            <h3 class="font-bold text-sm text-rose-950 group-hover:text-rose-700">Banner Image</h3>
+                            <p class="text-[11px] text-gray-500 mt-1">Manage home page banner images, promotional hero sliders, and action links.</p>
+                        </div>
+                        <div class="text-xs font-bold text-rose-900 flex items-center gap-1 group-hover:gap-2 transition-all pt-2 border-t border-stone-100">
+                            <span>Manage Banners</span> <span>→</span>
+                        </div>
+                    </a>
+
+                    <!-- Master Card 2: Categories -->
+                    <a href="admin-categories.html" class="group bg-white p-5 rounded-2xl border border-rose-100 shadow-sm hover:shadow-md hover:border-rose-300 transition-all flex flex-col justify-between space-y-3">
+                        <div class="flex items-start justify-between">
+                            <div class="w-10 h-10 rounded-xl bg-amber-50 text-amber-800 flex items-center justify-center text-xl group-hover:scale-110 transition-transform">🏷️</div>
+                            <span class="text-[10px] font-bold uppercase tracking-wider text-amber-800 bg-amber-50 px-2 py-0.5 rounded-full">7 Categories</span>
+                        </div>
+                        <div>
+                            <h3 class="font-bold text-sm text-rose-950 group-hover:text-rose-700">Categories</h3>
+                            <p class="text-[11px] text-gray-500 mt-1">Configure main storefront categories (Men, Women, Gifting, Sale, etc.).</p>
+                        </div>
+                        <div class="text-xs font-bold text-rose-900 flex items-center gap-1 group-hover:gap-2 transition-all pt-2 border-t border-stone-100">
+                            <span>Manage Categories</span> <span>→</span>
+                        </div>
+                    </a>
+
+                    <!-- Master Card 3: Sub Categories -->
+                    <a href="admin-subcategories.html" class="group bg-white p-5 rounded-2xl border border-rose-100 shadow-sm hover:shadow-md hover:border-rose-300 transition-all flex flex-col justify-between space-y-3">
+                        <div class="flex items-start justify-between">
+                            <div class="w-10 h-10 rounded-xl bg-purple-50 text-purple-800 flex items-center justify-center text-xl group-hover:scale-110 transition-transform">🏷️</div>
+                            <span class="text-[10px] font-bold uppercase tracking-wider text-purple-800 bg-purple-50 px-2 py-0.5 rounded-full">Sub Classification</span>
+                        </div>
+                        <div>
+                            <h3 class="font-bold text-sm text-rose-950 group-hover:text-rose-700">Sub Categories</h3>
+                            <p class="text-[11px] text-gray-500 mt-1">Organize fragrance families (Woody, Citrus, Floral, Oceanic & Amber).</p>
+                        </div>
+                        <div class="text-xs font-bold text-rose-900 flex items-center gap-1 group-hover:gap-2 transition-all pt-2 border-t border-stone-100">
+                            <span>Manage Sub Categories</span> <span>→</span>
+                        </div>
+                    </a>
+
+                    <!-- Master Card 4: Category Specifications -->
+                    <a href="admin-category-specifications.html" class="group bg-white p-5 rounded-2xl border border-rose-100 shadow-sm hover:shadow-md hover:border-rose-300 transition-all flex flex-col justify-between space-y-3">
+                        <div class="flex items-start justify-between">
+                            <div class="w-10 h-10 rounded-xl bg-blue-50 text-blue-800 flex items-center justify-center text-xl group-hover:scale-110 transition-transform">📋</div>
+                            <span class="text-[10px] font-bold uppercase tracking-wider text-blue-800 bg-blue-50 px-2 py-0.5 rounded-full">Attributes</span>
+                        </div>
+                        <div>
+                            <h3 class="font-bold text-sm text-rose-950 group-hover:text-rose-700">Category Specifications</h3>
+                            <p class="text-[11px] text-gray-500 mt-1">Define custom product specifications, scent notes schema, and bottle sizes.</p>
+                        </div>
+                        <div class="text-xs font-bold text-rose-900 flex items-center gap-1 group-hover:gap-2 transition-all pt-2 border-t border-stone-100">
+                            <span>Manage Specifications</span> <span>→</span>
+                        </div>
+                    </a>
+
+                    <!-- Master Card 5: Product Master -->
+                    <a href="admin-products.html" class="group bg-white p-5 rounded-2xl border border-rose-100 shadow-sm hover:shadow-md hover:border-rose-300 transition-all flex flex-col justify-between space-y-3">
+                        <div class="flex items-start justify-between">
+                            <div class="w-10 h-10 rounded-xl bg-emerald-50 text-emerald-800 flex items-center justify-center text-xl group-hover:scale-110 transition-transform">🧴</div>
+                            <span class="text-[10px] font-bold uppercase tracking-wider text-emerald-800 bg-emerald-50 px-2 py-0.5 rounded-full">Catalog</span>
+                        </div>
+                        <div>
+                            <h3 class="font-bold text-sm text-rose-950 group-hover:text-rose-700">Product Master</h3>
+                            <p class="text-[11px] text-gray-500 mt-1">Add, edit, price, and publish Qatar luxury perfumes and EDP collections.</p>
+                        </div>
+                        <div class="text-xs font-bold text-rose-900 flex items-center gap-1 group-hover:gap-2 transition-all pt-2 border-t border-stone-100">
+                            <span>Manage Products</span> <span>→</span>
+                        </div>
+                    </a>
+
+                    <!-- Master Card 6: Supplier Master -->
+                    <a href="admin-suppliers.html" class="group bg-white p-5 rounded-2xl border border-rose-100 shadow-sm hover:shadow-md hover:border-rose-300 transition-all flex flex-col justify-between space-y-3">
+                        <div class="flex items-start justify-between">
+                            <div class="w-10 h-10 rounded-xl bg-indigo-50 text-indigo-800 flex items-center justify-center text-xl group-hover:scale-110 transition-transform">🚚</div>
+                            <span class="text-[10px] font-bold uppercase tracking-wider text-indigo-800 bg-indigo-50 px-2 py-0.5 rounded-full">Suppliers</span>
+                        </div>
+                        <div>
+                            <h3 class="font-bold text-sm text-rose-950 group-hover:text-rose-700">Supplier Master</h3>
+                            <p class="text-[11px] text-gray-500 mt-1">Maintain supplier contacts, tax card details, and bank credentials.</p>
+                        </div>
+                        <div class="text-xs font-bold text-rose-900 flex items-center gap-1 group-hover:gap-2 transition-all pt-2 border-t border-stone-100">
+                            <span>Manage Suppliers</span> <span>→</span>
+                        </div>
+                    </a>
+
+                    <!-- Master Card 7: Customer Master -->
+                    <a href="admin-customers.html" class="group bg-white p-5 rounded-2xl border border-rose-100 shadow-sm hover:shadow-md hover:border-rose-300 transition-all flex flex-col justify-between space-y-3 sm:col-span-2 lg:col-span-2">
+                        <div class="flex items-start justify-between">
+                            <div class="w-10 h-10 rounded-xl bg-rose-100 text-rose-950 flex items-center justify-center text-xl group-hover:scale-110 transition-transform">👥</div>
+                            <span class="text-[10px] font-bold uppercase tracking-wider text-rose-950 bg-rose-100 px-2 py-0.5 rounded-full">Customer Profiles</span>
+                        </div>
+                        <div>
+                            <h3 class="font-bold text-sm text-rose-950 group-hover:text-rose-700">Customer Master</h3>
+                            <p class="text-[11px] text-gray-500 mt-1">Manage registered customer profiles, credentials, mobile contacts (+974), and address directory.</p>
+                        </div>
+                        <div class="text-xs font-bold text-rose-900 flex items-center gap-1 group-hover:gap-2 transition-all pt-2 border-t border-stone-100">
+                            <span>Manage Customers</span> <span>→</span>
+                        </div>
+                    </a>
+                </div>
+            </div>
+
+            <!-- SECTION 2: REPORTS & OPERATIONS -->
+            <div class="space-y-4">
+                <div class="flex items-center justify-between border-b border-rose-200/60 pb-3">
+                    <div>
+                        <h2 class="font-serif-heading text-xl font-bold text-rose-950 flex items-center gap-2">
+                            <span>📊</span> Reports & Operations Modules
+                        </h2>
+                        <p class="text-xs text-gray-500 mt-0.5">Inventory tracking, live order processing, sales logs, and promo coupons.</p>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+                    <!-- Report Card 1: Stock & Inventory Master -->
+                    <a href="admin-inventory.html" class="group bg-white p-5 rounded-2xl border border-rose-100 shadow-sm hover:shadow-md hover:border-rose-300 transition-all flex flex-col justify-between space-y-3">
+                        <div class="flex items-start justify-between">
+                            <div class="w-10 h-10 rounded-xl bg-teal-50 text-teal-800 flex items-center justify-center text-xl group-hover:scale-110 transition-transform">🏭</div>
+                            <span class="text-[10px] font-bold uppercase tracking-wider text-teal-800 bg-teal-50 px-2 py-0.5 rounded-full">Inventory Control</span>
+                        </div>
+                        <div>
+                            <h3 class="font-bold text-sm text-rose-950 group-hover:text-rose-700">Stock & Inventory Master</h3>
+                            <p class="text-[11px] text-gray-500 mt-1">Monitor perfume stock levels, update quantities, and track re-order thresholds.</p>
+                        </div>
+                        <div class="text-xs font-bold text-rose-900 flex items-center gap-1 group-hover:gap-2 transition-all pt-2 border-t border-stone-100">
+                            <span>View Inventory Master</span> <span>→</span>
+                        </div>
+                    </a>
+
+                    <!-- Report Card 2: Order Management -->
+                    <a href="admin-orders.html" class="group bg-white p-5 rounded-2xl border border-rose-100 shadow-sm hover:shadow-md hover:border-rose-300 transition-all flex flex-col justify-between space-y-3">
+                        <div class="flex items-start justify-between">
+                            <div class="w-10 h-10 rounded-xl bg-blue-50 text-blue-900 flex items-center justify-center text-xl group-hover:scale-110 transition-transform">📦</div>
+                            <span class="text-[10px] font-bold uppercase tracking-wider text-blue-900 bg-blue-50 px-2 py-0.5 rounded-full">Live Orders</span>
+                        </div>
+                        <div>
+                            <h3 class="font-bold text-sm text-rose-950 group-hover:text-rose-700">Order Management</h3>
+                            <p class="text-[11px] text-gray-500 mt-1">Fulfill incoming customer orders, update delivery status, and print invoices.</p>
+                        </div>
+                        <div class="text-xs font-bold text-rose-900 flex items-center gap-1 group-hover:gap-2 transition-all pt-2 border-t border-stone-100">
+                            <span>Manage Orders</span> <span>→</span>
+                        </div>
+                    </a>
+
+                    <!-- Report Card 3: Sales Summary Report -->
+                    <a href="admin-sales-summary.html" class="group bg-white p-5 rounded-2xl border border-rose-100 shadow-sm hover:shadow-md hover:border-rose-300 transition-all flex flex-col justify-between space-y-3">
+                        <div class="flex items-start justify-between">
+                            <div class="w-10 h-10 rounded-xl bg-emerald-50 text-emerald-900 flex items-center justify-center text-xl group-hover:scale-110 transition-transform">📈</div>
+                            <span class="text-[10px] font-bold uppercase tracking-wider text-emerald-900 bg-emerald-50 px-2 py-0.5 rounded-full">Revenue Analytics</span>
+                        </div>
+                        <div>
+                            <h3 class="font-bold text-sm text-rose-950 group-hover:text-rose-700">Sales Summary Report</h3>
+                            <p class="text-[11px] text-gray-500 mt-1">High-level sales charts, monthly growth analytics, and performance breakdown.</p>
+                        </div>
+                        <div class="text-xs font-bold text-rose-900 flex items-center gap-1 group-hover:gap-2 transition-all pt-2 border-t border-stone-100">
+                            <span>View Summary Report</span> <span>→</span>
+                        </div>
+                    </a>
+
+                    <!-- Report Card 4: Detailed Sales Log -->
+                    <a href="admin-sales-detail.html" class="group bg-white p-5 rounded-2xl border border-rose-100 shadow-sm hover:shadow-md hover:border-rose-300 transition-all flex flex-col justify-between space-y-3">
+                        <div class="flex items-start justify-between">
+                            <div class="w-10 h-10 rounded-xl bg-amber-50 text-amber-900 flex items-center justify-center text-xl group-hover:scale-110 transition-transform">📑</div>
+                            <span class="text-[10px] font-bold uppercase tracking-wider text-amber-900 bg-amber-50 px-2 py-0.5 rounded-full">Transaction Audit</span>
+                        </div>
+                        <div>
+                            <h3 class="font-bold text-sm text-rose-950 group-hover:text-rose-700">Detailed Sales Log</h3>
+                            <p class="text-[11px] text-gray-500 mt-1">Audit line-item sales logs, transaction timestamps, and payment breakdown.</p>
+                        </div>
+                        <div class="text-xs font-bold text-rose-900 flex items-center gap-1 group-hover:gap-2 transition-all pt-2 border-t border-stone-100">
+                            <span>View Sales Log</span> <span>→</span>
+                        </div>
+                    </a>
+
+                    <!-- Report Card 5: Promo Coupons -->
+                    <a href="admin-coupons.html" class="group bg-white p-5 rounded-2xl border border-rose-100 shadow-sm hover:shadow-md hover:border-rose-300 transition-all flex flex-col justify-between space-y-3 sm:col-span-2 lg:col-span-2">
+                        <div class="flex items-start justify-between">
+                            <div class="w-10 h-10 rounded-xl bg-rose-50 text-rose-900 flex items-center justify-center text-xl group-hover:scale-110 transition-transform">💳</div>
+                            <span class="text-[10px] font-bold uppercase tracking-wider text-rose-900 bg-rose-50 px-2 py-0.5 rounded-full">Discounts & Promos</span>
+                        </div>
+                        <div>
+                            <h3 class="font-bold text-sm text-rose-950 group-hover:text-rose-700">Promo Coupons</h3>
+                            <p class="text-[11px] text-gray-500 mt-1">Create, enable, and manage discount promo codes (e.g. NOTCH10, FESTIVE25) for store checkout.</p>
+                        </div>
+                        <div class="text-xs font-bold text-rose-900 flex items-center gap-1 group-hover:gap-2 transition-all pt-2 border-t border-stone-100">
+                            <span>Manage Promo Coupons</span> <span>→</span>
+                        </div>
+                    </a>
+                </div>
+            </div>
+
             <!-- RECENT ORDERS TABLE -->
             <div class="bg-white rounded-2xl border border-rose-100 shadow-sm overflow-hidden">
                 <div class="p-6 border-b border-rose-100 flex items-center justify-between">
                     <div>
                         <h3 class="font-serif-heading text-xl font-bold text-rose-950">Recent Customer Orders</h3>
-                        <p class="text-xs text-gray-500">Latest orders placed on notchperfumes.in</p>
+                        <p class="text-xs text-gray-500">Latest orders placed on Notch Qatar Perfumes.</p>
                     </div>
-                    <a href="admin-orders.html" class="text-xs font-bold text-rose-900 hover:text-rosegold-600 underline">View All Orders</a>
+                    <a href="admin-orders.html" class="text-xs font-bold text-rose-900 hover:text-rosegold-600 underline">View All Orders →</a>
                 </div>
 
                 <div class="overflow-x-auto">
@@ -180,25 +413,25 @@
                         <tbody class="divide-y divide-gray-100 font-medium">
                             <tr class="hover:bg-rose-50/30">
                                 <td class="p-4 font-bold text-rose-950">#NOTCH-8941</td>
-                                <td class="p-4">Rohan Kapoor</td>
+                                <td class="p-4 font-bold text-stone-900">Mohammed Al-Kuwari</td>
                                 <td class="p-4">Notch Raw EDP (100ml)</td>
-                                <td class="p-4 font-bold">QAR  2,495</td>
+                                <td class="p-4 font-bold">QAR 2,495</td>
                                 <td class="p-4"><span class="px-2.5 py-1 bg-amber-100 text-amber-800 font-bold rounded-full text-[10px]">Processing</span></td>
                                 <td class="p-4"><a href="admin-orders.html" class="text-rose-900 underline font-bold">Manage</a></td>
                             </tr>
                             <tr class="hover:bg-rose-50/30">
                                 <td class="p-4 font-bold text-rose-950">#NOTCH-8940</td>
-                                <td class="p-4">Ananya Sharma</td>
-                                <td class="p-4">Notch Noura EDP (100ml)</td>
-                                <td class="p-4 font-bold">QAR  3,495</td>
+                                <td class="p-4 font-bold text-stone-900">Fatima Al-Thani</td>
+                                <td class="p-4">Notch Celeste EDP (100ml)</td>
+                                <td class="p-4 font-bold">QAR 3,495</td>
                                 <td class="p-4"><span class="px-2.5 py-1 bg-emerald-100 text-emerald-800 font-bold rounded-full text-[10px]">Shipped</span></td>
                                 <td class="p-4"><a href="admin-orders.html" class="text-rose-900 underline font-bold">Manage</a></td>
                             </tr>
                             <tr class="hover:bg-rose-50/30">
                                 <td class="p-4 font-bold text-rose-950">#NOTCH-8939</td>
-                                <td class="p-4">Vikram Mehta</td>
+                                <td class="p-4 font-bold text-stone-900">Salem Al-Marri</td>
                                 <td class="p-4">Notch Discovery Gift Set</td>
-                                <td class="p-4 font-bold">QAR  995</td>
+                                <td class="p-4 font-bold">QAR 995</td>
                                 <td class="p-4"><span class="px-2.5 py-1 bg-blue-100 text-blue-800 font-bold rounded-full text-[10px]">Delivered</span></td>
                                 <td class="p-4"><a href="admin-orders.html" class="text-rose-900 underline font-bold">Manage</a></td>
                             </tr>
