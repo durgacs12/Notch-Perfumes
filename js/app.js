@@ -7,7 +7,39 @@ let cart = JSON.parse(localStorage.getItem('notch_cart')) || [
     { productId: 'notch-celeste-women', size: '50 ml', quantity: 1 }
 ];
 
-let wishlist = JSON.parse(localStorage.getItem('notch_wishlist')) || ['notch-nude-women'];
+function getLoggedInUserEmail() {
+    if (localStorage.getItem('customerLoggedIn') === 'true') {
+        return localStorage.getItem('customerEmail') || 'customer_user';
+    }
+    if (localStorage.getItem('adminLoggedIn') === 'true') {
+        return 'admin_user';
+    }
+    return null;
+}
+
+function getUserWishlistKey() {
+    const email = getLoggedInUserEmail();
+    if (!email) return null;
+    return `notch_wishlist_${email.toLowerCase().replace(/[^a-z0-9]/g, '_')}`;
+}
+
+function getWishlist() {
+    const key = getUserWishlistKey();
+    if (!key) return [];
+    try {
+        return JSON.parse(localStorage.getItem(key)) || [];
+    } catch(e) {
+        return [];
+    }
+}
+
+function saveWishlist(wishlistArray) {
+    const key = getUserWishlistKey();
+    if (key) {
+        localStorage.setItem(key, JSON.stringify(wishlistArray));
+    }
+}
+
 let currentFilter = 'all';
 let currentNoteFilter = 'all';
 let currentHeroSlide = 0;
@@ -114,8 +146,9 @@ function renderProducts(filterCategory = 'all') {
         return;
     }
 
+    const activeWishlist = getWishlist();
     grid.innerHTML = filtered.map(product => {
-        const isWishlisted = wishlist.includes(product.id);
+        const isWishlisted = activeWishlist.includes(product.id);
         const ratingVal = product.rating || 5.0;
         const reviewsVal = product.reviewsCount || 1;
         const defaultSize = (product.sizes && product.sizes.length) ? product.sizes[0] : '100 ml';
@@ -423,20 +456,30 @@ function closeCart() {
 }
 
 function toggleWishlist(productId) {
-    const index = wishlist.indexOf(productId);
-    const product = getProductsList().find(p => p.id === productId);
+    if (!isUserLoggedIn()) {
+        showToast('🔒 Please log in to save items to your wishlist!', 'warning');
+        setTimeout(() => {
+            window.location.href = 'login.html';
+        }, 1000);
+        return;
+    }
+
+    let userWishlist = getWishlist();
+    const index = userWishlist.indexOf(productId);
 
     if (index > -1) {
-        wishlist.splice(index, 1);
+        userWishlist.splice(index, 1);
         showToast(`Removed from wishlist`, 'info');
     } else {
-        wishlist.push(productId);
+        userWishlist.push(productId);
         showToast(`Added to wishlist ❤️`, 'success');
     }
 
-    localStorage.setItem('notch_wishlist', JSON.stringify(wishlist));
+    saveWishlist(userWishlist);
     updateHeaderCounters();
-    renderProducts(currentFilter);
+    if (typeof renderProducts === 'function' && document.getElementById('products-grid')) {
+        renderProducts(typeof currentFilter !== 'undefined' ? currentFilter : 'all');
+    }
 }
 
 function updateHeaderCounters() {
@@ -451,8 +494,10 @@ function updateHeaderCounters() {
     }
 
     if (wishlistCountEl) {
-        wishlistCountEl.textContent = wishlist.length;
-        wishlistCountEl.style.display = wishlist.length > 0 ? 'flex' : 'none';
+        const userWishlist = getWishlist();
+        const count = isUserLoggedIn() ? userWishlist.length : 0;
+        wishlistCountEl.textContent = count;
+        wishlistCountEl.style.display = count > 0 ? 'flex' : 'none';
     }
 
     const accountLinks = document.querySelectorAll('a[href="login.html"]');
