@@ -255,6 +255,14 @@
         }
 
         document.addEventListener('DOMContentLoaded', () => {
+            if (localStorage.getItem('customerLoggedIn') === 'true' || localStorage.getItem('adminLoggedIn') === 'true') {
+                showToast('You are already logged in!', 'info');
+                setTimeout(() => {
+                    window.location.href = 'index.html';
+                }, 600);
+                return;
+            }
+
             setTimeout(() => {
                 const loginEmail = document.getElementById('login-email');
                 const loginPass = document.getElementById('login-pass');

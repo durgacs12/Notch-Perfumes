@@ -267,7 +267,24 @@ function closeQuickView() {
 }
 
 function isUserLoggedIn() {
-    return localStorage.getItem('customerLoggedIn') === 'true';
+    return localStorage.getItem('customerLoggedIn') === 'true' || localStorage.getItem('adminLoggedIn') === 'true';
+}
+
+function handleAccountClick(event) {
+    if (isUserLoggedIn()) {
+        if (event) event.preventDefault();
+        const email = localStorage.getItem('customerEmail') || 'User';
+        if (confirm(`You are currently logged in as ${email}.\nDo you want to log out?`)) {
+            localStorage.removeItem('customerLoggedIn');
+            localStorage.removeItem('customerEmail');
+            localStorage.removeItem('customerName');
+            localStorage.removeItem('adminLoggedIn');
+            showToast('Logged out successfully', 'info');
+            setTimeout(() => {
+                window.location.href = 'index.html';
+            }, 600);
+        }
+    }
 }
 
 function addToCart(productId, size = '50 ml', quantity = 1) {
@@ -437,6 +454,20 @@ function updateHeaderCounters() {
         wishlistCountEl.textContent = wishlist.length;
         wishlistCountEl.style.display = wishlist.length > 0 ? 'flex' : 'none';
     }
+
+    const accountLinks = document.querySelectorAll('a[href="login.html"]');
+    accountLinks.forEach(link => {
+        if (!link.dataset.accountBound) {
+            link.dataset.accountBound = 'true';
+            link.addEventListener('click', (e) => handleAccountClick(e));
+        }
+        if (isUserLoggedIn()) {
+            const email = localStorage.getItem('customerEmail') || 'User';
+            link.title = `Logged in as ${email} (Click to Logout)`;
+        } else {
+            link.title = 'Account Login';
+        }
+    });
 }
 
 function initSearch() {
