@@ -183,22 +183,17 @@
     </main>
 
     <!-- SUCCESS MODAL -->
-    <div id="order-success-modal" class="hidden fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
-        <div class="bg-white rounded-3xl max-w-lg w-full p-8 text-center space-y-5 shadow-2xl relative">
-            <div class="w-16 h-16 rounded-full bg-emerald-100 text-emerald-800 text-3xl font-bold flex items-center justify-center mx-auto">🌹</div>
-            <h2 class="font-serif-heading text-3xl font-bold text-stone-900">Order Placed Successfully!</h2>
-            <p class="text-xs text-stone-600 leading-relaxed">
-                Thank you for purchasing Notch Qatar Perfumes. Your order <strong id="success-order-id" class="text-stone-900">#NOTCH-9082</strong> has been confirmed and is being packed.
+    <div id="order-success-modal" class="hidden fixed inset-0 z-50 bg-black/50 backdrop-blur-xs flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl max-w-sm w-full p-6 text-center space-y-4 shadow-xl border border-stone-100">
+            <div class="w-12 h-12 rounded-full bg-emerald-100 text-emerald-600 text-2xl font-bold flex items-center justify-center mx-auto">✓</div>
+            <h2 class="text-xl font-bold text-stone-900">Order Placed Successfully!</h2>
+            <p class="text-xs text-stone-600">
+                Your order <strong id="success-order-id" class="text-stone-900">#NOTCH-9082</strong> has been submitted.
             </p>
-
-            <div class="bg-stone-50 p-4 rounded-2xl border border-stone-200 text-xs text-left space-y-1">
-                <div class="flex justify-between"><span class="font-bold text-stone-700">Estimated Delivery:</span><span class="font-bold text-emerald-700">2 - 3 Business Days</span></div>
-                <div class="flex justify-between"><span class="font-bold text-stone-700">Tracking SMS:</span><span>Sent to mobile</span></div>
-            </div>
-
-            <div class="flex gap-3 pt-2">
-                <a href="index.html" class="flex-1 py-3.5 border border-stone-900 text-stone-900 font-bold text-xs rounded-xl uppercase text-center">Return to Store</a>
-                <a href="admin-orders.html" class="flex-1 py-3.5 bg-stone-900 text-white font-bold text-xs rounded-xl uppercase text-center">View Admin Order</a>
+            <div class="pt-2">
+                <a href="index.html" class="block w-full py-3 bg-stone-900 hover:bg-stone-800 text-white font-bold text-xs rounded-xl uppercase tracking-wider text-center transition-all">
+                    OK
+                </a>
             </div>
         </div>
     </div>
@@ -279,18 +274,92 @@
             renderCheckoutSummary();
         }
 
-        function handlePlaceOrder() {
-            const name = document.getElementById('chk-fullname').value || 'Customer';
-            const phone = document.getElementById('chk-phone').value || 'Mobile';
-            const orderId = `#NOTCH-${Math.floor(1000 + Math.random() * 9000)}`;
+        async function handlePlaceOrder() {
+            const name = document.getElementById('chk-fullname').value.trim() || 'Customer';
+            const phone = document.getElementById('chk-phone').value.trim() || '';
+            const email = document.getElementById('chk-email').value.trim() || '';
+            const city = document.getElementById('chk-city').value.trim() || '';
+            const address = document.getElementById('chk-address').value.trim() || '';
+            const fullAddress = `${address}${city ? ', ' + city : ''}`;
 
-            document.getElementById('success-order-id').textContent = orderId;
+            if (!name || !phone || !email || !address) {
+                alert('Please fill in all required shipping address fields!');
+                return;
+            }
+
+            let paymentMethod = 'COD (Cash on Delivery)';
+            const payRadios = document.getElementsByName('pay-method');
+            if (payRadios && payRadios.length > 0) {
+                for (let i = 0; i < payRadios.length; i++) {
+                    if (payRadios[i].checked) {
+                        const parentText = payRadios[i].closest('label')?.innerText || '';
+                        if (parentText.includes('UPI')) paymentMethod = 'UPI Instant Payment';
+                        else if (parentText.includes('Card')) paymentMethod = 'Credit / Debit Card';
+                        else if (parentText.includes('Cash')) paymentMethod = 'Cash on Delivery (COD)';
+                        break;
+                    }
+                }
+            }
+
+            const orderNum = `#NOTCH-${Math.floor(10000 + Math.random() * 90000)}`;
+
+            let subtotal = 0;
+            const orderItems = (cart || []).map(item => {
+                const product = typeof PRODUCTS !== 'undefined' ? PRODUCTS.find(p => p.id === item.productId) : null;
+                const pName = product ? product.name : (item.productId || 'Perfume Product');
+                const price = product ? product.price : 0;
+                const itemTotal = price * item.quantity;
+                subtotal += itemTotal;
+                return {
+                    productId: item.productId || '',
+                    productName: pName,
+                    quantity: item.quantity || 1,
+                    unitPrice: price,
+                    totalPrice: itemTotal
+                };
+            });
+
+            const discountAmount = Math.round((subtotal * appliedDiscountPercent) / 100);
+            const grandTotal = Math.max(0, subtotal - discountAmount);
+
+            const orderPayload = {
+                orderNumber: orderNum,
+                customerName: name,
+                customerEmail: email,
+                customerPhone: phone,
+                shippingAddress: fullAddress,
+                totalAmount: grandTotal,
+                paymentMethod: paymentMethod,
+                status: 'Pending',
+                items: orderItems
+            };
+
+            try {
+                await fetch('/api/orders', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(orderPayload)
+                });
+            } catch(e) {
+                console.error('API order submit warning:', e);
+            }
+
+            try {
+                let localOnline = JSON.parse(localStorage.getItem('notch_online_sales') || '[]');
+                localOnline.unshift({
+                    ...orderPayload,
+                    createdAt: new Date().toISOString(),
+                    id: Date.now()
+                });
+                localStorage.setItem('notch_online_sales', JSON.stringify(localOnline));
+            } catch(e){}
+
+            document.getElementById('success-order-id').textContent = orderNum;
             document.getElementById('order-success-modal').classList.remove('hidden');
 
-            // Clear local cart
             cart = [];
             saveCart();
-            updateHeaderCounters();
+            if (typeof updateHeaderCounters === 'function') updateHeaderCounters();
         }
     </script>
 </body>

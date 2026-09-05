@@ -216,6 +216,7 @@
 
             if (email === 'admin@gmail.com' && pass === '123') {
                 localStorage.setItem('adminLoggedIn', 'true');
+                localStorage.setItem('customerLoggedIn', 'true');
                 document.getElementById('login-form').reset();
                 emailInput.value = '';
                 passInput.value = '';
@@ -226,6 +227,8 @@
             } else if (email === 'admin@gmail.com' && pass !== '123') {
                 showToast('Invalid Admin Password! Access Denied.', 'error');
             } else {
+                localStorage.setItem('customerLoggedIn', 'true');
+                localStorage.setItem('customerEmail', email);
                 document.getElementById('login-form').reset();
                 emailInput.value = '';
                 passInput.value = '';
@@ -239,6 +242,11 @@
         function handleCustomerRegister(e) {
             e.preventDefault();
             const name = document.getElementById('reg-name').value;
+            const emailInput = document.getElementById('reg-email');
+            const email = emailInput ? emailInput.value.trim() : '';
+            localStorage.setItem('customerLoggedIn', 'true');
+            localStorage.setItem('customerName', name);
+            if (email) localStorage.setItem('customerEmail', email);
             document.getElementById('register-form').reset();
             showToast(`Account created successfully for <strong>${name}</strong>!`, 'success');
             setTimeout(() => {

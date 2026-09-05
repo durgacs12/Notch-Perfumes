@@ -77,7 +77,8 @@
 
             <a href="admin-purchase.html" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-semibold transition-colors text-rose-200/80 hover:bg-rose-900/60 hover:text-rosegold-300"><span>🛒</span> Purchase</a>
             <a href="admin-add-images.html" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-semibold transition-colors text-rose-200/80 hover:bg-rose-900/60 hover:text-rosegold-300"><span>📸</span> Add Images</a>
-            <a href="admin-orders.html" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-semibold transition-colors text-rose-200/80 hover:bg-rose-900/60 hover:text-rosegold-300"><span>📦</span> Sales</a>
+            <a href="admin-orders.html" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-semibold transition-colors text-rose-200/80 hover:bg-rose-900/60 hover:text-rosegold-300"><span>🏬</span> Offline Sales</a>
+            <a href="admin-online-sales.html" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-semibold transition-colors text-rose-200/80 hover:bg-rose-900/60 hover:text-rosegold-300"><span>🌐</span> Online Sales</a>
             <a href="admin-verify-payment.html" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-semibold transition-colors text-rose-200/80 hover:bg-rose-900/60 hover:text-rosegold-300"><span>💳</span> Verify Payment</a>
 
             <!-- REPORTS COLLAPSIBLE MENU -->
@@ -218,8 +219,38 @@
         ];
 
         document.addEventListener('DOMContentLoaded', () => {
-            renderInventoryTable(INVENTORY_DATA);
+            loadInventoryProducts();
         });
+
+        function loadInventoryProducts() {
+            const saved = localStorage.getItem('notch_custom_products');
+            if (saved) {
+                try {
+                    const parsed = JSON.parse(saved);
+                    if (Array.isArray(parsed) && parsed.length > 0) {
+                        parsed.forEach(p => {
+                            if (p && p.name && !INVENTORY_DATA.some(item => item.name === p.name || item.id === (p.id || p.Id))) {
+                                INVENTORY_DATA.unshift({
+                                    id: p.id || p.Id || `notch-custom-${Date.now()}`,
+                                    name: p.name || p.Name,
+                                    category: (p.category || p.Category || 'Perfume').toUpperCase(),
+                                    price: Number(p.price || p.Price) || 2495,
+                                    stock: Number(p.stock || p.Stock) || 100,
+                                    minLevel: 20
+                                });
+                            }
+                        });
+                    }
+                } catch(e) {}
+            }
+
+            const select = document.getElementById('stock-perfume-select');
+            if (select) {
+                select.innerHTML = INVENTORY_DATA.map(item => `<option value="${item.id}">${item.name}</option>`).join('');
+            }
+
+            renderInventoryTable(INVENTORY_DATA);
+        }
 
         function renderInventoryTable(items) {
             const body = document.getElementById('inventory-table-body');

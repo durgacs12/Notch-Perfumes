@@ -211,9 +211,14 @@
     <script src="js/products.js"></script>
     <script src="js/app.js"></script>
     <script>
-        document.addEventListener('DOMContentLoaded', () => {
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', renderGiftingGrid);
+        } else {
             renderGiftingGrid();
-        });
+        }
+
+        window.addEventListener('load', renderGiftingGrid);
+        window.addEventListener('notch_products_ready', renderGiftingGrid);
 
         function renderGiftingGrid() {
             const container = document.getElementById('gifting-grid');

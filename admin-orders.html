@@ -77,7 +77,8 @@
 
             <a href="admin-purchase.html" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-semibold transition-colors text-rose-200/80 hover:bg-rose-900/60 hover:text-rosegold-300"><span>🛒</span> Purchase</a>
             <a href="admin-add-images.html" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-semibold transition-colors text-rose-200/80 hover:bg-rose-900/60 hover:text-rosegold-300"><span>📸</span> Add Images</a>
-            <a href="admin-orders.html" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-semibold transition-colors text-rose-950 rose-gold-bg shadow-sm font-bold"><span>📦</span> Sales</a>
+            <a href="admin-orders.html" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-bold transition-colors text-rose-950 rose-gold-bg shadow-sm"><span>🏬</span> Offline Sales</a>
+            <a href="admin-online-sales.html" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-semibold transition-colors text-rose-200/80 hover:bg-rose-900/60 hover:text-rosegold-300"><span>🌐</span> Online Sales</a>
             <a href="admin-verify-payment.html" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-semibold transition-colors text-rose-200/80 hover:bg-rose-900/60 hover:text-rosegold-300"><span>💳</span> Verify Payment</a>
 
             <!-- REPORTS COLLAPSIBLE MENU -->
@@ -303,20 +304,159 @@
         </main>
     </div>
 
-    <!-- JAVASCRIPT BILLING LOGIC ENGINE -->
+    <!-- PRINTABLE INVOICE MODAL FOR OFFLINE SALES -->
+    <div id="offline-invoice-modal" class="hidden fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
+        <div class="bg-white rounded-3xl max-w-3xl w-full max-h-[90vh] overflow-y-auto p-6 md:p-8 space-y-6 shadow-2xl relative">
+            <button onclick="closeOfflineInvoiceModal()" class="no-print absolute top-6 right-6 w-8 h-8 rounded-full bg-stone-100 text-stone-600 hover:bg-stone-200 font-bold flex items-center justify-center text-sm">✕</button>
+
+            <div id="printable-offline-invoice" class="space-y-6 text-stone-900 font-sans">
+                <div class="flex items-start justify-between border-b-2 border-stone-900 pb-5">
+                    <div>
+                        <img src="image/notch-logo.png" alt="Notch Perfumes" class="h-9 w-auto mb-2" />
+                        <h2 class="font-serif-heading text-lg font-bold text-rose-950">Notch Qatar Perfumes W.L.L</h2>
+                        <p class="text-[11px] text-stone-500 leading-tight">POS Billing & Boutique Sales</p>
+                        <p class="text-[10px] text-stone-400">CR No: 98234-QA • Tax ID: QA90123847</p>
+                        <p class="text-[10px] text-stone-400">Doha, State of Qatar • Phone: +974 4412 8899</p>
+                    </div>
+                    <div class="text-right space-y-1">
+                        <span class="inline-block bg-rose-950 text-rosegold-300 font-bold px-3 py-1 rounded text-xs tracking-widest uppercase">POS SALES INVOICE</span>
+                        <div class="text-xs font-mono pt-1">Invoice #: <strong id="off-inv-num" class="text-stone-900">SAL-01</strong></div>
+                        <div class="text-[11px] text-stone-500">Date: <span id="off-inv-date">05/09/2026</span></div>
+                        <div class="text-[11px] text-stone-500">Payment: <span id="off-inv-pay" class="font-semibold text-emerald-700">Cash</span></div>
+                    </div>
+                </div>
+
+                <div class="bg-stone-50 p-4 rounded-xl text-xs border border-stone-200">
+                    <span class="font-bold text-stone-500 uppercase tracking-wider text-[10px] block mb-1">Customer Details:</span>
+                    <div id="off-inv-cust" class="font-bold text-stone-900 text-sm">Walk-in Customer</div>
+                </div>
+
+                <div>
+                    <table class="w-full text-left text-xs border-collapse border border-stone-200">
+                        <thead>
+                            <tr class="bg-stone-900 text-white font-bold uppercase text-[10px]">
+                                <th class="p-2.5 border border-stone-700">Product</th>
+                                <th class="p-2.5 border border-stone-700">Variant</th>
+                                <th class="p-2.5 border border-stone-700">Batch</th>
+                                <th class="p-2.5 text-right border border-stone-700">Price</th>
+                                <th class="p-2.5 text-center border border-stone-700">Qty</th>
+                                <th class="p-2.5 text-right border border-stone-700">Disc</th>
+                                <th class="p-2.5 text-right border border-stone-700">Total (QAR)</th>
+                            </tr>
+                        </thead>
+                        <tbody id="off-inv-items-tbody" class="divide-y divide-stone-200 font-medium"></tbody>
+                    </table>
+                </div>
+
+                <div class="flex justify-between items-start pt-2">
+                    <div class="text-[11px] text-stone-500 max-w-xs space-y-1">
+                        <p class="font-bold text-stone-800">Thank you for visiting Notch Perfumes!</p>
+                        <p>Items sold are non-refundable after 7 days. Guarantee of 100% authentic fragrance oil concentrations.</p>
+                    </div>
+                    <div class="w-64 bg-stone-50 p-4 rounded-xl border border-stone-200 space-y-1.5 text-xs">
+                        <div class="flex justify-between text-stone-600"><span>Discount Total:</span><span id="off-inv-disc" class="font-semibold text-red-600">QAR 0.00</span></div>
+                        <div class="flex justify-between text-stone-600"><span>Tax / VAT:</span><span>QAR 0.00</span></div>
+                        <hr class="border-stone-300 my-1" />
+                        <div class="flex justify-between text-sm font-bold text-stone-900 pt-1">
+                            <span>Grand Total:</span>
+                            <span id="off-inv-total" class="text-rose-950 text-base">QAR 0.00</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="pt-8 border-t border-stone-200 flex justify-between items-end text-[10px] text-stone-400">
+                    <p>Printed from Notch POS Terminal • www.notchperfumes.com</p>
+                    <div class="text-right">
+                        <div class="h-8 border-b border-stone-400 w-36 mb-1"></div>
+                        <p class="font-bold text-stone-700">Store Manager</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="no-print flex justify-end gap-3 pt-4 border-t border-stone-100">
+                <button onclick="closeOfflineInvoiceModal()" class="px-5 py-2.5 border border-stone-300 text-stone-700 hover:bg-stone-100 font-bold text-xs rounded-xl">Close</button>
+                <button onclick="window.print()" class="px-6 py-2.5 bg-rose-950 text-white hover:bg-rose-900 font-bold text-xs rounded-xl shadow-md flex items-center gap-2"><span>🖨️ Print Invoice</span></button>
+            </div>
+        </div>
+    </div>
+
     <script src="js/products.js"></script>
     <script>
         let addedItems = [];
         let currentSalesCounter = 1;
 
-        function initSalesForm() {
-            const dateStr = new Date().toISOString().slice(0, 10);
-            document.getElementById('sales-date').value = dateStr;
-            const formattedCounter = currentSalesCounter.toString().padStart(2, '0');
-            document.getElementById('sales-invoice-no').value = 'SAL-' + formattedCounter;
+        async function loadOrderProducts() {
+            const select = document.getElementById('item-product');
+            if (!select) return;
+            select.innerHTML = '<option value="">Search Product</option>';
+            let productsList = [];
+
+            // Read custom products from Product Master localStorage
+            const saved = localStorage.getItem('notch_custom_products');
+            if (saved) {
+                try {
+                    const parsed = JSON.parse(saved);
+                    if (Array.isArray(parsed) && parsed.length > 0) {
+                        parsed.forEach(p => {
+                            if (p && p.name) {
+                                productsList.push({
+                                    name: p.name || p.Name,
+                                    price: Number(p.price || p.Price) || 295,
+                                    stock: Number(p.stock || p.Stock) || 100
+                                });
+                            }
+                        });
+                    }
+                } catch(e) {}
+            }
+
+            // Try fetching /api/products
+            try {
+                const res = await fetch('/api/products');
+                if (res.ok) {
+                    const data = await res.json();
+                    if (Array.isArray(data) && data.length > 0) {
+                        data.forEach(p => {
+                            const name = p.name || p.Name;
+                            if (name && !productsList.some(pl => pl.name === name)) {
+                                productsList.push({
+                                    name: name,
+                                    price: Number(p.price || p.Price) || 295,
+                                    stock: Number(p.stock || p.Stock) || 100
+                                });
+                            }
+                        });
+                    }
+                }
+            } catch(e) {}
+
+            // Default fallback catalog items
+            const defaults = [
+                { name: "Notch Velvet Oud EDP", price: 295, stock: 180 },
+                { name: "Notch Royal Rose EDP", price: 245, stock: 120 },
+                { name: "Notch Steele Intense EDP", price: 320, stock: 45 },
+                { name: "Notch Celeste EDP", price: 275, stock: 95 },
+                { name: "Notch Discovery Gift Set", price: 495, stock: 30 }
+            ];
+
+            defaults.forEach(d => {
+                if (!productsList.some(pl => pl.name === d.name)) {
+                    productsList.push(d);
+                }
+            });
+
+            productsList.forEach(p => {
+                const opt = document.createElement('option');
+                opt.value = p.name;
+                opt.textContent = p.name;
+                opt.dataset.price = p.price;
+                opt.dataset.stock = p.stock;
+                select.appendChild(opt);
+            });
         }
 
         initSalesForm();
+        loadOrderProducts();
 
         function toggleSalesView() {
             const createSec = document.getElementById('create-sales-section');
@@ -334,6 +474,7 @@
                 viewSec.classList.remove('hidden');
                 btn.innerHTML = '<span>+ Create Sales</span>';
                 heading.innerText = 'Sales Transactions';
+                renderSalesHistory();
             }
         }
 
@@ -460,8 +601,35 @@
                 return;
             }
             const inv = document.getElementById('sales-invoice-no').value;
+            const date = document.getElementById('sales-date').value;
+            const customer = document.getElementById('sales-customer').value || 'Walk-in Customer';
+            const payment = document.getElementById('sales-payment').value || 'Cash';
+
+            let totalDisc = addedItems.reduce((s, i) => s + i.discAmt, 0);
+            let totalNet = addedItems.reduce((s, i) => s + i.net, 0);
+
+            const billRecord = {
+                invoiceNo: inv,
+                date: date,
+                customer: customer,
+                payment: payment,
+                totalDisc: totalDisc,
+                totalNet: totalNet,
+                items: [...addedItems],
+                createdAt: new Date().toISOString()
+            };
+
+            let offlineHistory = [];
+            try {
+                offlineHistory = JSON.parse(localStorage.getItem('notch_offline_sales') || '[]');
+            } catch(e){}
+            offlineHistory.unshift(billRecord);
+            localStorage.setItem('notch_offline_sales', JSON.stringify(offlineHistory));
+
+            openOfflineInvoiceModal(billRecord);
+
             const toast = document.getElementById('toast-msg');
-            toast.innerText = '✅ Sales Invoice #' + inv + ' saved & printed successfully!';
+            toast.innerText = '✅ Sales Invoice #' + inv + ' saved successfully!';
             toast.classList.remove('hidden');
             setTimeout(() => toast.classList.add('hidden'), 4000);
 
@@ -469,6 +637,76 @@
             renderAddedItemsTable();
             currentSalesCounter++;
             initSalesForm();
+        }
+
+        function renderSalesHistory() {
+            const tbody = document.getElementById('sales-history-tbody');
+            let offlineHistory = [];
+            try {
+                offlineHistory = JSON.parse(localStorage.getItem('notch_offline_sales') || '[]');
+            } catch(e){}
+
+            if (offlineHistory.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="8" class="py-6 px-4 text-center text-stone-500 italic">No offline sales transactions recorded yet.</td></tr>';
+                return;
+            }
+
+            let html = '';
+            offlineHistory.forEach((h, idx) => {
+                html += `
+                    <tr class="hover:bg-rose-50/20">
+                        <td class="py-3 px-4 font-mono font-bold text-rose-950">${h.invoiceNo}</td>
+                        <td class="py-3 px-4 text-gray-500">${h.date}</td>
+                        <td class="py-3 px-4 font-bold text-stone-900">${h.customer}</td>
+                        <td class="py-3 px-4"><span class="px-2 py-0.5 rounded bg-stone-100 font-semibold border border-stone-200">${h.payment}</span></td>
+                        <td class="py-3 px-4 text-center font-bold">${h.items ? h.items.length : 1} Items</td>
+                        <td class="py-3 px-4 text-right font-bold text-emerald-700">QAR ${(h.totalNet || 0).toFixed(2)}</td>
+                        <td class="py-3 px-4 text-center"><span class="px-2.5 py-1 bg-emerald-100 text-emerald-800 font-bold rounded-full text-[10px]">Completed</span></td>
+                        <td class="py-3 px-4 text-center">
+                            <button onclick="viewOfflineHistoryInvoice(${idx})" class="px-3 py-1 bg-rose-950 text-rosegold-300 rounded font-bold text-[11px] hover:bg-rose-900">📄 Invoice</button>
+                        </td>
+                    </tr>
+                `;
+            });
+            tbody.innerHTML = html;
+        }
+
+        function viewOfflineHistoryInvoice(idx) {
+            let offlineHistory = JSON.parse(localStorage.getItem('notch_offline_sales') || '[]');
+            if (offlineHistory[idx]) {
+                openOfflineInvoiceModal(offlineHistory[idx]);
+            }
+        }
+
+        function openOfflineInvoiceModal(bill) {
+            document.getElementById('off-inv-num').innerText = bill.invoiceNo;
+            document.getElementById('off-inv-date').innerText = bill.date || new Date().toLocaleDateString('en-GB');
+            document.getElementById('off-inv-pay').innerText = bill.payment || 'Cash';
+            document.getElementById('off-inv-cust').innerText = bill.customer || 'Walk-in Customer';
+
+            const tbody = document.getElementById('off-inv-items-tbody');
+            let html = '';
+            (bill.items || []).forEach(item => {
+                html += `
+                    <tr>
+                        <td class="p-2.5 font-bold border border-stone-200 text-stone-900">${item.product}</td>
+                        <td class="p-2.5 border border-stone-200">${item.variant}</td>
+                        <td class="p-2.5 border border-stone-200 text-stone-500">${item.batch}</td>
+                        <td class="p-2.5 text-right border border-stone-200">QAR ${item.price.toFixed(2)}</td>
+                        <td class="p-2.5 text-center border border-stone-200 font-bold">${item.qty}</td>
+                        <td class="p-2.5 text-right border border-stone-200 text-red-600">QAR ${item.discAmt.toFixed(2)}</td>
+                        <td class="p-2.5 text-right border border-stone-200 font-bold">QAR ${item.net.toFixed(2)}</td>
+                    </tr>
+                `;
+            });
+            tbody.innerHTML = html;
+            document.getElementById('off-inv-disc').innerText = `QAR ${(bill.totalDisc || 0).toFixed(2)}`;
+            document.getElementById('off-inv-total').innerText = `QAR ${(bill.totalNet || 0).toFixed(2)}`;
+            document.getElementById('offline-invoice-modal').classList.remove('hidden');
+        }
+
+        function closeOfflineInvoiceModal() {
+            document.getElementById('offline-invoice-modal').classList.add('hidden');
         }
 
         async function loadCustomerMasterOptions() {
@@ -503,8 +741,6 @@
             if (!select) return;
             try {
                 let products = [];
-
-                // 1. Try from localStorage (Product Master custom products)
                 const saved = localStorage.getItem('notch_custom_products');
                 if (saved) {
                     try {
@@ -515,7 +751,6 @@
                     } catch(e) {}
                 }
 
-                // 2. Fetch from API if needed
                 if (!products || products.length === 0) {
                     try {
                         const res = await fetch('/api/products');
@@ -528,7 +763,6 @@
                     } catch(e) {}
                 }
 
-                // 3. Fallback to default catalog from products.js
                 if (!products || products.length === 0) {
                     if (typeof getProductsList === 'function') {
                         products = getProductsList();
@@ -537,7 +771,6 @@
                     }
                 }
 
-                // Standard catalog fallback if still empty
                 if (!products || products.length === 0) {
                     products = [
                         { name: 'Notch Velvet Oud EDP', price: 295, stock: 180 },

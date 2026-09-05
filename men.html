@@ -229,11 +229,29 @@
     <script src="js/products.js"></script>
     <script src="js/app.js"></script>
     <script>
-        let currentMenList = getProductsList().filter(p => p.category === 'men' || p.category === 'unisex' || p.category === 'discovery');
+        function getMenProductsList() {
+            const all = getProductsList();
+            return all.filter(p => {
+                const cat = (p.category || '').toLowerCase();
+                return cat === 'men' || cat === 'unisex' || cat === 'discovery' || cat === 'male' || !cat;
+            });
+        }
 
-        document.addEventListener('DOMContentLoaded', () => {
+        let currentMenList = [];
+
+        function refreshMenProducts() {
+            currentMenList = getMenProductsList();
             renderMenGrid(currentMenList);
-        });
+        }
+
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', refreshMenProducts);
+        } else {
+            refreshMenProducts();
+        }
+
+        window.addEventListener('load', refreshMenProducts);
+        window.addEventListener('notch_products_ready', refreshMenProducts);
 
         function renderMenGrid(items) {
             const container = document.getElementById('men-products-grid');
@@ -241,8 +259,22 @@
             if (countEl) countEl.textContent = `Showing ${items.length} Men's Fragrances`;
             if (!container) return;
 
+            if (items.length === 0) {
+                container.innerHTML = `
+                    <div class="col-span-full py-16 text-center text-gray-500">
+                        <p class="text-2xl font-serif-heading italic mb-2">No fragrances found in this section</p>
+                    </div>
+                `;
+                return;
+            }
+
+            const fallbackImg = 'https://images.unsplash.com/photo-1594035910387-fea47794261f?auto=format&fit=crop&w=800&q=80';
+
             container.innerHTML = items.map(product => {
                 const defaultSize = (product.sizes && product.sizes.length) ? product.sizes[0] : '100 ml';
+                const imgSrc = (product.image && product.image.trim().length > 5) ? product.image : fallbackImg;
+                const displayPrice = (typeof product.price === 'number') ? product.price : (parseFloat(product.price) || 295);
+
                 return `
                 <div class="product-card bg-white rounded-xl overflow-hidden border border-stone-200 shadow-sm flex flex-col group relative">
                     ${product.badge ? `<span class="absolute top-3 left-3 z-10 px-3 py-1 text-[11px] font-bold uppercase text-white bg-stone-900 rounded-full shadow-sm">${product.badge}</span>` : ''}
@@ -252,7 +284,7 @@
                     </button>
 
                     <div class="product-image-container relative bg-stone-50 h-80 overflow-hidden cursor-pointer" onclick="openQuickView('${product.id}')">
-                        <img src="${product.image}" alt="${product.name}" class="w-full h-full object-cover" />
+                        <img src="${imgSrc}" alt="${product.name}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" onerror="this.onerror=null;this.src='${fallbackImg}';" />
                     </div>
 
                     <div class="p-6 flex-1 flex flex-col justify-between">
@@ -265,7 +297,7 @@
                         </div>
 
                         <div class="pt-3 border-t border-stone-100 flex items-center justify-between">
-                            <span class="text-lg font-bold text-stone-900">QAR ${product.price.toLocaleString('en-US')}</span>
+                            <span class="text-lg font-bold text-stone-900">QAR ${displayPrice.toLocaleString('en-US')}</span>
                             <button onclick="addToCart('${product.id}', '${defaultSize}', 1)" class="px-4 py-2 bg-stone-900 hover:bg-stone-800 text-white rounded-lg text-xs font-bold uppercase tracking-wide">
                                 Add To Bag
                             </button>
@@ -282,10 +314,11 @@
             });
             btn.className = 'men-vibe-btn px-4 py-1.5 bg-stone-900 text-white rounded-full text-xs font-bold shadow-sm';
 
+            const baseList = getMenProductsList();
             if (vibe === 'all') {
-                currentMenList = getProductsList().filter(p => p.category === 'men' || p.category === 'unisex' || p.category === 'discovery');
+                currentMenList = baseList;
             } else {
-                currentMenList = getProductsList().filter(p => (p.category === 'men' || p.category === 'unisex') && p.scentFamily === vibe);
+                currentMenList = baseList.filter(p => (p.scentFamily || '').toLowerCase() === vibe.toLowerCase());
             }
             renderMenGrid(currentMenList);
         }

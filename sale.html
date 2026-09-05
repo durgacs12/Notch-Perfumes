@@ -194,9 +194,18 @@
     <script src="js/products.js"></script>
     <script src="js/app.js"></script>
     <script>
-        document.addEventListener('DOMContentLoaded', () => {
+        function refreshSaleProducts() {
             renderProducts('all');
-        });
+        }
+
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', refreshSaleProducts);
+        } else {
+            refreshSaleProducts();
+        }
+
+        window.addEventListener('load', refreshSaleProducts);
+        window.addEventListener('notch_products_ready', refreshSaleProducts);
     </script>
 </body>
 </html>

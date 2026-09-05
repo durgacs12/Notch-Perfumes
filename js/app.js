@@ -18,13 +18,25 @@ let quizState = {
     answers: { gender: '', vibe: '', occasion: '' }
 };
 
-document.addEventListener('DOMContentLoaded', () => {
+function initApp() {
     initHeroSlider();
-    renderProducts(currentFilter);
+    renderProducts(typeof currentFilter !== 'undefined' ? currentFilter : 'all');
     renderCart();
     updateHeaderCounters();
     initSearch();
     initEventListeners();
+}
+
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initApp);
+} else {
+    initApp();
+}
+
+window.addEventListener('load', initApp);
+
+window.addEventListener('notch_products_ready', () => {
+    renderProducts(typeof currentFilter !== 'undefined' ? currentFilter : 'all');
 });
 
 function initHeroSlider() {
@@ -85,11 +97,11 @@ function renderProducts(filterCategory = 'all') {
     const allProds = getProductsList();
     let filtered = allProds;
     if (filterCategory !== 'all') {
-        filtered = allProds.filter(p => p.category === filterCategory);
+        filtered = allProds.filter(p => (p.category || '').toLowerCase() === filterCategory.toLowerCase());
     }
 
     if (currentNoteFilter !== 'all') {
-        filtered = filtered.filter(p => p.scentFamily === currentNoteFilter);
+        filtered = filtered.filter(p => (p.scentFamily || '').toLowerCase() === currentNoteFilter.toLowerCase());
     }
 
     if (filtered.length === 0) {
@@ -120,7 +132,7 @@ function renderProducts(filterCategory = 'all') {
                 </button>
 
                 <div class="product-image-container relative bg-rose-50/40 h-72 overflow-hidden cursor-pointer" onclick="openQuickView('${product.id}')">
-                    <img src="${product.image}" alt="${product.name}" class="w-full h-full object-cover object-center" loading="lazy" />
+                    <img src="${(product.image && product.image.trim().length > 5) ? product.image : 'https://images.unsplash.com/photo-1594035910387-fea47794261f?auto=format&fit=crop&w=800&q=80'}" alt="${product.name}" class="w-full h-full object-cover object-center" onerror="this.onerror=null;this.src='https://images.unsplash.com/photo-1594035910387-fea47794261f?auto=format&fit=crop&w=800&q=80';" loading="lazy" />
                     
                     <div class="absolute inset-0 bg-rose-950/20 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
                         <span class="px-4 py-2 bg-white/90 backdrop-blur-md text-rose-950 text-xs font-semibold uppercase tracking-wider rounded-full shadow-md transform translate-y-2 group-hover:translate-y-0 transition-transform">
@@ -254,7 +266,16 @@ function closeQuickView() {
     }
 }
 
+function isUserLoggedIn() {
+    return localStorage.getItem('customerLoggedIn') === 'true';
+}
+
 function addToCart(productId, size = '50 ml', quantity = 1) {
+    if (!isUserLoggedIn()) {
+        window.location.href = 'login.html';
+        return;
+    }
+
     const product = getProductsList().find(p => p.id === productId);
     if (!product) return;
 

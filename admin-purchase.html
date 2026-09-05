@@ -82,7 +82,8 @@
 
             <a href="admin-purchase.html" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-semibold transition-colors text-rose-950 rose-gold-bg shadow-sm font-bold"><span>🛒</span> Purchase</a>
             <a href="admin-add-images.html" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-semibold transition-colors text-rose-200/80 hover:bg-rose-900/60 hover:text-rosegold-300"><span>📸</span> Add Images</a>
-            <a href="admin-orders.html" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-semibold transition-colors text-rose-200/80 hover:bg-rose-900/60 hover:text-rosegold-300"><span>📦</span> Sales</a>
+            <a href="admin-orders.html" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-semibold transition-colors text-rose-200/80 hover:bg-rose-900/60 hover:text-rosegold-300"><span>🏬</span> Offline Sales</a>
+            <a href="admin-online-sales.html" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-semibold transition-colors text-rose-200/80 hover:bg-rose-900/60 hover:text-rosegold-300"><span>🌐</span> Online Sales</a>
             <a href="admin-verify-payment.html" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-semibold transition-colors text-rose-200/80 hover:bg-rose-900/60 hover:text-rosegold-300"><span>💳</span> Verify Payment</a>
 
             <!-- REPORTS COLLAPSIBLE MENU -->
@@ -477,32 +478,68 @@
             });
         }
 
-        // 2. Load Products from API / fallback
+        // 2. Load Products from API / Local Storage / fallback catalog
         async function loadProducts() {
             const select = document.getElementById('item-product');
+            if (!select) return;
             select.innerHTML = '<option value="">-- Search Product --</option>';
+            allProducts = [];
 
+            // 1. Read custom products created in Product Master from localStorage
+            const saved = localStorage.getItem('notch_custom_products');
+            if (saved) {
+                try {
+                    const parsed = JSON.parse(saved);
+                    if (Array.isArray(parsed) && parsed.length > 0) {
+                        parsed.forEach((p, idx) => {
+                            if (p && p.name) {
+                                const priceInr = Number(p.price || p.Price) || 2500;
+                                const sellingQar = Number(p.sellingPrice || p.SellingPrice || p.originalPrice) || Math.round(priceInr / 13.5) || 185;
+                                allProducts.push({
+                                    id: p.id || p.Id || `notch-custom-${idx}`,
+                                    name: p.name || p.Name,
+                                    code: p.code || p.ProductCode || `PRD-${100 + idx}`,
+                                    priceInr: priceInr,
+                                    sellingQar: sellingQar
+                                });
+                            }
+                        });
+                    }
+                } catch (e) {
+                    console.error('Error loading local custom products:', e);
+                }
+            }
+
+            // 2. Fetch from API /api/products if server active
             try {
                 const res = await fetch('/api/products');
                 if (res.ok) {
                     const data = await res.json();
-                    if (data && data.length > 0) {
-                        allProducts = data.map((p, idx) => ({
-                            id: p.id || p.Id,
-                            name: p.name || p.Name,
-                            code: p.code || p.ProductCode || `PRD-${100 + idx}`,
-                            priceInr: p.price || p.Price || 2500,
-                            sellingQar: p.sellingPrice || p.SellingPrice || 185
-                        }));
+                    if (Array.isArray(data) && data.length > 0) {
+                        data.forEach((p, idx) => {
+                            const name = p.name || p.Name;
+                            if (name && !allProducts.some(existing => existing.name === name)) {
+                                allProducts.push({
+                                    id: p.id || p.Id,
+                                    name: name,
+                                    code: p.code || p.ProductCode || `PRD-${100 + idx}`,
+                                    priceInr: Number(p.price || p.Price) || 2500,
+                                    sellingQar: Number(p.sellingPrice || p.SellingPrice) || 185
+                                });
+                            }
+                        });
                     }
                 }
             } catch (e) {
-                console.log('Products API unreachable, using standard product catalog.');
+                console.log('Products API unreachable, using local product catalog.');
             }
 
-            if (!allProducts || allProducts.length === 0) {
-                allProducts = defaultProducts;
-            }
+            // 3. Fallback to default catalog if missing
+            defaultProducts.forEach(dp => {
+                if (!allProducts.some(p => p.name === dp.name)) {
+                    allProducts.push(dp);
+                }
+            });
 
             allProducts.forEach(p => {
                 const opt = document.createElement('option');

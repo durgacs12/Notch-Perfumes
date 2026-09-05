@@ -219,6 +219,49 @@ app.MapGet("/api/products/{id}", async (string id) =>
     return product is not null ? Results.Ok(product) : Results.NotFound(new { message = "Product not found" });
 });
 
+// Create/Update Product
+app.MapPost("/api/products", async (ProductDto dto) =>
+{
+    using var db = GetConnection();
+    string id = string.IsNullOrWhiteSpace(dto.Id) ? $"notch-custom-{DateTime.UtcNow.Ticks}" : dto.Id;
+    string sql = @"IF EXISTS (SELECT 1 FROM Products WHERE Id = @Id)
+                   BEGIN
+                       UPDATE Products SET Name=@Name, Subtitle=@Subtitle, Category=@Category, ScentFamily=@ScentFamily, Price=@Price, OriginalPrice=@OriginalPrice, Image=@Image, Description=@Description, TopNotes=@TopNotes, HeartNotes=@HeartNotes, BaseNotes=@BaseNotes, Perfumer=@Perfumer WHERE Id=@Id;
+                   END
+                   ELSE
+                   BEGIN
+                       INSERT INTO Products (Id, Name, Subtitle, Category, ScentFamily, Price, OriginalPrice, Image, Description, TopNotes, HeartNotes, BaseNotes, Perfumer)
+                       VALUES (@Id, @Name, @Subtitle, @Category, @ScentFamily, @Price, @OriginalPrice, @Image, @Description, @TopNotes, @HeartNotes, @BaseNotes, @Perfumer);
+                   END";
+
+    await db.ExecuteAsync(sql, new
+    {
+        Id = id,
+        Name = dto.Name ?? "Perfume Product",
+        Subtitle = dto.Subtitle ?? "",
+        Category = dto.Category ?? "unisex",
+        ScentFamily = dto.ScentFamily ?? "amber",
+        Price = dto.Price,
+        OriginalPrice = dto.OriginalPrice > 0 ? dto.OriginalPrice : Math.Round(dto.Price * 1.25m),
+        Image = dto.Image ?? "",
+        Description = dto.Description ?? "",
+        TopNotes = dto.TopNotes ?? "",
+        HeartNotes = dto.HeartNotes ?? "",
+        BaseNotes = dto.BaseNotes ?? "",
+        Perfumer = dto.Perfumer ?? ""
+    });
+
+    return Results.Ok(new { Id = id, Name = dto.Name });
+});
+
+// Delete Product
+app.MapDelete("/api/products/{id}", async (string id) =>
+{
+    using var db = GetConnection();
+    int rows = await db.ExecuteAsync("DELETE FROM Products WHERE Id = @Id", new { Id = id });
+    return rows > 0 ? Results.Ok() : Results.NotFound();
+});
+
 // Categories Endpoints
 app.MapGet("/api/categories", async () =>
 {
@@ -309,27 +352,119 @@ app.MapDelete("/api/subcategories/{id:int}", async (int id) =>
 });
 
 
-// Get Orders
+// Get Orders (with Items)
 app.MapGet("/api/orders", async () =>
 {
-    using var db = GetConnection();
-    var orders = await db.QueryAsync("SELECT * FROM Orders ORDER BY CreatedAt DESC");
-    return Results.Ok(orders);
+    try
+    {
+        using var db = GetConnection();
+        var orders = (await db.QueryAsync<dynamic>("SELECT * FROM Orders ORDER BY CreatedAt DESC")).ToList();
+        var items = (await db.QueryAsync<dynamic>("SELECT * FROM OrderItems")).ToList();
+
+        var result = orders.Select(o => new
+        {
+            id = (int)o.Id,
+            orderNumber = (string)o.OrderNumber,
+            customerName = (string)o.CustomerName,
+            customerEmail = o.CustomerEmail != null ? (string)o.CustomerEmail : "",
+            customerPhone = o.CustomerPhone != null ? (string)o.CustomerPhone : "",
+            shippingAddress = o.ShippingAddress != null ? (string)o.ShippingAddress : "",
+            totalAmount = (decimal)o.TotalAmount,
+            paymentMethod = o.PaymentMethod != null ? (string)o.PaymentMethod : "COD",
+            status = o.Status != null ? (string)o.Status : "Pending",
+            createdAt = (DateTime)o.CreatedAt,
+            items = items.Where(i => (int)i.OrderId == (int)o.Id).Select(i => new {
+                id = (int)i.Id,
+                orderId = (int)i.OrderId,
+                productId = i.ProductId != null ? (string)i.ProductId : "",
+                productName = (string)i.ProductName,
+                quantity = (int)i.Quantity,
+                unitPrice = (decimal)i.UnitPrice,
+                totalPrice = (decimal)i.TotalPrice
+            }).ToList()
+        });
+
+        return Results.Ok(result);
+    }
+    catch (Exception ex)
+    {
+        return Results.Problem(ex.Message);
+    }
 });
 
-// Create Order
-app.MapPost("/api/orders", async (HttpContext context) =>
+// Get Order by ID
+app.MapGet("/api/orders/{id:int}", async (int id) =>
 {
     using var db = GetConnection();
-    var body = await context.Request.ReadFromJsonAsync<dynamic>();
-    if (body is null) return Results.BadRequest();
+    var order = await db.QueryFirstOrDefaultAsync<dynamic>("SELECT * FROM Orders WHERE Id = @Id", new { Id = id });
+    if (order is null) return Results.NotFound();
 
-    string sql = @"INSERT INTO Orders (OrderNumber, CustomerName, CustomerEmail, CustomerPhone, ShippingAddress, TotalAmount, Status)
-                   VALUES (@OrderNumber, @CustomerName, @CustomerEmail, @CustomerPhone, @ShippingAddress, @TotalAmount, @Status);
-                   SELECT CAST(SCOPE_IDENTITY() as int);";
+    var items = await db.QueryAsync<dynamic>("SELECT * FROM OrderItems WHERE OrderId = @Id", new { Id = id });
 
-    int id = await db.ExecuteScalarAsync<int>(sql, (object)body);
-    return Results.Created($"/api/orders/{id}", new { Id = id });
+    return Results.Ok(new
+    {
+        id = (int)order.Id,
+        orderNumber = (string)order.OrderNumber,
+        customerName = (string)order.CustomerName,
+        customerEmail = order.CustomerEmail != null ? (string)order.CustomerEmail : "",
+        customerPhone = order.CustomerPhone != null ? (string)order.CustomerPhone : "",
+        shippingAddress = order.ShippingAddress != null ? (string)order.ShippingAddress : "",
+        totalAmount = (decimal)order.TotalAmount,
+        paymentMethod = order.PaymentMethod != null ? (string)order.PaymentMethod : "COD",
+        status = order.Status != null ? (string)order.Status : "Pending",
+        createdAt = (DateTime)order.CreatedAt,
+        items
+    });
+});
+
+// Create Order (with Items)
+app.MapPost("/api/orders", async (OrderCreateDto dto) =>
+{
+    using var db = GetConnection();
+    string sqlOrder = @"INSERT INTO Orders (OrderNumber, CustomerName, CustomerEmail, CustomerPhone, ShippingAddress, TotalAmount, PaymentMethod, Status)
+                        VALUES (@OrderNumber, @CustomerName, @CustomerEmail, @CustomerPhone, @ShippingAddress, @TotalAmount, @PaymentMethod, @Status);
+                        SELECT CAST(SCOPE_IDENTITY() as int);";
+
+    int orderId = await db.ExecuteScalarAsync<int>(sqlOrder, new
+    {
+        dto.OrderNumber,
+        CustomerName = dto.CustomerName ?? "Customer",
+        CustomerEmail = dto.CustomerEmail ?? "",
+        CustomerPhone = dto.CustomerPhone ?? "",
+        ShippingAddress = dto.ShippingAddress ?? "",
+        dto.TotalAmount,
+        PaymentMethod = dto.PaymentMethod ?? "COD",
+        Status = dto.Status ?? "Pending"
+    });
+
+    if (dto.Items != null && dto.Items.Any())
+    {
+        string sqlItem = @"INSERT INTO OrderItems (OrderId, ProductId, ProductName, Quantity, UnitPrice, TotalPrice)
+                           VALUES (@OrderId, @ProductId, @ProductName, @Quantity, @UnitPrice, @TotalPrice);";
+        foreach (var item in dto.Items)
+        {
+            await db.ExecuteAsync(sqlItem, new
+            {
+                OrderId = orderId,
+                ProductId = item.ProductId ?? "",
+                ProductName = item.ProductName ?? "Product",
+                Quantity = item.Quantity > 0 ? item.Quantity : 1,
+                UnitPrice = item.UnitPrice,
+                TotalPrice = item.TotalPrice > 0 ? item.TotalPrice : (item.UnitPrice * item.Quantity)
+            });
+        }
+    }
+
+    return Results.Created($"/api/orders/{orderId}", new { Id = orderId, OrderNumber = dto.OrderNumber });
+});
+
+// Update Order Status
+app.MapPut("/api/orders/{id:int}/status", async (int id, OrderStatusDto dto) =>
+{
+    using var db = GetConnection();
+    string sql = @"UPDATE Orders SET Status = @Status WHERE Id = @Id";
+    int rows = await db.ExecuteAsync(sql, new { Id = id, Status = dto.Status });
+    return rows > 0 ? Results.Ok(new { message = "Order status updated" }) : Results.NotFound();
 });
 
 // Get Coupons
@@ -704,6 +839,14 @@ public record PurchaseDto(
     decimal TotalAmount,
     List<PurchaseItemDto>? Items
 );
+
+public record OrderItemInputDto(string? ProductId, string ProductName, int Quantity, decimal UnitPrice, decimal TotalPrice);
+public record OrderCreateDto(string OrderNumber, string? CustomerName, string? CustomerEmail, string? CustomerPhone, string? ShippingAddress, decimal TotalAmount, string? PaymentMethod, string? Status, List<OrderItemInputDto>? Items);
+public record OrderStatusDto(string Status);
+
+public record ProductDto(string? Id, string Name, string? Subtitle, string? Category, string? ScentFamily, decimal Price, decimal OriginalPrice, string? Image, string? Description, string? TopNotes, string? HeartNotes, string? BaseNotes, string? Perfumer);
+
+
 
 
 

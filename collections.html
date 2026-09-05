@@ -266,9 +266,18 @@
             return dynamicCollections;
         }
 
-        document.addEventListener('DOMContentLoaded', () => {
+        function refreshCollections() {
             renderCollections(getDynamicCollectionsData());
-        });
+        }
+
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', refreshCollections);
+        } else {
+            refreshCollections();
+        }
+
+        window.addEventListener('load', refreshCollections);
+        window.addEventListener('notch_products_ready', refreshCollections);
 
         function renderCollections(collections) {
             const container = document.getElementById('collections-container');
